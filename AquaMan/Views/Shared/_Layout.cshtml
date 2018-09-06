@@ -1,0 +1,36 @@
+﻿@using AquaMan.Controllers
+@using AquaMan.Extensions
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aqua Man</title>
+    <environment names="development">
+        <link asp-href-include="~/css/*.css" rel="stylesheet" />
+    </environment>
+</head>
+<body>
+    <div id="wrapper">
+        @Html.Partial("_Navigation")
+        @RenderBody()
+    </div>
+    <footer>
+        <p>&copy; 2018 Engingeering Awesomeness<span class="pull-right">Contact Help Desk at 1-800-DRU-IDIA</span></p>
+    </footer>
+    <environment names="development">
+        <script asp-src-include="~/js/*.js"></script>
+        <script>
+            //$(document).ready(function () {
+            //    $('.vote-up').click(function (e) {
+            //        e.preventDefault();
+            //        var id = $(this).data('productid')
+            //        $.post('/home/vote', { id: id }, function (data) {
+            //            $('#surveyWidget').html(data);
+            //        })
+            //    })
+            //})
+        </script>
+    </environment>
+</body>
+</html>

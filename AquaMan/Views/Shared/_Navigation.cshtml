@@ -1,0 +1,48 @@
+﻿@using AquaMan.Controllers
+@using AquaMan.Extensions
+
+<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Aqua Man</a>
+    </div>
+    <div class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+            <br />
+            <ul class="nav" id="side-menu">
+                <li>
+                    <span><i class="fa fa-edit fa-fw"></i> Tank Specs</span>
+                    <ul class="nav nav-second-level in">
+                        <li>
+                            <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span><i class="fa fa-edit fa-fw"></i> Feeding Times</span>
+                    <ul class="nav nav-second-level in">
+                        <li>
+                            <a href="#">Setup Feeding Times</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span><i class="fa fa-edit fa-fw"></i> Water</span>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="#">Check water level</a>
+                        </li>
+                        <li>
+                            <a href="#">Configure water change</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

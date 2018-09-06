@@ -1,0 +1,15 @@
+﻿{
+  "Locations": [
+    "Downtown",
+    "Northeast",
+    "West",
+    "South",
+    "East",
+    "Json Road"
+  ],
+  "ClientTypes": [
+    "Small Business",
+    "Corporation",
+    "Individual"
+  ]
+}

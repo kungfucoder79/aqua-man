@@ -1,0 +1,48 @@
+﻿@using AquaMan.Models
+@using AquaMan.Services
+@using AquaMan.Extensions
+
+@model TankSpecs
+@inject IFormDataService FormDataHelper
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                Enter the specifications for your tank <br />
+            </h1>
+        </div>
+    </div>
+    @using (Html.BeginForm(nameof(TankController.TankSpecs), nameof(TankController).RemoveControllerFromName(), FormMethod.Post))
+    {
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Height" class="col-xs-12">Tank Height</label>
+                    <div class="col-xs-9">
+                        <input asp-for="Height" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Width" class="col-xs-12">Tank Width</label>
+                    <div class="col-xs-9">
+                        <input asp-for="Width" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Depth" class="col-xs-12">Tank Depth</label>
+                    <div class="col-xs-9">
+                        <input asp-for="Depth" class="form-control" />
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-9">
+                        <input type="submit" class="pull-left btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
