@@ -23,6 +23,6 @@ namespace AquaMan.Models
         /// <summary>
         /// Depth of the tank
         /// </summary>
-        public DateTime Depth { get; set; }
+        public double Depth { get; set; }
     }
 }
