@@ -34,6 +34,7 @@ namespace AquaMan.Services
         {
             TankSpecs tankSpecs = new TankSpecs()
             {
+                Initialized = false,
                 Height = 6,
                 Width = 12,
                 Depth = 22,

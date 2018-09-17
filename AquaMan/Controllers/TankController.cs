@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AquaMan.Extensions;
 using AquaMan.Models;
 using AquaMan.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,13 @@ namespace AquaMan.Controllers
         [HttpPost]
         public IActionResult TankSpecs(TankSpecs tankSpecs)
         {
-            _formDataService.SetTankSpecs(tankSpecs);
+            if (ModelState.IsValid)
+            {
+                tankSpecs.Initialized = true;
+                _formDataService.SetTankSpecs(tankSpecs);
+                return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
+            }
+            
             return View(tankSpecs);
         }
 }

@@ -1,5 +1,7 @@
 ﻿<!-- Begin View Wrapper -->
 @using AquaMan.Models
+@using AquaMan.Services
+@inject IFormDataService formHelper
 
 <div id="page-wrapper">
     <div class="row">
@@ -12,7 +14,22 @@
     </div>
     <div class="row">
         <div class="col-md-8">
+            @if (!formHelper.GetTankSpecs().Initialized)
+            {
+                <label>Tanks specifications are needed to intitailize the system.</label>
+                <br />
+                <lable> Please go to the </lable>
+                <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup Page</a>
+            }
+            @if (formHelper.GetFeedingTimes()?.Time1 == null)
+            {
+                <br />
+                <label>At least one feeding time is needed.</label>
+                <br />
+                <lable> Please go to the </lable>
+                <a asp-controller="Feeding" asp-action="FeedingTimes">Feeding Times Setup Page</a>
+            }
+        </div>
         </div>
     </div>
-</div>
-<!-- End View Wrapper -->
+    <!-- End View Wrapper -->

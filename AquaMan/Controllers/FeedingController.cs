@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AquaMan.Extensions;
 using AquaMan.Models;
 using AquaMan.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,11 @@ namespace AquaMan.Controllers
         [HttpPost]
         public IActionResult FeedingTimes(FeedingTimes feedingTimes)
         {
-            _formDataService.SetFeedingTimes(feedingTimes);
+            if (ModelState.IsValid)
+            {
+                _formDataService.SetFeedingTimes(feedingTimes);
+                return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
+            }
             return View(feedingTimes);
         }
 }
