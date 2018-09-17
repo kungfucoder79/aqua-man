@@ -1,0 +1,70 @@
+﻿@using AquaMan.Models
+@using AquaMan.Services
+@using AquaMan.Extensions
+
+@model FeedingTimes
+@inject IFormDataService FormDataHelper
+
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                Enter times for feeding <br />
+            </h1>
+        </div>
+    </div>
+    @using (Html.BeginForm(nameof(FeedingController.FeedingTimes), nameof(FeedingController).RemoveControllerFromName(), FormMethod.Post))
+    {
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-xs-9">
+                        <span asp-validation-for="Time1" />
+                    </div>
+                    <div class="col-xs-9">
+                        <input asp-for="Time1" type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-9">
+                        <span asp-validation-for="Time2" />
+                    </div>
+                    <div class="col-xs-9">
+                        <input asp-for="Time2" type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-9">
+                        <span asp-validation-for="Time3" />
+                    </div>
+                    <div class="col-xs-9">
+                        <input asp-for="Time3" type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-9">
+                        <span asp-validation-for="Time4" />
+                    </div>
+                    <div class="col-xs-9">
+                        <input asp-for="Time4" type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-9">
+                        <span asp-validation-for="Time5" />
+                    </div>
+                    <div class="col-xs-9">
+                        <input asp-for="Time5" type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-9">
+                        <input type="submit" class="pull-left btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+
+

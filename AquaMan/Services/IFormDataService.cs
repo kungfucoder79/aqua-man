@@ -16,13 +16,13 @@ namespace AquaMan.Services
         /// Gets the feeding times
         /// </summary>
         /// <returns></returns>
-        IEnumerable<DateTime> GetFeedingTimes();
+        FeedingTimes GetFeedingTimes();
 
         /// <summary>
         /// Gets the feeding times
         /// </summary>
         /// <returns></returns>
-        void SetFeedingTimes(IEnumerable<DateTime> dateTimes);
+        void SetFeedingTimes(FeedingTimes feedingTimes);
 
         /// <summary>
         /// Gets the tank size specs, <see cref="TankSpecs"/>

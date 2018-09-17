@@ -13,18 +13,18 @@ namespace AquaMan.Services
         /// Gets the feeding times
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<DateTime> GetFeedingTimes()
+        public FeedingTimes GetFeedingTimes()
         {
-            throw new NotImplementedException();
+            return new FeedingTimes();
         }
 
         /// <summary>
         /// Sets the feeding times
         /// </summary>
         /// <returns></returns>
-        public void SetFeedingTimes(IEnumerable<DateTime> dateTimes)
+        public void SetFeedingTimes(FeedingTimes feedingTimes)
         {
-            throw new NotImplementedException();
+            //Save more stuffs
         }
 
         /// <summary>
