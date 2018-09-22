@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AquaMan", "AquaMan\AquaMan.csproj", "{F6C6FBE4-49FA-4B5B-B202-5118C06DD917}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlinkyHeaded", "BlinkyHeaded\BlinkyHeaded.csproj", "{5CFD39E8-0331-4AC1-84B2-2F943C077096}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aqua_Control", "BlinkyHeaded\Aqua_Control.csproj", "{5CFD39E8-0331-4AC1-84B2-2F943C077096}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
