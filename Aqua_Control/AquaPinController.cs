@@ -4,7 +4,7 @@ using Unosquare.RaspberryIO.Gpio;
 
 namespace Aqua_Control
 {
-    public class AquaPinController
+    public class AquaPinController : IAquaPinController
     {
         private Timer timer_fill;
         private Timer timer_drain;
@@ -143,6 +143,29 @@ namespace Aqua_Control
 
                 FillpinValue = GpioPinValue.High;
                 Fillpin.Write(FillpinValue);
+            }
+        }
+
+        public void Fill()
+        {
+            timer_fill.Start();
+            if (PumppinValue == GpioPinValue.High)
+            {
+                PumppinValue = GpioPinValue.Low;
+                Pumppin.Write(PumppinValue);
+
+                InpinValue = GpioPinValue.Low;
+                Inpin.Write(InpinValue);
+
+                FillpinValue = GpioPinValue.Low;
+                Fillpin.Write(FillpinValue);
+
+                OutpinValue = GpioPinValue.High;
+                Outpin.Write(OutpinValue);
+
+                WastepinValue = GpioPinValue.High;
+                Wastepin.Write(WastepinValue);
+
             }
         }
     }
