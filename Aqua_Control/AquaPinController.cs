@@ -8,8 +8,6 @@ namespace Aqua_Control
     {
         private Timer timer_fill;
         private Timer timer_drain;
-        private int time_fill_event = 0;
-        private int time_drain_event = 0;
 
         private const int Fill_Pin = 20;
         private GpioPin Fillpin;
