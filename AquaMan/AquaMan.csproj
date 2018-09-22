@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aqua_Control\Aqua_Control.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="Views\Feeding\FeedingTimes.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

@@ -14,6 +14,23 @@
     </div>
     <div class="row">
         <div class="col-md-8">
+
+            @*@using (Html.BeginForm(nameof(HomeController.Fill), nameof(HomeController).RemoveControllerFromName(), FormMethod.Post))
+            {
+                <label>Click to Fill</label>
+                <br />
+                <input type="submit" title="Fill" class="pull-left btn btn-primary" />
+            }
+            
+            <br />
+
+            @using (Html.BeginForm(nameof(HomeController.Drain), nameof(HomeController).RemoveControllerFromName(), FormMethod.Post))
+            {
+                <label>Click to Drain</label>
+                <br />
+                <input type="submit" title="Drain" class="pull-left btn btn-primary" />
+            }*@
+
             @if (!formHelper.GetTankSpecs().Initialized)
             {
                 <label>Tanks specifications are needed to intitailize the system.</label>
@@ -32,4 +49,4 @@
         </div>
     </div>
 </div>
-    <!-- End View Wrapper -->
+<!-- End View Wrapper -->
