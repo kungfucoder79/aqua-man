@@ -6,20 +6,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aqua Man</title>
-    <environment names="development">
-        <link asp-href-include="~/css/*.css" rel="stylesheet" />
-    </environment>
+    <link asp-href-include="~/css/*.css" rel="stylesheet" />
 </head>
 <body>
     <div id="wrapper">
-        <partial name="_Navigation"/>
+        <partial name="_Navigation" />
         @RenderBody()
     </div>
     <footer>
         <p>&copy; 2018 Engingeering Awesomeness<span class="pull-right">Contact Help Desk at 1-800-DRU-IDIA</span></p>
     </footer>
-    <environment names="development">
-        <script asp-src-include="~/js/*.js"></script>
-    </environment>
+    <script asp-src-include="~/js/*.js"></script>
 </body>
 </html>
