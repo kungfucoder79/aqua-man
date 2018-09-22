@@ -16,13 +16,15 @@ using Windows.UI.Xaml.Navigation;
 
 namespace BlinkyHeaded
 {
-
     public sealed partial class MainPage : Page
     {
+        // Initiate seeting and parameters for code.  There are two delcared timers using the DispatchTimer
+        // as well as declaring color fill events for the xaml GUI screen.
+        // Also declaring all the necessary variables for the different GPIO pins that are used on the
+        // Raspberry Pi.
+
         private DispatcherTimer timer_fill;
         private DispatcherTimer timer_drain;
-        private int time_fill_event = 0;
-        private int time_drain_event = 0;
         private SolidColorBrush redBrush = new SolidColorBrush(Windows.UI.Colors.Red);
         private SolidColorBrush GreenBrush = new SolidColorBrush(Windows.UI.Colors.Green);
 
@@ -50,6 +52,8 @@ namespace BlinkyHeaded
         public MainPage()
         {
             this.InitializeComponent();
+            // Dispatcher timer setup and classes.  The interval time seen below is abritary and was used for 
+            // testing.  These values will change based on what is best for the project in opening the water valves
 
             timer_fill = new DispatcherTimer();
             timer_fill.Interval = TimeSpan.FromSeconds(10);
@@ -59,21 +63,26 @@ namespace BlinkyHeaded
             timer_drain.Interval = TimeSpan.FromSeconds(5);
             timer_drain.Tick += Timer_drain_Tick;
 
+            // Function to setup the GPIO of the raspberry pi and to use the variables defined above
             InitGPIO();
                       
         }
 
         private void InitGPIO()
         {
-            GpioController gpio = GpioController.GetDefault();
-            // Show an error if there is no GPIO controller
-            if (gpio == null)
-            {
-                Fillpin = null;
-                GpioStatus.Text = "No GPIO controller on device.";
-                return;
-            }
 
+            GpioController gpio = GpioController.GetDefault();
+
+            //// Show an error if there is no GPIO controller
+            //if (gpio == null)
+            //{
+            //    Fillpin = null;
+            //    GpioStatus.Text = "No GPIO controller on device.";
+            //    return;
+            //}
+
+            // Below are the separate pins being used from the raspberry pi and how they are setup
+            // need to assign pins, values, and driver output
             Fillpin = gpio.OpenPin(Fill_Pin);
             FillpinValue = GpioPinValue.High;
             Fillpin.Write(FillpinValue);
@@ -99,102 +108,76 @@ namespace BlinkyHeaded
             Pumppin.Write(PumppinValue);
             Pumppin.SetDriveMode(GpioPinDriveMode.Output);
 
+            // display text change to GUI if GPIO pins were installed and initaiated, can be removed
             GpioStatus.Text = "GPIO pin initialized.";
         }
 
+        // Timer function for Filling.  When the tick interval is reached, this function will run and set the 
+        // GPIO high (which closed the valves) and stops the timer
         private void Timer_fill_Tick(object sender, object e)
         {
+            PumppinValue = GpioPinValue.High;
+            Pumppin.Write(PumppinValue);
 
-            if (PumppinValue == GpioPinValue.High)
-            {
-                PumppinValue = GpioPinValue.Low;
-                Pumppin.Write(PumppinValue);
+            InpinValue = GpioPinValue.High;
+            Inpin.Write(InpinValue);
 
-                InpinValue = GpioPinValue.Low;
-                Inpin.Write(InpinValue);
+            FillpinValue = GpioPinValue.High;
+            Fillpin.Write(FillpinValue);
 
-                FillpinValue = GpioPinValue.Low;
-                Fillpin.Write(FillpinValue);
+            OutpinValue = GpioPinValue.High;
+            Outpin.Write(OutpinValue);
 
-                OutpinValue = GpioPinValue.Low;
-                Outpin.Write(OutpinValue);
+            WastepinValue = GpioPinValue.High;
+            Wastepin.Write(WastepinValue);
 
-                WastepinValue = GpioPinValue.Low;
-                Wastepin.Write(WastepinValue);
-
-                Pump_Display.Fill = redBrush;
-                Solenoid_Fill_Display.Fill = redBrush;
-                Solenoid_In_Display.Fill = redBrush;
-                Solenoid_Out_Display.Fill = redBrush;
-                Solenoid_Waste_Display.Fill = redBrush;
-
-                if (time_fill_event > 0)
-                {
-                    timer_fill.Stop();
-                    time_fill_event = 0;
-                }
-
-            }
-            else
-            {
-                PumppinValue = GpioPinValue.High;
-                Pumppin.Write(PumppinValue);
-
-                InpinValue = GpioPinValue.High;
-                Inpin.Write(InpinValue);
-
-                FillpinValue = GpioPinValue.High;
-                Fillpin.Write(FillpinValue);
-
-                OutpinValue = GpioPinValue.Low;
-                Outpin.Write(OutpinValue);
-
-                WastepinValue = GpioPinValue.Low;
-                Wastepin.Write(WastepinValue);
-
-                Pump_Display.Fill = GreenBrush;
-                Solenoid_Fill_Display.Fill = GreenBrush;
-                Solenoid_In_Display.Fill = GreenBrush;
-                Solenoid_Out_Display.Fill = redBrush;
-                Solenoid_Waste_Display.Fill = redBrush;
-
-                time_fill_event++;
-            }
+            //Display commands for the GUI
+            Pump_Display.Fill = redBrush;
+            Solenoid_Fill_Display.Fill = redBrush;
+            Solenoid_In_Display.Fill = redBrush;
+            Solenoid_Out_Display.Fill = redBrush;
+            Solenoid_Waste_Display.Fill = redBrush;
+                                  
+            timer_fill.Stop();           
         }
+
+        // Timer function for drain.  When the tick interval is reached, this function will run and set the 
+        // GPIO high (which closed the valves) and stops the timer
         private void Timer_drain_Tick(object sender, object e)
         {
+            PumppinValue = GpioPinValue.High;
+            Pumppin.Write(PumppinValue);
+
+            InpinValue = GpioPinValue.High;
+            Inpin.Write(InpinValue);
+
+            FillpinValue = GpioPinValue.High;
+            Fillpin.Write(FillpinValue);
+
+            OutpinValue = GpioPinValue.High;
+            Outpin.Write(OutpinValue);
+
+            WastepinValue = GpioPinValue.High;
+            Wastepin.Write(WastepinValue);
+
+            //Display commands for the GUI
+            Pump_Display.Fill = redBrush;
+            Solenoid_Fill_Display.Fill = redBrush;
+            Solenoid_In_Display.Fill = redBrush;
+            Solenoid_Out_Display.Fill = redBrush;
+            Solenoid_Waste_Display.Fill = redBrush;
+
+            timer_drain.Stop();            
+        }
+
+        // GUI click event for filling.  Will start the associated timer and set the selected GPIO pins LOW
+        // to turn on the correct valve.
+        private void Fill_Click(object sender, RoutedEventArgs e)
+        {
+            timer_fill.Start();
             if (PumppinValue == GpioPinValue.High)
             {
                 PumppinValue = GpioPinValue.Low;
-                Pumppin.Write(PumppinValue);
-
-                OutpinValue = GpioPinValue.Low;
-                Outpin.Write(OutpinValue);
-
-                WastepinValue = GpioPinValue.Low;
-                Wastepin.Write(WastepinValue);
-
-                InpinValue = GpioPinValue.Low;
-                Inpin.Write(InpinValue);
-
-                FillpinValue = GpioPinValue.Low;
-                Fillpin.Write(FillpinValue);
-
-                Pump_Display.Fill = redBrush;
-                Solenoid_Fill_Display.Fill = redBrush;
-                Solenoid_In_Display.Fill = redBrush;
-                Solenoid_Out_Display.Fill = redBrush;
-                Solenoid_Waste_Display.Fill = redBrush;
-
-                if (time_drain_event > 0)
-                {
-                    timer_drain.Stop();
-                    time_drain_event = 0;
-                }
-            }
-            else
-            {
-                PumppinValue = GpioPinValue.High;
                 Pumppin.Write(PumppinValue);
 
                 InpinValue = GpioPinValue.Low;
@@ -210,25 +193,42 @@ namespace BlinkyHeaded
                 Wastepin.Write(WastepinValue);
 
                 Pump_Display.Fill = GreenBrush;
-                Solenoid_Fill_Display.Fill = redBrush;
-                Solenoid_In_Display.Fill = redBrush;
-                Solenoid_Out_Display.Fill = GreenBrush;
-                Solenoid_Waste_Display.Fill = GreenBrush;
-
-                time_drain_event++;
-
+                Solenoid_Fill_Display.Fill = GreenBrush;
+                Solenoid_In_Display.Fill = GreenBrush;
+                Solenoid_Out_Display.Fill = redBrush;
+                Solenoid_Waste_Display.Fill = redBrush;
             }
+
         }
 
-        private void Fill_Click(object sender, RoutedEventArgs e)
-        {
-            timer_fill.Start();
-        }
-
-
+        // GUI click event for draining.  Will start the associated timer and set the selected GPIO pins LOW
+        // to turn on the correct valves.
         private void Drain_Click(object sender, RoutedEventArgs e)
         {
             timer_drain.Start();
+            if (PumppinValue == GpioPinValue.High)
+            {
+                PumppinValue = GpioPinValue.Low;
+                Pumppin.Write(PumppinValue);
+
+                OutpinValue = GpioPinValue.Low;
+                Outpin.Write(OutpinValue);
+
+                WastepinValue = GpioPinValue.Low;
+                Wastepin.Write(WastepinValue);
+
+                InpinValue = GpioPinValue.High;
+                Inpin.Write(InpinValue);
+
+                FillpinValue = GpioPinValue.High;
+                Fillpin.Write(FillpinValue);
+
+                Pump_Display.Fill = GreenBrush;
+                Solenoid_Fill_Display.Fill = redBrush;
+                Solenoid_In_Display.Fill = redBrush;
+                Solenoid_Out_Display.Fill = GreenBrush;
+                Solenoid_Waste_Display.Fill = GreenBrush;                              
+            }
         }
     }
 
