@@ -11,7 +11,7 @@
     <StackPanel HorizontalAlignment="Stretch" Margin="0,0,0,0" Orientation="Vertical" VerticalAlignment="Stretch">
 
         <Grid HorizontalAlignment="Stretch" Height="768" Margin="0,0,0,0" VerticalAlignment="Stretch" Background="#FF27F2FB">
-            <TextBlock x:Name="GpioStatus" HorizontalAlignment="Left" Height="50" Margin="360,624,0,0" Text="Waiting to Initialize GPIO..." TextWrapping="Wrap" VerticalAlignment="Top" Width="326" FontSize="24" FontWeight="Bold" RenderTransformOrigin="0.503,0.48"/>
+            <TextBlock x:Name="GpioStatus" HorizontalAlignment="Left" Height="50" Margin="359,525,0,0" Text="Waiting to Initialize GPIO..." TextWrapping="Wrap" VerticalAlignment="Top" Width="326" FontSize="24" FontWeight="Bold" RenderTransformOrigin="0.503,0.48"/>
             <Button x:Name="Drain" Content="Drain" HorizontalAlignment="Left" Height="66" Margin="802,436,0,0" VerticalAlignment="Top" Width="90" FontSize="24" FontWeight="Bold" Click="Drain_Click"/>
             <Button x:Name="Fill" Content="Fill" HorizontalAlignment="Left" Height="66" Margin="150,436,0,0" VerticalAlignment="Top" Width="90" FontSize="24" FontWeight="Bold" Click="Fill_Click"/>
             <Rectangle x:Name="Pump_Display" HorizontalAlignment="Left" Height="69" Margin="483,281,0,0" VerticalAlignment="Top" Width="144" Fill="Red"/>
@@ -31,6 +31,12 @@
                     <CompositeTransform Rotation="-90.17"/>
                 </Rectangle.RenderTransform>
             </Rectangle>
+            <TextBlock x:Name="Text_Status" HorizontalAlignment="Left" Height="98" Margin="359,562,0,0" Text="Status: Initializing" TextWrapping="Wrap" VerticalAlignment="Top" Width="412" FontWeight="Bold" FontSize="24"/>
+            <TextBlock x:Name="I2CData1" HorizontalAlignment="Left" Margin="727,149,0,0" Text="I2CText" TextWrapping="Wrap" VerticalAlignment="Top" Height="70" Width="275" FontWeight="Bold" FontSize="24"/>
+            <TextBlock x:Name="I2CData2" HorizontalAlignment="Left" Margin="727,204,0,0" Text="I2CText" TextWrapping="Wrap" VerticalAlignment="Top" Height="70" Width="275" FontWeight="Bold" FontSize="24"/>
+            <TextBlock x:Name="I2CData3" HorizontalAlignment="Left" Margin="727,255,0,0" Text="I2CText" TextWrapping="Wrap" VerticalAlignment="Top" Height="70" Width="275" FontWeight="Bold" FontSize="24"/>
+            <TextBlock x:Name="I2CData4" HorizontalAlignment="Left" Margin="727,315,0,0" Text="I2CText" TextWrapping="Wrap" VerticalAlignment="Top" Height="70" Width="275" FontWeight="Bold" FontSize="24"/>
+
 
         </Grid>
     </StackPanel>
