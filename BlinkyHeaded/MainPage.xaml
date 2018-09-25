@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Height="1024">
 
     <StackPanel HorizontalAlignment="Stretch" Margin="0,0,0,0" Orientation="Vertical" VerticalAlignment="Stretch">
 
@@ -36,6 +36,8 @@
             <TextBlock x:Name="I2CData2" HorizontalAlignment="Left" Margin="727,204,0,0" Text="I2CText" TextWrapping="Wrap" VerticalAlignment="Top" Height="70" Width="275" FontWeight="Bold" FontSize="24"/>
             <TextBlock x:Name="I2CData3" HorizontalAlignment="Left" Margin="727,255,0,0" Text="I2CText" TextWrapping="Wrap" VerticalAlignment="Top" Height="70" Width="275" FontWeight="Bold" FontSize="24"/>
             <TextBlock x:Name="I2CData4" HorizontalAlignment="Left" Margin="727,315,0,0" Text="I2CText" TextWrapping="Wrap" VerticalAlignment="Top" Height="70" Width="275" FontWeight="Bold" FontSize="24"/>
+            <Button x:Name="Reset" Content="Reset Pi" HorizontalAlignment="Left" Height="58" Margin="28,23,0,0" VerticalAlignment="Top" Width="129" FontSize="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Reset_Click"/>
+            <TextBlock x:Name="Measurement1Done" HorizontalAlignment="Left" Height="46" Margin="640,37,0,0" Text="Meas1_Done = " TextWrapping="Wrap" VerticalAlignment="Top" Width="267" FontSize="24" FontWeight="Bold"/>
 
 
         </Grid>

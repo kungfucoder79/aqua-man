@@ -16,17 +16,16 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.I2c;
+using Windows.System;
 using System.Threading.Tasks;
 
 namespace BlinkyHeaded
 {
 
-    struct WaterSensor
+    struct OneRegisterRead
     {
-        public int Cwater;
-        public int Cair;
-        //public double Cmeasure;
-        //public double Cref;
+        public int DataMSB;
+        public int DataLSB;
     };
     struct CapMeasure1_1
     {
@@ -39,6 +38,8 @@ namespace BlinkyHeaded
         public int CapReadLSB1_2;
         public int CapreadMSB1_2;
     };
+
+
     public sealed partial class MainPage : Page
     {
         // Initiate seeting and parameters for code.  There are two delcared timers using the DispatchTimer
@@ -48,6 +49,7 @@ namespace BlinkyHeaded
 
         private DispatcherTimer timer_fill;
         private DispatcherTimer timer_drain;
+        private Timer periodicTimer;
         private SolidColorBrush redBrush = new SolidColorBrush(Windows.UI.Colors.Red);
         private SolidColorBrush GreenBrush = new SolidColorBrush(Windows.UI.Colors.Green);
 
@@ -72,8 +74,8 @@ namespace BlinkyHeaded
         private GpioPinValue PumppinValue;
 
         //Declared variables for I2C
-        private I2cDevice I2CAccel;
-        private const byte ACCEL_I2C_ADDR = 0x50;
+        private I2cDevice I2CSensor;
+        private const byte FDC1004_I2C_ADDR = 0x50;
         private const byte MEAS_ONE_CONTROL = 0x08;         // Address of the Measurement #1 register  
         private const byte MEAS_TWO_CONTROL = 0x09;         // Address of the Measurement #2 register    
         private const byte MEAS_THREE_CONTROL = 0x0A;       // Address of the Measurement #3 register 
@@ -88,16 +90,16 @@ namespace BlinkyHeaded
             // testing.  These values will change based on what is best for the project in opening the water valves
 
             timer_fill = new DispatcherTimer();
-            timer_fill.Interval = TimeSpan.FromSeconds(10);
+            timer_fill.Interval = TimeSpan.FromSeconds(1);
             timer_fill.Tick += Timer_fill_Tick;
 
             timer_drain = new DispatcherTimer();
-            timer_drain.Interval = TimeSpan.FromSeconds(10);
+            timer_drain.Interval = TimeSpan.FromSeconds(1);
             timer_drain.Tick += Timer_drain_Tick;
 
             // Function to setup the GPIO of the raspberry pi and to use the variables defined above
             InitGPIO();
-            InitI2CAccel();
+            InitI2C();
         }
 
         private void InitGPIO()
@@ -138,18 +140,15 @@ namespace BlinkyHeaded
 
         
 
-        // Initialization for I2C accelerometer 
-        private async void InitI2CAccel()
-        {
-            
-            I2cConnectionSettings settings = new I2cConnectionSettings(ACCEL_I2C_ADDR);
-            settings.BusSpeed = I2cBusSpeed.FastMode;                       /* 400KHz bus speed */
-
+        // Initialization for I2C FDC1004 Capaciatance Sensor 
+        private async void InitI2C()
+        {            
+            I2cConnectionSettings settings = new I2cConnectionSettings(FDC1004_I2C_ADDR);
+            settings.BusSpeed = I2cBusSpeed.FastMode;                       // 400KHz bus speed 
             I2cController controller = await Windows.Devices.I2c.I2cController.GetDefaultAsync();
-            I2CAccel = controller.GetDevice(settings);    /* Create an I2cDevice with our selected bus controller and I2C settings    */
-
-            /* 
-             * Initialize the accelerometer:
+            I2CSensor = controller.GetDevice(settings);    // Create an I2cDevice with our selected bus controller and I2C settings    
+             /* 
+             * Initialize the FDC1004 capacitance sensor:
              *
              * For this device, we create 3-byte write buffers: ==> this device uses 
              * The first byte is the register address we want to write to.
@@ -161,14 +160,14 @@ namespace BlinkyHeaded
             byte[] WriteBuf_MeasurementThreeFormat = new byte[] { MEAS_THREE_CONTROL, 0x3c, 0x00 }; // configs measurement 3                        
             byte[] WriteBuf_Cin1 = new byte[] { CIN1_CONTROL, 0x30, 0x00 };             // Set Offset for Cin1 to "6"pF based on datsheet calculations
             byte[] WriteBuf_FDC_Config = new byte[] { FDC_CONF_CONTROL, 0x0D, 0xE0 };   //set to read at 400S/s with repeat and read at measurement #1,#2,#3
-            /* Write the register settings */
+            // Write the register settings
             try
             {
-                I2CAccel.Write(WriteBuf_MeasurementOneFormat);
-                I2CAccel.Write(WriteBuf_MeasurementTwoFormat);                
-                I2CAccel.Write(WriteBuf_MeasurementThreeFormat);
-                I2CAccel.Write(WriteBuf_Cin1);
-                I2CAccel.Write(WriteBuf_FDC_Config);
+                I2CSensor.Write(WriteBuf_MeasurementOneFormat);
+                I2CSensor.Write(WriteBuf_MeasurementTwoFormat);                
+                I2CSensor.Write(WriteBuf_MeasurementThreeFormat);
+                I2CSensor.Write(WriteBuf_Cin1);
+                I2CSensor.Write(WriteBuf_FDC_Config);
                 Text_Status.Text = "Status: Running";
             }
             /* If the write fails display the error and stop running */
@@ -177,9 +176,70 @@ namespace BlinkyHeaded
                 Text_Status.Text = "Failed to communicate with device: " + ex.Message;
                 return;
             }
+            // Create timer to pull data from FDC1004 sensor at given interval
+            periodicTimer = new Timer(this.TimerCallback, null, 0, 10);
+        }
 
+        private void TimerCallback(object state)
+        {
+            string xText, yText, zText, wText, meas1doneText;
+            string statusText;
             
+            try
+            {
 
+                byte[] FDCCongAddrBuf = new byte[] { 0x0C };
+                byte[] Meas1AddrBufLSB = new byte[] { 0x00 };
+                byte[] Meas1AddrBufMSB = new byte[] { 0x01 };
+                OneRegisterRead DataIn = ReadOneReg(FDCCongAddrBuf);
+                int Measurement_1_Done = ((byte)(0x08 & DataIn.DataLSB) >> 3);
+                int Measurement_2_Done = ((byte)(0x04 & DataIn.DataLSB) >> 2);
+                int Measurement_3_Done = ((byte)(0x02 & DataIn.DataLSB) >> 1);
+                meas1doneText = string.Format("Meas1 Done = {0:F3}", Measurement_1_Done);
+
+                //if (Measurement_1_Done == 1)
+                //{
+                //}
+
+                CapMeasure1_1 Capread1 = ReadCapSen1_1(Meas1AddrBufLSB);
+                CapMeasure1_2 Capread2 = ReadCapSen1_2(Meas1AddrBufMSB);
+                int CapLabel1_1 = Capread1.CapreadMSB1_1 * 256 + Capread1.CapReadLSB1_1;
+                int CapLabel1_2 = Capread2.CapreadMSB1_2 * 256 + Capread2.CapReadLSB1_2;
+                int CapLabel1Both = (CapLabel1_1 * 65536 + CapLabel1_2) >> 8;
+                FinalCapMeasure1 = CapLabel1Both / 524288;
+
+                xText = string.Format("Data1: {0:F3}", Capread1.CapreadMSB1_1);
+                yText = string.Format("Data2: {0:F3}", Capread1.CapReadLSB1_1);
+                zText = string.Format("Data3: {0:F0}", Capread2.CapreadMSB1_2);
+                wText = string.Format("Data4: {0:F0}", Capread2.CapReadLSB1_2);
+                statusText = string.Format("Cpf: {0:F0}", FinalCapMeasure1);
+            }
+            catch (Exception ex)
+            {
+                xText = "Data1: Error";
+                yText = "Data2: Error";
+                zText = "Data3: Error";
+                wText = "Data4: Error";
+                meas1doneText = "DataMeas: Err";
+                statusText = "Failed to read from FDC1004: " + ex.Message;
+
+                //I2CData1.Text = xText;
+                //I2CData2.Text = yText;
+                //I2CData3.Text = zText;
+                //I2CData4.Text = wText;
+                //Text_Status.Text = statusText;
+            }
+
+            /* UI updates must be invoked on the UI thread */
+            Windows.Foundation.IAsyncAction task = this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                I2CData1.Text = xText;
+                I2CData2.Text = yText;
+                I2CData3.Text = zText;
+                I2CData4.Text = wText;
+                Measurement1Done.Text = meas1doneText;
+                Text_Status.Text = statusText;
+            });
         }
 
         // Timer function for Filling.  When the tick interval is reached, this function will run and set the 
@@ -207,56 +267,6 @@ namespace BlinkyHeaded
             Solenoid_In_Display.Fill = redBrush;
             Solenoid_Out_Display.Fill = redBrush;
             Solenoid_Waste_Display.Fill = redBrush;
-
-            string xText, yText, zText, wText;
-            string statusText;
-
-            try
-            {
-                
-                byte[] FDCCongAddrBuf = new byte[] { 0x0C };
-                byte[] Meas1AddrBufLSB = new byte[] { 0x00 };
-                byte[] Meas1AddrBufMSB = new byte[] { 0x01 };
-                WaterSensor wtrsen = ReadWtrSen(FDCCongAddrBuf);
-                
-                if (wtrsen.Cwater == 1)
-                {
-                    //CapMeasure1_1 Capread1 = ReadCapSen1_1(Meas1AddrBufLSB);
-                    //CapMeasure1_2 Capread2 = ReadCapSen1_2(Meas1AddrBufMSB);
-
-
-                }
-                CapMeasure1_1 Capread1 = ReadCapSen1_1(Meas1AddrBufLSB);
-                CapMeasure1_2 Capread2 = ReadCapSen1_2(Meas1AddrBufMSB);
-                int CapLabel1_1 = Capread1.CapreadMSB1_1 * 256 + Capread1.CapReadLSB1_1;
-                int CapLabel1_2 = Capread2.CapreadMSB1_2 * 256 + Capread2.CapReadLSB1_2;
-                int CapLabel1Both = (CapLabel1_1 * 65536 + CapLabel1_2) >> 8;
-                FinalCapMeasure1 = CapLabel1Both / 524288;
-
-                xText = string.Format("Data1: {0:F3}", Capread1.CapreadMSB1_1);
-                yText = string.Format("Data2: {0:F3}", Capread1.CapReadLSB1_1);
-                zText = string.Format("Data3: {0:F0}", Capread2.CapreadMSB1_2);
-                wText = string.Format("Data4: {0:F0}", Capread2.CapReadLSB1_2);
-                statusText = string.Format("Cpf: {0:F0}", FinalCapMeasure1);
-            }
-            catch (Exception ex)
-            {
-                xText = "Data1: Error";
-                yText = "Data2: Error";
-                zText = "Data3: Error";
-                wText = "Data4: Error";
-                statusText = "Failed to read from FDC2004: " + ex.Message;
-            }
-
-            /* UI updates must be invoked on the UI thread */
-            Windows.Foundation.IAsyncAction task = this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                I2CData1.Text = xText;
-                I2CData2.Text = yText;
-                I2CData3.Text = zText;
-                I2CData4.Text = wText;
-                Text_Status.Text = statusText;
-            });
 
             timer_fill.Stop();           
         }
@@ -353,36 +363,23 @@ namespace BlinkyHeaded
 
         private void MainPage_Unloaded(object sender, object args)
         {
-          I2CAccel.Dispose();
+          I2CSensor.Dispose();
         }
 
-        private WaterSensor ReadWtrSen(byte[] RegAddrBuf)
+        private OneRegisterRead ReadOneReg(byte[] RegAddrBuf)
         {
             byte[] ReadBuf;
-           // byte[] RegAddrBuf;
-                        
-            ReadBuf = new byte[2];  /* We read 6 bytes sequentially to get all 3 two-byte axes                 */
-            //RegAddrBuf = new byte[] { 0x0C }; /* Register address we want to read from                  */
-            I2CAccel.WriteRead(RegAddrBuf, ReadBuf);
-            
-
-            /* In order to get the raw 16-bit data values, we need to concatenate two 8-bit bytes for each axis */
-            
+            ReadBuf = new byte[2];  // need to read the two bytes stored in the targeted register
+            I2CSensor.WriteRead(RegAddrBuf, ReadBuf);
+            // A little confusing but decided to parse the two bytes into separate bytes, convert to 'int'
+            // then return this information so we can perform calculations.
             int RawData = BitConverter.ToInt16(ReadBuf, 0);
-            int RawData1 = ((byte)(0x08 & RawData) >>3 ) ;
-            int RawData2 = 0x08 & RawData;
-            //ushort RawData2 = BitConverter.ToUInt16(ReadBuf, 1);
-            //long RawData3 = BitConverter.ToUInt16(ReadBuf, 2);
-            //long RawData4 = BitConverter.ToUInt16(ReadBuf, 3);
 
-            WaterSensor wtrsen;
-            wtrsen.Cair = RawData1;
-            wtrsen.Cwater = RawData2;
-            //wtrsen.Cwater = RawData3;
-            //wtrsen.Cref = RawData4;
+            OneRegisterRead OneRegReadDataOut;
+            OneRegReadDataOut.DataMSB = 0xFF00 & RawData >> 8;
+            OneRegReadDataOut.DataLSB = 0x00FF & RawData; // if reading Done bit((byte)(0x08 & RawData) >> 3)
 
-            return wtrsen;
-            
+            return OneRegReadDataOut;            
         }
 
         private CapMeasure1_1 ReadCapSen1_1(byte[] RegAddrBuf)
@@ -390,7 +387,7 @@ namespace BlinkyHeaded
             byte[] ReadBuf;
             
             ReadBuf = new byte[2];  /* We read 2 bytes sequentially  */
-            I2CAccel.WriteRead(RegAddrBuf, ReadBuf);
+            I2CSensor.WriteRead(RegAddrBuf, ReadBuf);
             
             /* In order to get the raw 16-bit data values, we need to separate the bytes */
 
@@ -411,7 +408,7 @@ namespace BlinkyHeaded
             byte[] ReadBuf;
 
             ReadBuf = new byte[2];  /* We read 2 bytes sequentially  */
-            I2CAccel.WriteRead(RegAddrBuf, ReadBuf);
+            I2CSensor.WriteRead(RegAddrBuf, ReadBuf);
 
             /* In order to get the raw 16-bit data values, we need to separate the bytes */
 
@@ -426,6 +423,12 @@ namespace BlinkyHeaded
             return capMeas1_2;
         }
 
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            // Clicking Button will Reset Raspberry Pi and perform system restart
+            // If this is clicked during debug, the host computer looses connection
+            ShutdownManager.BeginShutdown(ShutdownKind.Restart, TimeSpan.FromSeconds(0));
+        }
     }
 
 }
