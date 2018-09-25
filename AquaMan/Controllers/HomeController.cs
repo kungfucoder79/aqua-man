@@ -12,12 +12,12 @@ namespace AquaMan.Controllers
 {
     public class HomeController : Controller
     {
-        //private IAquaPinController _aquaPinController;
+        private IAquaPinController _aquaPinController;
 
-        //public HomeController(IAquaPinController aquaPinController)
-        //{
-        //    _aquaPinController = aquaPinController;
-        //}
+        public HomeController(IAquaPinController aquaPinController)
+        {
+            _aquaPinController = aquaPinController;
+        }
 
         public IActionResult Index()
         {
@@ -46,7 +46,7 @@ namespace AquaMan.Controllers
         [HttpPost]
         public ActionResult Fill()
         {
-            //_aquaPinController.Fill();
+            _aquaPinController.Fill();
             return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
         }
 
@@ -54,7 +54,7 @@ namespace AquaMan.Controllers
         [HttpPost]
         public ActionResult Drain()
         {
-            //_aquaPinController.Drain();
+            _aquaPinController.Drain();
             return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
         }
         
