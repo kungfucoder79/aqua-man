@@ -38,6 +38,7 @@
             <TextBlock x:Name="I2CData4" HorizontalAlignment="Left" Margin="727,315,0,0" Text="I2CText" TextWrapping="Wrap" VerticalAlignment="Top" Height="70" Width="275" FontWeight="Bold" FontSize="24"/>
             <Button x:Name="Reset" Content="Reset Pi" HorizontalAlignment="Left" Height="58" Margin="28,23,0,0" VerticalAlignment="Top" Width="129" FontSize="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Reset_Click"/>
             <TextBlock x:Name="Measurement1Done" HorizontalAlignment="Left" Height="46" Margin="640,37,0,0" Text="Meas1_Done = " TextWrapping="Wrap" VerticalAlignment="Top" Width="267" FontSize="24" FontWeight="Bold"/>
+            <Button x:Name="Reset_I2C" Content="Reset I2C" HorizontalAlignment="Left" Height="58" Margin="28,141,0,0" VerticalAlignment="Top" Width="129" FontSize="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Reset_I2C_Click"/>
 
 
         </Grid>
