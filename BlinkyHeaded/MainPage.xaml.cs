@@ -71,7 +71,29 @@ namespace Aqua_ControlUWP
 
             _aquaGPIO = new AquaGPIO();
 
+            _aquaGPIO.DrainDone += _aquaGPIO_DrainDone;
+            _aquaGPIO.FillDone += _aquaGPIO_FillDone;
+
             InitI2C();
+        }
+
+        private void _aquaGPIO_FillDone(object sender, EventArgs e)
+        {
+            SetButtonToRed();
+        }
+
+        private void _aquaGPIO_DrainDone(object sender, EventArgs e)
+        {
+            SetButtonToRed();
+        }
+
+        private void SetButtonToRed()
+        {
+            Pump_Display.Fill = redBrush;
+            Solenoid_Fill_Display.Fill = redBrush;
+            Solenoid_In_Display.Fill = redBrush;
+            Solenoid_Out_Display.Fill = redBrush;
+            Solenoid_Waste_Display.Fill = redBrush;
         }
 
         // Initialization for I2C FDC1004 Capaciatance Sensor 

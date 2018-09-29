@@ -74,8 +74,22 @@ namespace Aqua_ControlUWP
 
         #endregion
 
+        #region Properties
+        public event EventHandler DrainDone;
+        public event EventHandler FillDone;
+        #endregion
 
         #region Methods
+        protected virtual void OnDrainDone(EventArgs e)
+        {
+            DrainDone?.Invoke(this, e);
+        }
+
+        protected virtual void OnFillDone(EventArgs e)
+        {
+            FillDone?.Invoke(this, e);
+        }
+
         private void InitializePin(GpioController gpioController, out GpioPin pin, int pinId)
         {
             pin = gpioController.OpenPin(pinId);
@@ -102,6 +116,8 @@ namespace Aqua_ControlUWP
             _timer_fill.Stop();
 
             _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+
+            OnFillDone(EventArgs.Empty);
         }
 
         /// <summary>
@@ -123,6 +139,8 @@ namespace Aqua_ControlUWP
             _timer_drain.Stop();
 
             _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+
+            OnDrainDone(EventArgs.Empty);
         }
 
         /// <summary>
@@ -182,7 +200,7 @@ namespace Aqua_ControlUWP
         /// to turn on the correct valves.
         /// </summary>
         /// <returns>The value of the <see cref="_pumppinValue"/></returns>
-        public async Task<GpioPinValue> Drain()
+        public GpioPinValue Drain()
         {
             _timer_drain.Start();
             if (_pumppinValue == GpioPinValue.High)
