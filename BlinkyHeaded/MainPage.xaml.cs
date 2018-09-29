@@ -63,7 +63,9 @@ namespace Aqua_ControlUWP
         private const byte MEAS_THREE_CONTROL = 0x0A;       // Address of the Measurement #3 register 
         private const byte CIN1_CONTROL = 0x0D;             // Address of the Cin1 register
         private const byte FDC_CONF_CONTROL = 0x0C;         // Address of the FDC configuration register
-        public float FinalCapMeasure1, FinalCapMeasure2, FinalCapMeasure3;
+        private float FinalCapMeasure1;
+        private float FinalCapMeasure2;
+        private float FinalCapMeasure3;
 
         public MainPage()
         {
@@ -280,6 +282,11 @@ namespace Aqua_ControlUWP
             byte[] WriteBuf_FDC_Config = new byte[] { FDC_CONF_CONTROL, 0x8C, 0x00 };
             I2CSensor.Write(WriteBuf_FDC_Config);
             WriteToI2CDevice();
+        }
+
+        private void Feeder_Button_Click(object sender, RoutedEventArgs e)
+        {
+            _aquaGPIO.FeedMe(6400);
         }
 
         private float ReadCapSen1_1(byte[] RegAddrBuf1, byte[] RegAddrBuf2)

@@ -13,7 +13,7 @@
         <Grid HorizontalAlignment="Stretch" Height="768" Margin="0,0,0,0" VerticalAlignment="Stretch" Background="#FF27F2FB">
             <TextBlock x:Name="GpioStatus" HorizontalAlignment="Left" Height="50" Margin="359,525,0,0" Text="Waiting to Initialize GPIO..." TextWrapping="Wrap" VerticalAlignment="Top" Width="326" FontSize="24" FontWeight="Bold" RenderTransformOrigin="0.503,0.48"/>
             <Button x:Name="Drain" Content="Drain" HorizontalAlignment="Left" Height="66" Margin="802,436,0,0" VerticalAlignment="Top" Width="90" FontSize="24" FontWeight="Bold" Click="Drain_Click"/>
-            <Button x:Name="Fill" Content="Fill" HorizontalAlignment="Left" Height="66" Margin="150,436,0,0" VerticalAlignment="Top" Width="90" FontSize="24" FontWeight="Bold" Click="Fill_Click"/>
+            <Button x:Name="Fill" Content="Fill" HorizontalAlignment="Left" Height="66" Margin="802,525,0,0" VerticalAlignment="Top" Width="90" FontSize="24" FontWeight="Bold" Click="Fill_Click"/>
             <Rectangle x:Name="Pump_Display" HorizontalAlignment="Left" Height="69" Margin="483,281,0,0" VerticalAlignment="Top" Width="144" Fill="Red"/>
             <Rectangle x:Name="Solenoid_Fill_Display" HorizontalAlignment="Left" Height="69" Margin="314,433,0,0" VerticalAlignment="Top" Width="48" Fill="Red"/>
             <Rectangle x:Name="Solenoid_Waste_Display" HorizontalAlignment="Left" Height="69" Margin="656,433,0,0" VerticalAlignment="Top" Width="48" Fill="Red"/>
@@ -39,6 +39,11 @@
             <Button x:Name="Reset" Content="Reset Pi" HorizontalAlignment="Left" Height="58" Margin="28,23,0,0" VerticalAlignment="Top" Width="129" FontSize="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Reset_Click"/>
             <TextBlock x:Name="Measurement1Done" HorizontalAlignment="Left" Height="46" Margin="640,37,0,0" Text="Meas1_Done = " TextWrapping="Wrap" VerticalAlignment="Top" Width="267" FontSize="24" FontWeight="Bold"/>
             <Button x:Name="Reset_I2C" Content="Reset I2C" HorizontalAlignment="Left" Height="58" Margin="28,141,0,0" VerticalAlignment="Top" Width="129" FontSize="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Reset_I2C_Click"/>
+            <Button x:Name="Feeder_Button" Content="Feeder" HorizontalAlignment="Left" Height="66" Margin="66,475,0,0" VerticalAlignment="Top" Width="127" FontSize="24" FontWeight="Bold" Click="Feeder_Button_Click"/>
+            <Ellipse x:Name="In1" HorizontalAlignment="Left" Height="53" Margin="28,388,0,0" VerticalAlignment="Top" Width="63" Fill="#FFFD150A"/>
+            <Ellipse x:Name="In2" HorizontalAlignment="Left" Height="53" Margin="98,388,0,0" VerticalAlignment="Top" Width="63" Fill="#FFFD150A"/>
+            <Ellipse x:Name="In3" HorizontalAlignment="Left" Height="53" Margin="166,388,0,0" VerticalAlignment="Top" Width="63" Fill="#FFFD150A"/>
+            <Ellipse x:Name="In4" HorizontalAlignment="Left" Height="53" Margin="234,388,0,0" VerticalAlignment="Top" Width="63" Fill="#FFFD150A"/>
 
 
         </Grid>

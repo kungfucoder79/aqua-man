@@ -30,6 +30,25 @@ namespace Aqua_ControlUWP
         private GpioPin _pumpPin;
         private GpioPinValue _pumppinValue;
 
+        private const int _in1ID = 23;
+        private GpioPin _inPin1;
+
+        private const int _in2ID = 24;
+        private GpioPin _inPin2;
+
+        private const int _in3ID = 25;
+        private GpioPin _inPin3;
+
+        private const int _in4ID = 8;
+        private GpioPin _inPin4;
+
+        private GpioPinValue[][] _feederSequences = new GpioPinValue[][]{
+            new[] {GpioPinValue.High, GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.Low},
+            new[] {GpioPinValue.Low, GpioPinValue.High, GpioPinValue.Low, GpioPinValue.Low},
+            new[] {GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.High, GpioPinValue.Low},
+            new[] {GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.High}};
+
+
         // Dispatcher timer setup and classes.  The interval time seen below is abritary and was used for 
         // testing.  These values will change based on what is best for the project in opening the water valves
         private DispatcherTimer _timer_fill;
@@ -44,13 +63,13 @@ namespace Aqua_ControlUWP
         /// </summary>
         public AquaGPIO()
         {
-            
+
             _timer_fill = new DispatcherTimer();
-            _timer_fill.Interval = TimeSpan.FromSeconds(5);
+            _timer_fill.Interval = TimeSpan.FromSeconds(15);
             _timer_fill.Tick += Timer_fill_Tick;
 
             _timer_drain = new DispatcherTimer();
-            _timer_drain.Interval = TimeSpan.FromSeconds(5);
+            _timer_drain.Interval = TimeSpan.FromSeconds(15);
             _timer_drain.Tick += Timer_drain_Tick;
 
             _timer_pumpOnDelay = new Timer(_timer_pumpOnDelay_Tick, null, Timeout.Infinite, Timeout.Infinite);
@@ -70,6 +89,14 @@ namespace Aqua_ControlUWP
             InitializePin(gpio, out _inPin, _inPinID);
 
             InitializePin(gpio, out _outPin, _outPinID);
+
+            InitializePin(gpio, out _inPin1, _in1ID);
+
+            InitializePin(gpio, out _inPin2, _in2ID);
+
+            InitializePin(gpio, out _inPin3, _in3ID);
+
+            InitializePin(gpio, out _inPin4, _in4ID);
         }
 
         #endregion
@@ -179,7 +206,7 @@ namespace Aqua_ControlUWP
         public GpioPinValue Fill()
         {
             _timer_fill.Start();
-            
+
             if (_pumppinValue == GpioPinValue.High)
             {
                 _inPin.Write(GpioPinValue.Low);
@@ -216,6 +243,27 @@ namespace Aqua_ControlUWP
                 _timer_pumpOnDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
             }
             return _pumppinValue;
+        }
+
+        /// <summary>
+        /// Starts the feeding auger sequence with the specified number of times to step.
+        /// </summary>
+        /// <param name="numberOfTimes"></param>
+        public async void FeedMe(int numberOfTimes)
+        {
+            int delay = 1;
+            for (int i = 0; i < numberOfTimes; i++)
+            {
+                for (int j = 0; j < _feederSequences[0].Length; j++)
+                {
+                    _inPin1.Write(_feederSequences[j][0]);
+                    _inPin2.Write(_feederSequences[j][1]);
+                    _inPin3.Write(_feederSequences[j][2]);
+                    _inPin4.Write(_feederSequences[j][3]);
+                    await Task.Delay(delay);
+                }
+
+            }
         }
         #endregion
     }
