@@ -225,30 +225,33 @@ namespace Aqua_ControlUWP
         private void Fill_Click(object sender, RoutedEventArgs e)
         {
             GpioPinValue pumppinValue = _aquaGPIO.Fill();
-            if (pumppinValue == GpioPinValue.Low)
-            {
-                Pump_Display.Fill = GreenBrush;
-                Solenoid_Fill_Display.Fill = GreenBrush;
-                Solenoid_In_Display.Fill = GreenBrush;
-                Solenoid_Out_Display.Fill = redBrush;
-                Solenoid_Waste_Display.Fill = redBrush;
-            }
+            SetGUItoFill();
+        }
 
+        private void SetGUItoFill()
+        {
+            Pump_Display.Fill = GreenBrush;
+            Solenoid_Fill_Display.Fill = GreenBrush;
+            Solenoid_In_Display.Fill = GreenBrush;
+            Solenoid_Out_Display.Fill = redBrush;
+            Solenoid_Waste_Display.Fill = redBrush;
         }
 
         // GUI click event for draining.  Will start the associated timer and set the selected GPIO pins LOW
         // to turn on the correct valves.
-        private async void Drain_Click(object sender, RoutedEventArgs e)
+        private void Drain_Click(object sender, RoutedEventArgs e)
         {
-            GpioPinValue pumppinValue = await _aquaGPIO.Drain();
-            if (pumppinValue == GpioPinValue.Low)
-            {
-                Pump_Display.Fill = GreenBrush;
-                Solenoid_Fill_Display.Fill = redBrush;
-                Solenoid_In_Display.Fill = redBrush;
-                Solenoid_Out_Display.Fill = GreenBrush;
-                Solenoid_Waste_Display.Fill = GreenBrush;
-            }
+            GpioPinValue pumppinValue = _aquaGPIO.Drain();
+            SetGUItoDrain();
+        }
+
+        private void SetGUItoDrain()
+        {
+            Pump_Display.Fill = GreenBrush;
+            Solenoid_Fill_Display.Fill = redBrush;
+            Solenoid_In_Display.Fill = redBrush;
+            Solenoid_Out_Display.Fill = GreenBrush;
+            Solenoid_Waste_Display.Fill = GreenBrush;
         }
 
         private void MainPage_Unloaded(object sender, object args)
