@@ -3,6 +3,31 @@
 @using AquaMan.Services
 @inject IFormDataService formHelper
 
+<script>
+function Fill() 
+{
+    $.get("/Home/Fill", function (data) 
+    {
+        $("p").html(data);
+    });
+}
+
+function Drain() 
+{
+    $.get("/Home/Drain", function (data) 
+    {
+        $("p").html(data);
+    });
+}
+
+function Feed() 
+{
+    $.get("/Home/Feed", function (data) 
+    {
+        $("p").html(data);
+    });
+}
+</script>
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
@@ -14,37 +39,28 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-
-            @*@using (Html.BeginForm(nameof(HomeController.Fill), nameof(HomeController).RemoveControllerFromName(), FormMethod.Post))
-            {
-                <label>Click to Fill</label>
+            <form>
+                <button type="button" onclick="Fill()" value="Fill">Fill</button>
                 <br />
-                <input type="submit" title="Fill" class="pull-left btn btn-primary" />
-            }
-            
-            <br />
-
-            @using (Html.BeginForm(nameof(HomeController.Drain), nameof(HomeController).RemoveControllerFromName(), FormMethod.Post))
-            {
-                <label>Click to Drain</label>
+                <button type="button" onclick="Drain()" value="Drain">Drain</button>
+                <br/>
+                <button type="button" onclick="Feed()" value="Feed">Feed</button>
                 <br />
-                <input type="submit" title="Drain" class="pull-left btn btn-primary" />
-            }*@
-
+            </form>
             @if (!formHelper.GetTankSpecs().Initialized)
             {
-                <label>Tanks specifications are needed to intitailize the system.</label>
-                <br />
-                <lable> Please go to the </lable>
-                <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup Page</a>
+            <label>Tanks specifications are needed to intitailize the system.</label>
+            <br />
+            <lable> Please go to the </lable>
+            <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup Page</a>
             }
             @if (formHelper.GetFeedingTimes()?.Time1 == null)
             {
-                <br />
-                <label>At least one feeding time is needed.</label>
-                <br />
-                <lable> Please go to the </lable>
-                <a asp-controller="Feeding" asp-action="FeedingTimes">Feeding Times Setup Page</a>
+            <br />
+            <label>At least one feeding time is needed.</label>
+            <br />
+            <lable> Please go to the </lable>
+            <a asp-controller="Feeding" asp-action="FeedingTimes">Feeding Times Setup Page</a>
             }
         </div>
     </div>

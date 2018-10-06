@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RuntimeIdentifiers>win8-arm;linux-arm</RuntimeIdentifiers>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
  
   <ItemGroup>

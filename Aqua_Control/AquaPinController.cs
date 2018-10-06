@@ -1,172 +1,246 @@
 ﻿using System;
-using System.Timers;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Unosquare.RaspberryIO.Gpio;
 
 namespace Aqua_Control
 {
     public class AquaPinController : IAquaPinController
     {
-        private Timer timer_fill;
-        private Timer timer_drain;
+        #region Members
+        //the gpio pins and their respective pin numbers on the board
+        private GpioPin _fillPin;
 
-        private const int Fill_Pin = 20;
-        private GpioPin Fillpin;
-        private GpioPinValue FillpinValue;
+        private GpioPin _wastePin;
+
+        private GpioPin _inPin;
+
+        private GpioPin _outPin;
+
+        private GpioPin _pumpPin;
+
+        private GpioPin _inPin1;
+
+        private GpioPin _inPin2;
+
+        private GpioPin _inPin3;
+
+        private GpioPin _inPin4;
+
+        private const GpioPinValue _0 = GpioPinValue.High;
+        private const GpioPinValue _1 = GpioPinValue.Low;
+
+        private GpioPinValue[][] _feederSequences = new GpioPinValue[][]{
+            new[] {_0, _1, _1, _1},
+            new[] {_1, _0, _1, _1},
+            new[] {_1, _1, _0, _1},
+            new[] {_1, _1, _1, _0}};
 
 
-        private const int Waste_Pin = 21;
-        private GpioPin Wastepin;
-        private GpioPinValue WastepinValue;
+        // Dispatcher timer setup and classes.  The interval time seen below is abritary and was used for 
+        // testing.  These values will change based on what is best for the project in opening the water valves
+        private Timer _timer_fill;
+        private Timer _timer_drain;
+        private Timer _timer_pumpOnDelay;
+        private Timer _timer_pumpOffDelay;
+        private TimeSpan _fillDrainInterval;
+        #endregion
 
-        private const int In_Pin = 19;
-        private GpioPin Inpin;
-        private GpioPinValue InpinValue;
-
-        private const int Out_Pin = 26;
-        private GpioPin Outpin;
-        private GpioPinValue OutpinValue;
-
-        private const int Pump_Pin = 16;
-        private GpioPin Pumppin;
-        private GpioPinValue PumppinValue;
-
+        #region ctor
+        /// <summary>
+        /// Constructs a new <see cref="AquaGPIO"/> object by initialzing the gpio pins for the raspberry pi
+        /// </summary>
         public AquaPinController()
         {
-            timer_fill = new Timer();
-            timer_fill.Interval = TimeSpan.FromSeconds(10).TotalSeconds;
-            timer_fill.Elapsed += Timer_fill_Elapsed;
+            _fillDrainInterval = TimeSpan.FromSeconds(15);
+            _timer_fill = new Timer(Timer_fill_Tick, null, Timeout.Infinite, Timeout.Infinite);
 
-            timer_drain = new Timer();
-            timer_drain.Interval = TimeSpan.FromSeconds(5).TotalSeconds;
-            timer_drain.Elapsed += Timer_drain_Elapsed;
+            _timer_drain = new Timer(Timer_drain_Tick, null, Timeout.Infinite, Timeout.Infinite);
 
-            InitGPIO();
-        }
+            _timer_pumpOnDelay = new Timer(_timer_pumpOnDelay_Tick, null, Timeout.Infinite, Timeout.Infinite);
+            _timer_pumpOffDelay = new Timer(_timer_pumpOffDelay_Tick, null, Timeout.Infinite, Timeout.Infinite);
 
-        private void InitGPIO()
-        {
             GpioController gpio = GpioController.Instance;
 
-            //Initialize the fill pin
-            Fillpin = gpio.Pin20;
-            FillpinValue = GpioPinValue.High;
-            Fillpin.Write(FillpinValue);
-            Fillpin.PinMode = GpioPinDriveMode.Output;
+            // Below are the separate pins being used from the raspberry pi and how they are setup
+            // need to assign pins, values, and driver output
 
-            //Initialize the Waste_Pin
-            Wastepin = gpio.Pin21;
-            WastepinValue = GpioPinValue.High;
-            Wastepin.Write(WastepinValue);
-            Wastepin.PinMode = GpioPinDriveMode.Output;
+            _pumpPin = InitializePin(gpio.Pin17, _0, GpioPinDriveMode.Output);
 
-            //Initialize the In_Pin
-            Inpin = gpio.Pin19;
-            InpinValue = GpioPinValue.High;
-            Inpin.Write(InpinValue);
-            Inpin.PinMode = GpioPinDriveMode.Output;
+            _fillPin = InitializePin(gpio.Pin20, _0, GpioPinDriveMode.Output);
 
-            //Initialize the Out_Pin
-            Outpin = gpio.Pin26;
-            OutpinValue = GpioPinValue.High;
-            Outpin.Write(OutpinValue);
-            Outpin.PinMode = GpioPinDriveMode.Output;
+            _wastePin = InitializePin(gpio.Pin21, _0, GpioPinDriveMode.Output);
 
-            //Initialize the Pump_Pin
-            Pumppin = gpio.Pin21;
-            PumppinValue = GpioPinValue.High;
-            Pumppin.Write(PumppinValue);
-            Pumppin.PinMode = GpioPinDriveMode.Output;
+            _inPin = InitializePin(gpio.Pin19, _0, GpioPinDriveMode.Output);
+
+            _outPin = InitializePin(gpio.Pin26, _0, GpioPinDriveMode.Output);
+
+            _inPin1 = InitializePin(gpio.Pin23, _0, GpioPinDriveMode.Output);
+
+            _inPin2 = InitializePin(gpio.Pin24, _0, GpioPinDriveMode.Output);
+
+            _inPin3 = InitializePin(gpio.Pin25, _0, GpioPinDriveMode.Output);
+
+            _inPin4 = InitializePin(gpio.Pin08, _0, GpioPinDriveMode.Output);
         }
 
-        private void InitializePin(GpioPin gpioPin, GpioPinValue gpioPinValue, GpioPinDriveMode gpioPinDriveMode)
+        #endregion
+
+        #region Properties
+        public event EventHandler DrainDone;
+        public event EventHandler FillDone;
+        #endregion
+
+        #region Methods
+        protected virtual void OnDrainDone(EventArgs e)
         {
-            Fillpin = gpioPin;
-            FillpinValue = gpioPinValue;
-            Fillpin.Write(FillpinValue);
-            Fillpin.PinMode = gpioPinDriveMode;
+            DrainDone?.Invoke(this, e);
         }
 
-        private void Timer_fill_Elapsed(object sender, ElapsedEventArgs e)
+        protected virtual void OnFillDone(EventArgs e)
         {
-            PumppinValue = GpioPinValue.High;
-            Pumppin.Write(PumppinValue);
-
-            InpinValue = GpioPinValue.High;
-            Inpin.Write(InpinValue);
-
-            FillpinValue = GpioPinValue.High;
-            Fillpin.Write(FillpinValue);
-
-            OutpinValue = GpioPinValue.High;
-            Outpin.Write(OutpinValue);
-
-            WastepinValue = GpioPinValue.High;
-            Wastepin.Write(WastepinValue);
-
-            timer_fill.Stop();
+            FillDone?.Invoke(this, e);
         }
 
-        private void Timer_drain_Elapsed(object sender, ElapsedEventArgs e)
+        private GpioPin InitializePin(GpioPin pin, GpioPinValue gpioPinValue, GpioPinDriveMode gpioPinDriveMode)
         {
-            PumppinValue = GpioPinValue.High;
-            Pumppin.Write(PumppinValue);
-
-            InpinValue = GpioPinValue.High;
-            Inpin.Write(InpinValue);
-
-            FillpinValue = GpioPinValue.High;
-            Fillpin.Write(FillpinValue);
-
-            OutpinValue = GpioPinValue.High;
-            Outpin.Write(OutpinValue);
-
-            WastepinValue = GpioPinValue.High;
-            Wastepin.Write(WastepinValue);
+            pin.PinMode = gpioPinDriveMode;
+            pin.Write(gpioPinValue);
+            return pin;
         }
 
-        public void Drain()
+        /// <summary>
+        /// Timer function for Filling.  When the tick interval is reached, this function will run and set the 
+        /// GPIO high (which closed the valves) and stops the timer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Timer_fill_Tick(object sender)
         {
-            timer_drain.Start();
-            if (PumppinValue == GpioPinValue.High)
-            {
-                PumppinValue = GpioPinValue.Low;
-                Pumppin.Write(PumppinValue);
+            TurnValvesOff();
 
-                OutpinValue = GpioPinValue.Low;
-                Outpin.Write(OutpinValue);
+            _timer_fill.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 
-                WastepinValue = GpioPinValue.Low;
-                Wastepin.Write(WastepinValue);
+            _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
 
-                InpinValue = GpioPinValue.High;
-                Inpin.Write(InpinValue);
-
-                FillpinValue = GpioPinValue.High;
-                Fillpin.Write(FillpinValue);
-            }
+            OnFillDone(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Timer function for drain.  When the tick interval is reached, this function will run and set the 
+        /// GPIO high (which closed the valves) and stops the timer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Timer_drain_Tick(object sender)
+        {
+            TurnValvesOff();
+
+            _timer_drain.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+
+            _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+
+            OnDrainDone(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Set the pins to high which turns the valves off
+        /// </summary>
+        private void TurnValvesOff()
+        {
+            _inPin.Write(_0);
+
+            _fillPin.Write(_0);
+
+            _outPin.Write(_0);
+
+            _wastePin.Write(_0);
+        }
+
+        /// <summary>
+        /// Timer function for turning the pump on.  When the tick interval is reached, this function will run and set the 
+        /// <see cref="_pumpPin"/> low (which turns it on)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _timer_pumpOnDelay_Tick(object sender)
+        {
+            _pumpPin.Write(_1);
+            _timer_pumpOnDelay.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+        }
+
+        /// <summary>
+        /// Timer function for turning the pump on.  When the tick interval is reached, this function will run and set the 
+        /// <see cref="_pumpPin"/> low (which turns it off)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _timer_pumpOffDelay_Tick(object sender)
+        {
+            _pumpPin.Write(_0);
+            _timer_pumpOffDelay.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+        }
+
+        /// <summary>
+        /// GUI click event for filling.  Will start the associated timer and set the selected GPIO pins LOW
+        /// to turn on the correct valve.
+        /// </summary>
+        /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Fill()
         {
-            timer_fill.Start();
-            if (PumppinValue == GpioPinValue.High)
+            _inPin.Write(_1);
+
+            _fillPin.Write(_1);
+
+            _outPin.Write(_0);
+
+            _wastePin.Write(_0);
+
+            _timer_fill.Change(_fillDrainInterval, Timeout.InfiniteTimeSpan);
+            _timer_pumpOnDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+        }
+
+        /// <summary>
+        /// GUI click event for draining.  Will start the associated timer and set the selected GPIO pins LOW
+        /// to turn on the correct valves.
+        /// </summary>
+        /// <returns>The value of the <see cref="_pumppinValue"/></returns>
+        public void Drain()
+        {
+            _outPin.Write(_1);
+
+            _wastePin.Write(_1);
+
+            _inPin.Write(_0);
+
+            _fillPin.Write(_0);
+
+            _timer_drain.Change(_fillDrainInterval, Timeout.InfiniteTimeSpan);
+            _timer_pumpOnDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+        }
+
+        /// <summary>
+        /// Starts the feeding auger sequence with the specified number of times to step.
+        /// </summary>
+        /// <param name="numberOfTimes"></param>
+        public async void FeedMe(int numberOfTimes)
+        {
+            int delay = 1;
+            for (int i = 0; i < numberOfTimes; i++)
             {
-                PumppinValue = GpioPinValue.Low;
-                Pumppin.Write(PumppinValue);
-
-                InpinValue = GpioPinValue.Low;
-                Inpin.Write(InpinValue);
-
-                FillpinValue = GpioPinValue.Low;
-                Fillpin.Write(FillpinValue);
-
-                OutpinValue = GpioPinValue.High;
-                Outpin.Write(OutpinValue);
-
-                WastepinValue = GpioPinValue.High;
-                Wastepin.Write(WastepinValue);
-
+                for (int j = 0; j < _feederSequences[0].Length; j++)
+                {
+                    _inPin1.Write(_feederSequences[j][0]);
+                    _inPin2.Write(_feederSequences[j][1]);
+                    _inPin3.Write(_feederSequences[j][2]);
+                    _inPin4.Write(_feederSequences[j][3]);
+                    await Task.Delay(delay);
+                }
             }
         }
+        #endregion
     }
 }

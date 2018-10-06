@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using AquaMan.Models;
 using Aqua_Control;
 using AquaMan.Extensions;
+using System.Net;
 
 namespace AquaMan.Controllers
 {
@@ -43,20 +44,23 @@ namespace AquaMan.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [HttpPost]
-        public ActionResult Fill()
+        public IActionResult Fill()
         {
             _aquaPinController.Fill();
-            return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
+            return Ok();
         }
 
-
-        [HttpPost]
-        public ActionResult Drain()
+        public IActionResult Drain()
         {
             _aquaPinController.Drain();
-            return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
+            return Ok();
         }
-        
+
+        public IActionResult Feed()
+        {
+            _aquaPinController.FeedMe(1);
+            return Ok();
+        }
+
     }
 }
