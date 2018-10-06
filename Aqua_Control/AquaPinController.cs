@@ -39,14 +39,7 @@ namespace Aqua_Control
             new[] {_1, _1, _0, _1},
             new[] {_1, _1, _1, _0}};
 
-
-        // Dispatcher timer setup and classes.  The interval time seen below is abritary and was used for 
-        // testing.  These values will change based on what is best for the project in opening the water valves
-        private Timer _timer_fill;
-        private Timer _timer_drain;
-        private Timer _timer_pumpOnDelay;
-        private Timer _timer_pumpOffDelay;
-        private TimeSpan _fillDrainInterval;
+        private TimerController _timerController;
         #endregion
 
         #region ctor
@@ -55,13 +48,12 @@ namespace Aqua_Control
         /// </summary>
         public AquaPinController()
         {
-            _fillDrainInterval = TimeSpan.FromSeconds(15);
-            _timer_fill = new Timer(Timer_fill_Tick, null, Timeout.Infinite, Timeout.Infinite);
+            _timerController = new TimerController();
+            _timerController.DrainDone += _timerController_DrainDone;
+            _timerController.FillDone += _timerController_FillDone;
+            _timerController.PumpOff += _timerController_PumpOff;
+            _timerController.PumpOn += _timerController_PumpOn;
 
-            _timer_drain = new Timer(Timer_drain_Tick, null, Timeout.Infinite, Timeout.Infinite);
-
-            _timer_pumpOnDelay = new Timer(_timer_pumpOnDelay_Tick, null, Timeout.Infinite, Timeout.Infinite);
-            _timer_pumpOffDelay = new Timer(_timer_pumpOffDelay_Tick, null, Timeout.Infinite, Timeout.Infinite);
 
             GpioController gpio = GpioController.Instance;
 
@@ -87,63 +79,34 @@ namespace Aqua_Control
             _inPin4 = InitializePin(gpio.Pin08, _0, GpioPinDriveMode.Output);
         }
 
-        #endregion
+        private void _timerController_PumpOn(object sender, EventArgs e)
+        {
+            _pumpPin.Write(_1);
+        }
 
-        #region Properties
-        public event EventHandler DrainDone;
-        public event EventHandler FillDone;
+        private void _timerController_PumpOff(object sender, EventArgs e)
+        {
+            _pumpPin.Write(_0);
+        }
+
+        private void _timerController_FillDone(object sender, EventArgs e)
+        {
+            TurnValvesOff();
+        }
+
+        private void _timerController_DrainDone(object sender, EventArgs e)
+        {
+            TurnValvesOff();
+        }
+
         #endregion
 
         #region Methods
-        protected virtual void OnDrainDone(EventArgs e)
-        {
-            DrainDone?.Invoke(this, e);
-        }
-
-        protected virtual void OnFillDone(EventArgs e)
-        {
-            FillDone?.Invoke(this, e);
-        }
-
         private GpioPin InitializePin(GpioPin pin, GpioPinValue gpioPinValue, GpioPinDriveMode gpioPinDriveMode)
         {
             pin.PinMode = gpioPinDriveMode;
             pin.Write(gpioPinValue);
             return pin;
-        }
-
-        /// <summary>
-        /// Timer function for Filling.  When the tick interval is reached, this function will run and set the 
-        /// GPIO high (which closed the valves) and stops the timer
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Timer_fill_Tick(object sender)
-        {
-            TurnValvesOff();
-
-            _timer_fill.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-
-            _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
-
-            OnFillDone(EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Timer function for drain.  When the tick interval is reached, this function will run and set the 
-        /// GPIO high (which closed the valves) and stops the timer
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Timer_drain_Tick(object sender)
-        {
-            TurnValvesOff();
-
-            _timer_drain.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-
-            _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
-
-            OnDrainDone(EventArgs.Empty);
         }
 
         /// <summary>
@@ -161,30 +124,6 @@ namespace Aqua_Control
         }
 
         /// <summary>
-        /// Timer function for turning the pump on.  When the tick interval is reached, this function will run and set the 
-        /// <see cref="_pumpPin"/> low (which turns it on)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _timer_pumpOnDelay_Tick(object sender)
-        {
-            _pumpPin.Write(_1);
-            _timer_pumpOnDelay.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-        }
-
-        /// <summary>
-        /// Timer function for turning the pump on.  When the tick interval is reached, this function will run and set the 
-        /// <see cref="_pumpPin"/> low (which turns it off)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _timer_pumpOffDelay_Tick(object sender)
-        {
-            _pumpPin.Write(_0);
-            _timer_pumpOffDelay.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-        }
-
-        /// <summary>
         /// GUI click event for filling.  Will start the associated timer and set the selected GPIO pins LOW
         /// to turn on the correct valve.
         /// </summary>
@@ -199,8 +138,7 @@ namespace Aqua_Control
 
             _wastePin.Write(_0);
 
-            _timer_fill.Change(_fillDrainInterval, Timeout.InfiniteTimeSpan);
-            _timer_pumpOnDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+            _timerController.SetFillTimer();
         }
 
         /// <summary>
@@ -218,8 +156,7 @@ namespace Aqua_Control
 
             _fillPin.Write(_0);
 
-            _timer_drain.Change(_fillDrainInterval, Timeout.InfiniteTimeSpan);
-            _timer_pumpOnDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+            _timerController.SetDrainTimer();
         }
 
         /// <summary>
