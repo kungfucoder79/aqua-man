@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Gpio;
+using Windows.System.Threading;
 using Windows.UI.Xaml;
 
 namespace Aqua_ControlUWP
@@ -28,10 +30,31 @@ namespace Aqua_ControlUWP
         private GpioPin _pumpPin;
         private GpioPinValue _pumppinValue;
 
+        private const int _in1ID = 23;
+        private GpioPin _inPin1;
+
+        private const int _in2ID = 24;
+        private GpioPin _inPin2;
+
+        private const int _in3ID = 25;
+        private GpioPin _inPin3;
+
+        private const int _in4ID = 8;
+        private GpioPin _inPin4;
+
+        private GpioPinValue[][] _feederSequences = new GpioPinValue[][]{
+            new[] {GpioPinValue.High, GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.Low},
+            new[] {GpioPinValue.Low, GpioPinValue.High, GpioPinValue.Low, GpioPinValue.Low},
+            new[] {GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.High, GpioPinValue.Low},
+            new[] {GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.High}};
+
+
         // Dispatcher timer setup and classes.  The interval time seen below is abritary and was used for 
         // testing.  These values will change based on what is best for the project in opening the water valves
         private DispatcherTimer _timer_fill;
         private DispatcherTimer _timer_drain;
+        private Timer _timer_pumpOnDelay;
+        private Timer _timer_pumpOffDelay;
         #endregion
 
         #region ctor
@@ -40,13 +63,17 @@ namespace Aqua_ControlUWP
         /// </summary>
         public AquaGPIO()
         {
+
             _timer_fill = new DispatcherTimer();
-            _timer_fill.Interval = TimeSpan.FromSeconds(1);
+            _timer_fill.Interval = TimeSpan.FromSeconds(15);
             _timer_fill.Tick += Timer_fill_Tick;
 
             _timer_drain = new DispatcherTimer();
-            _timer_drain.Interval = TimeSpan.FromSeconds(1);
+            _timer_drain.Interval = TimeSpan.FromSeconds(15);
             _timer_drain.Tick += Timer_drain_Tick;
+
+            _timer_pumpOnDelay = new Timer(_timer_pumpOnDelay_Tick, null, Timeout.Infinite, Timeout.Infinite);
+            _timer_pumpOffDelay = new Timer(_timer_pumpOffDelay_Tick, null, Timeout.Infinite, Timeout.Infinite);
 
             GpioController gpio = GpioController.GetDefault();
 
@@ -62,7 +89,16 @@ namespace Aqua_ControlUWP
             InitializePin(gpio, out _inPin, _inPinID);
 
             InitializePin(gpio, out _outPin, _outPinID);
+
+            InitializePin(gpio, out _inPin1, _in1ID);
+
+            InitializePin(gpio, out _inPin2, _in2ID);
+
+            InitializePin(gpio, out _inPin3, _in3ID);
+
+            InitializePin(gpio, out _inPin4, _in4ID);
         }
+
         #endregion
 
         #region Properties
@@ -96,9 +132,6 @@ namespace Aqua_ControlUWP
         /// <param name="e"></param>
         private void Timer_fill_Tick(object sender, object e)
         {
-            _pumppinValue = GpioPinValue.High;
-            _pumpPin.Write(_pumppinValue);
-
             _inPin.Write(GpioPinValue.High);
 
             _fillPin.Write(GpioPinValue.High);
@@ -108,6 +141,8 @@ namespace Aqua_ControlUWP
             _wastePin.Write(GpioPinValue.High);
 
             _timer_fill.Stop();
+
+            _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
 
             OnFillDone(EventArgs.Empty);
         }
@@ -120,9 +155,6 @@ namespace Aqua_ControlUWP
         /// <param name="e"></param>
         private void Timer_drain_Tick(object sender, object e)
         {
-            _pumppinValue = GpioPinValue.High;
-            _pumpPin.Write(_pumppinValue);
-
             _inPin.Write(GpioPinValue.High);
 
             _fillPin.Write(GpioPinValue.High);
@@ -133,7 +165,37 @@ namespace Aqua_ControlUWP
 
             _timer_drain.Stop();
 
+            _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+
             OnDrainDone(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Timer function for turning the pump on.  When the tick interval is reached, this function will run and set the 
+        /// <see cref="_pumpPin"/> low (which closed turns it on)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _timer_pumpOnDelay_Tick(object sender)
+        {
+            _pumppinValue = GpioPinValue.Low;
+            _pumpPin.Write(_pumppinValue);
+
+            _timer_pumpOnDelay.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+        }
+
+        /// <summary>
+        /// Timer function for turning the pump on.  When the tick interval is reached, this function will run and set the 
+        /// <see cref="_pumpPin"/> low (which closed turns it on)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _timer_pumpOffDelay_Tick(object sender)
+        {
+            _pumppinValue = GpioPinValue.High;
+            _pumpPin.Write(_pumppinValue);
+
+            _timer_pumpOffDelay.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
 
         /// <summary>
@@ -144,11 +206,9 @@ namespace Aqua_ControlUWP
         public GpioPinValue Fill()
         {
             _timer_fill.Start();
+
             if (_pumppinValue == GpioPinValue.High)
             {
-                _pumppinValue = GpioPinValue.Low;
-                _pumpPin.Write(_pumppinValue);
-
                 _inPin.Write(GpioPinValue.Low);
 
                 _fillPin.Write(GpioPinValue.Low);
@@ -156,6 +216,8 @@ namespace Aqua_ControlUWP
                 _outPin.Write(GpioPinValue.High);
 
                 _wastePin.Write(GpioPinValue.High);
+
+                _timer_pumpOnDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
             }
             return _pumppinValue;
         }
@@ -169,10 +231,7 @@ namespace Aqua_ControlUWP
         {
             _timer_drain.Start();
             if (_pumppinValue == GpioPinValue.High)
-            { 
-                _pumppinValue = GpioPinValue.Low;
-                _pumpPin.Write(_pumppinValue);
-
+            {
                 _outPin.Write(GpioPinValue.Low);
 
                 _wastePin.Write(GpioPinValue.Low);
@@ -180,8 +239,31 @@ namespace Aqua_ControlUWP
                 _inPin.Write(GpioPinValue.High);
 
                 _fillPin.Write(GpioPinValue.High);
+
+                _timer_pumpOnDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
             }
             return _pumppinValue;
+        }
+
+        /// <summary>
+        /// Starts the feeding auger sequence with the specified number of times to step.
+        /// </summary>
+        /// <param name="numberOfTimes"></param>
+        public async void FeedMe(int numberOfTimes)
+        {
+            int delay = 1;
+            for (int i = 0; i < numberOfTimes; i++)
+            {
+                for (int j = 0; j < _feederSequences[0].Length; j++)
+                {
+                    _inPin1.Write(_feederSequences[j][0]);
+                    _inPin2.Write(_feederSequences[j][1]);
+                    _inPin3.Write(_feederSequences[j][2]);
+                    _inPin4.Write(_feederSequences[j][3]);
+                    await Task.Delay(delay);
+                }
+
+            }
         }
         #endregion
     }

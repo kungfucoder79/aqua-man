@@ -1,13 +1,17 @@
 ﻿using System;
-using System.Threading;
-using Windows.Devices.Enumeration;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Devices.Enumeration;
 using Windows.Devices.Gpio;
+using Windows.Devices.I2c;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
+using Windows.System.Threading;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -15,9 +19,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.Devices.I2c;
-using Windows.System;
-using System.Threading.Tasks;
 
 namespace Aqua_ControlUWP
 {
@@ -41,7 +42,7 @@ namespace Aqua_ControlUWP
     //    public int CapreadMSB1_2;
     //};
 
-    
+
     public sealed partial class MainPage : Page
     {
         // Initiate seeting and parameters for code.  There are two delcared timers using the DispatchTimer
@@ -62,7 +63,9 @@ namespace Aqua_ControlUWP
         private const byte MEAS_THREE_CONTROL = 0x0A;       // Address of the Measurement #3 register 
         private const byte CIN1_CONTROL = 0x0D;             // Address of the Cin1 register
         private const byte FDC_CONF_CONTROL = 0x0C;         // Address of the FDC configuration register
-        public float FinalCapMeasure1, FinalCapMeasure2, FinalCapMeasure3;
+        private float FinalCapMeasure1;
+        private float FinalCapMeasure2;
+        private float FinalCapMeasure3;
 
         public MainPage()
         {
@@ -97,12 +100,24 @@ namespace Aqua_ControlUWP
 
         // Initialization for I2C FDC1004 Capaciatance Sensor 
         private async void InitI2C()
-        {            
+        {
             I2cConnectionSettings settings = new I2cConnectionSettings(FDC1004_I2C_ADDR);
             settings.BusSpeed = I2cBusSpeed.FastMode;                       // 400KHz bus speed 
             I2cController controller = await Windows.Devices.I2c.I2cController.GetDefaultAsync();
-            I2CSensor = controller.GetDevice(settings);    // Create an I2cDevice with our selected bus controller and I2C settings    
-             /* 
+            I2CSensor = controller.GetDevice(settings);    // Create an I2cDevice with our selected bus controller and I2C settings
+
+            // Write the register settings
+            WriteToI2CDevice();
+
+
+            /* If the write fails display the error and stop running */
+            // Create timer to pull data from FDC1004 sensor at given interval
+            periodicTimer = new Timer(TimerCallback, null, 0, 250);
+        }
+
+        private void WriteToI2CDevice()
+        {
+            /* 
              * Initialize the FDC1004 capacitance sensor:
              *
              * For this device, we create 3-byte write buffers: ==> this device uses 
@@ -115,31 +130,27 @@ namespace Aqua_ControlUWP
             byte[] WriteBuf_MeasurementThreeFormat = new byte[] { MEAS_THREE_CONTROL, 0x5c, 0x00 }; // configs measurement 3                        
             byte[] WriteBuf_Cin1 = new byte[] { CIN1_CONTROL, 0x30, 0x00 };             // Set Offset for Cin1 to "6"pF based on datsheet calculations
             byte[] WriteBuf_FDC_Config = new byte[] { FDC_CONF_CONTROL, 0x0D, 0xE0 };   //set to read at 400S/s with repeat and read at measurement #1,#2,#3
-            // Write the register settings
+
             try
             {
                 I2CSensor.Write(WriteBuf_MeasurementOneFormat);
-                I2CSensor.Write(WriteBuf_MeasurementTwoFormat);                
+                I2CSensor.Write(WriteBuf_MeasurementTwoFormat);
                 I2CSensor.Write(WriteBuf_MeasurementThreeFormat);
                 I2CSensor.Write(WriteBuf_Cin1);
                 I2CSensor.Write(WriteBuf_FDC_Config);
                 Text_Status.Text = "Status: Running";
             }
-            /* If the write fails display the error and stop running */
             catch (Exception ex)
             {
                 Text_Status.Text = "Failed to communicate with device: " + ex.Message;
-                return;
             }
-            // Create timer to pull data from FDC1004 sensor at given interval
-            periodicTimer = new Timer(this.TimerCallback, null, 0, 250);
         }
 
         private void TimerCallback(object state)
         {
             string xText, yText, zText, wText, meas1doneText;
             string statusText;
-            
+
             try
             {
                 byte[] FDCCongAddrBuf = new byte[] { 0x0C };
@@ -216,15 +227,16 @@ namespace Aqua_ControlUWP
         private void Fill_Click(object sender, RoutedEventArgs e)
         {
             GpioPinValue pumppinValue = _aquaGPIO.Fill();
-            if (pumppinValue == GpioPinValue.Low)
-            {
-                Pump_Display.Fill = GreenBrush;
-                Solenoid_Fill_Display.Fill = GreenBrush;
-                Solenoid_In_Display.Fill = GreenBrush;
-                Solenoid_Out_Display.Fill = redBrush;
-                Solenoid_Waste_Display.Fill = redBrush;
-            }
+            SetGUItoFill();
+        }
 
+        private void SetGUItoFill()
+        {
+            Pump_Display.Fill = GreenBrush;
+            Solenoid_Fill_Display.Fill = GreenBrush;
+            Solenoid_In_Display.Fill = GreenBrush;
+            Solenoid_Out_Display.Fill = redBrush;
+            Solenoid_Waste_Display.Fill = redBrush;
         }
 
         // GUI click event for draining.  Will start the associated timer and set the selected GPIO pins LOW
@@ -232,19 +244,21 @@ namespace Aqua_ControlUWP
         private void Drain_Click(object sender, RoutedEventArgs e)
         {
             GpioPinValue pumppinValue = _aquaGPIO.Drain();
-            if (pumppinValue == GpioPinValue.Low)
-            {
-                Pump_Display.Fill = GreenBrush;
-                Solenoid_Fill_Display.Fill = redBrush;
-                Solenoid_In_Display.Fill = redBrush;
-                Solenoid_Out_Display.Fill = GreenBrush;
-                Solenoid_Waste_Display.Fill = GreenBrush;                              
-            }
+            SetGUItoDrain();
+        }
+
+        private void SetGUItoDrain()
+        {
+            Pump_Display.Fill = GreenBrush;
+            Solenoid_Fill_Display.Fill = redBrush;
+            Solenoid_In_Display.Fill = redBrush;
+            Solenoid_Out_Display.Fill = GreenBrush;
+            Solenoid_Waste_Display.Fill = GreenBrush;
         }
 
         private void MainPage_Unloaded(object sender, object args)
         {
-          I2CSensor.Dispose();
+            I2CSensor.Dispose();
         }
 
         private OneRegisterRead ReadOneReg(byte[] RegAddrBuf)
@@ -260,14 +274,19 @@ namespace Aqua_ControlUWP
             OneRegReadDataOut.DataMSB = 0xFF00 & RawData >> 8;
             OneRegReadDataOut.DataLSB = 0x00FF & RawData; // if reading Done bit, use this statement ==> ((byte)(0x08 & RawData) >> 3)
 
-            return OneRegReadDataOut;            
+            return OneRegReadDataOut;
         }
 
         private void Reset_I2C_Click(object sender, RoutedEventArgs e)
         {
             byte[] WriteBuf_FDC_Config = new byte[] { FDC_CONF_CONTROL, 0x8C, 0x00 };
             I2CSensor.Write(WriteBuf_FDC_Config);
-            InitI2C();
+            WriteToI2CDevice();
+        }
+
+        private void Feeder_Button_Click(object sender, RoutedEventArgs e)
+        {
+            _aquaGPIO.FeedMe(6400);
         }
 
         private float ReadCapSen1_1(byte[] RegAddrBuf1, byte[] RegAddrBuf2)
@@ -300,47 +319,6 @@ namespace Aqua_ControlUWP
 
             return FinalCapMeasure;
         }
-
-        //private CapMeasure1_1 readcapsen1_1(byte[] regaddrbuf)
-        //{
-        //    byte[] readbuf;
-
-        //    readbuf = new byte[2];  /* we read 2 bytes sequentially  */
-        //    I2CSensor.WriteRead(regaddrbuf, readbuf);
-
-        //    /* in order to get the raw 16-bit data values, we need to separate the bytes */
-
-        //    int rawdata = BitConverter.ToInt16(readbuf, 0);
-        //    //int rawdata = bitconverter.toint16(readbuf, 0);
-        //    int rawdata1lsb = (0xff00 & rawdata) >> 8;
-        //    int rawdata2msb = 0x00ff & rawdata;
-
-        //    CapMeasure1_1 capmeas1_1;
-        //    capmeas1_1.CapreadMSB1_1 = rawdata2msb;
-        //    capmeas1_1.CapReadLSB1_1 = rawdata1lsb;
-
-        //    return capmeas1_1;
-        //}
-
-        //private CapMeasure1_2 readcapsen1_2(byte[] regaddrbuf)
-        //{
-        //    byte[] readbuf;
-
-        //    readbuf = new byte[2];  /* we read 2 bytes sequentially  */
-        //    I2CSensor.WriteRead(regaddrbuf, readbuf);
-
-        //    /* in order to get the raw 16-bit data values, we need to separate the bytes */
-
-        //    int rawdata = BitConverter.ToInt16(readbuf, 0);
-        //    int rawdata1lsb = (0xff00 & rawdata) >> 8;
-        //    int rawdata2msb = 0x00ff & rawdata;
-
-        //    CapMeasure1_2 capmeas1_2;
-        //    capmeas1_2.CapreadMSB1_2 = rawdata2msb;
-        //    capmeas1_2.CapReadLSB1_2 = rawdata1lsb;
-
-        //    return capmeas1_2;
-        //}
 
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
