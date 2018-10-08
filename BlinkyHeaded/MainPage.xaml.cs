@@ -151,7 +151,14 @@ namespace Aqua_ControlUWP
         
         private void Reset_I2C_Click(object sender, RoutedEventArgs e)
         {
-            _aquaI2C.Reset();
+            try
+            {
+                _aquaI2C.Reset();
+            }
+            catch (Exception ex)
+            {
+                Text_Status.Text = "Failed to communicate with device: " + ex.Message;
+            }
         }
 
         private void Feeder_Button_Click(object sender, RoutedEventArgs e)
