@@ -45,7 +45,9 @@ namespace OrderingApplication
             ContainerBuilder builder = new ContainerBuilder();
             builder.Populate(services);
 
-            builder.RegisterType<PinControllerEmpty>().As<IAquaPinController>();
+            IAquaPinController pinController = new PinControllerEmpty();
+            builder.RegisterInstance(pinController);
+
             builder.RegisterType<FormDataService>().As<IFormDataService>();
 
             return new AutofacServiceProvider(builder.Build());

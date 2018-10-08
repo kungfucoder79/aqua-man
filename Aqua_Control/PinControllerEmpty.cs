@@ -21,6 +21,7 @@ namespace Aqua_Control
         /// </summary>
         public PinControllerEmpty()
         {
+            Console.WriteLine($"----------------{DateTime.Now}: Initializing Pin Controller");
             _timerController = new TimerController();
             _timerController.DrainDone += _timerController_DrainDone;
             _timerController.FillDone += _timerController_FillDone;
