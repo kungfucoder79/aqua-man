@@ -48,7 +48,7 @@ namespace Aqua_ControlUWP
             _aquaGPIO.DrainDone += _aquaGPIO_DrainDone;
             _aquaGPIO.FillDone += _aquaGPIO_FillDone;
 
-            periodicTimer = new Timer(TimerCallback, null, 0, 250);
+            periodicTimer = new Timer(I2CCheck, null, 0, 250);
         }
 
         private void _aquaGPIO_FillDone(object sender, EventArgs e)
@@ -70,7 +70,7 @@ namespace Aqua_ControlUWP
             Solenoid_Waste_Display.Fill = redBrush;
         }
 
-        private void TimerCallback(object state)
+        private void I2CCheck(object state)
         {
             string xText, yText, zText, wText, meas1doneText;
             string statusText;
