@@ -14,6 +14,7 @@ namespace Aqua_Control
         #region Members
         private TimerController _timerController;
         #endregion
+
         #region ctor
         /// <summary>
         /// Constructs a new <see cref="AquaGPIO"/> object by initialzing the gpio pins for the raspberry pi
@@ -89,6 +90,7 @@ namespace Aqua_Control
             int delay = 1;
             for (int i = 0; i < numberOfTimes; i++)
             {
+                Console.WriteLine($"----------------{DateTime.Now}: {i}");
                 await Task.Delay(delay);
             }
             Console.WriteLine($"----------------{DateTime.Now}: FEEDING STOPPED");

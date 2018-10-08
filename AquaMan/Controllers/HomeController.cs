@@ -58,7 +58,7 @@ namespace AquaMan.Controllers
 
         public IActionResult Feed()
         {
-            _aquaPinController.FeedMe(1);
+            _aquaPinController.FeedMe(2000);
             return Ok();
         }
 
