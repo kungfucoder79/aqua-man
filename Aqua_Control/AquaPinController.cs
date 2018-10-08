@@ -48,6 +48,7 @@ namespace Aqua_Control
         /// </summary>
         public AquaPinController()
         {
+            Console.WriteLine($"----------------{DateTime.Now}: Initializing Pin Controller");
             _timerController = new TimerController();
             _timerController.DrainDone += _timerController_DrainDone;
             _timerController.FillDone += _timerController_FillDone;
@@ -77,16 +78,25 @@ namespace Aqua_Control
             _inPin3 = InitializePin(gpio.Pin25, _0, GpioPinDriveMode.Output);
 
             _inPin4 = InitializePin(gpio.Pin08, _0, GpioPinDriveMode.Output);
+            Console.WriteLine($"----------------{DateTime.Now}: Pins Initialized");
         }
 
         private void _timerController_PumpOn(object sender, EventArgs e)
         {
+            Console.WriteLine($"----------------{DateTime.Now}: Pump ON");
+
             _pumpPin.Write(_1);
+
+            WritePinsToConsole();
         }
 
         private void _timerController_PumpOff(object sender, EventArgs e)
         {
+            Console.WriteLine($"----------------{DateTime.Now}: Pump OFF");
+
             _pumpPin.Write(_0);
+
+            WritePinsToConsole();
         }
 
         private void _timerController_FillDone(object sender, EventArgs e)
@@ -121,6 +131,10 @@ namespace Aqua_Control
             _outPin.Write(_0);
 
             _wastePin.Write(_0);
+
+            WritePinsToConsole();
+
+            Console.WriteLine($"----------------{DateTime.Now}: Valves OFF");
         }
 
         /// <summary>
@@ -130,6 +144,7 @@ namespace Aqua_Control
         /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Fill()
         {
+            Console.WriteLine($"----------------{DateTime.Now}: Fill STARTED");
             _inPin.Write(_1);
 
             _fillPin.Write(_1);
@@ -138,7 +153,10 @@ namespace Aqua_Control
 
             _wastePin.Write(_0);
 
+            WritePinsToConsole();
+            
             _timerController.SetFillTimer();
+            Console.WriteLine($"----------------{DateTime.Now}: Fill TIMER SET");
         }
 
         /// <summary>
@@ -148,15 +166,26 @@ namespace Aqua_Control
         /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Drain()
         {
+            Console.WriteLine($"----------------{DateTime.Now}: Drian STARTED");
+
             _outPin.Write(_1);
-
             _wastePin.Write(_1);
-
             _inPin.Write(_0);
-
             _fillPin.Write(_0);
 
+            WritePinsToConsole();
+
             _timerController.SetDrainTimer();
+            Console.WriteLine($"----------------{DateTime.Now}: Drian TIMER SET");
+        }
+
+        private void WritePinsToConsole()
+        {
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(_pumpPin)}{_pumpPin.Read()}");
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(_outPin)}{_outPin.Read()}");
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(_wastePin)}{_wastePin.Read()}");
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(_inPin)}{_inPin.Read()}");
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(_fillPin)}{_fillPin.Read()}");
         }
 
         /// <summary>
@@ -165,6 +194,7 @@ namespace Aqua_Control
         /// <param name="numberOfTimes"></param>
         public async void FeedMe(int numberOfTimes)
         {
+            Console.WriteLine($"----------------{DateTime.Now}: FEEDING STARTED");
             int delay = 1;
             for (int i = 0; i < numberOfTimes; i++)
             {
@@ -176,7 +206,9 @@ namespace Aqua_Control
                     _inPin4.Write(_feederSequences[j][3]);
                     await Task.Delay(delay);
                 }
+                Console.WriteLine($"----------------{DateTime.Now}: {i}");
             }
+            Console.WriteLine($"----------------{DateTime.Now}: FEEDING STOPPED");
         }
         #endregion
     }
