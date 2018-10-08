@@ -49,18 +49,18 @@ function Feed()
             </form>
             @if (!formHelper.GetTankSpecs().Initialized)
             {
-            <label>Tanks specifications are needed to intitailize the system.</label>
-            <br />
-            <lable> Please go to the </lable>
-            <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup Page</a>
+                <label>Tanks specifications are needed to intitailize the system.</label>
+                <br />
+                <label> Please go to the </label>
+                <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup Page</a>
             }
             @if (formHelper.GetFeedingTimes()?.Time1 == null)
             {
-            <br />
-            <label>At least one feeding time is needed.</label>
-            <br />
-            <lable> Please go to the </lable>
-            <a asp-controller="Feeding" asp-action="FeedingTimes">Feeding Times Setup Page</a>
+                <br />
+                <label>At least one feeding time is needed.</label>
+                <br />
+                <label> Please go to the </label>
+                <a asp-controller="Feeding" asp-action="FeedingTimes">Feeding Times Setup Page</a>
             }
         </div>
     </div>
