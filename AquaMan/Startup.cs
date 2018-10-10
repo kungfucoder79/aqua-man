@@ -45,8 +45,11 @@ namespace OrderingApplication
             ContainerBuilder builder = new ContainerBuilder();
             builder.Populate(services);
 
-            IAquaPinController pinController = new PinControllerEmpty();
+            IAquaPinController pinController = new AquaPinController();
+            IAquaI2CController i2CController = new AquaI2CController();
+
             builder.RegisterInstance(pinController);
+            builder.RegisterInstance(i2CController);
 
             builder.RegisterType<FormDataService>().As<IFormDataService>();
 
