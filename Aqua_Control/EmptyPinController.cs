@@ -9,7 +9,7 @@ namespace Aqua_Control
     /// <summary>
     /// Empty impelmentation for testing on a device with out pins
     /// </summary>
-    public class PinControllerEmpty : IAquaPinController
+    public class EmptyPinController : IAquaPinController
     {
         #region Members
         private TimerController _timerController;
@@ -19,7 +19,7 @@ namespace Aqua_Control
         /// <summary>
         /// Constructs a new <see cref="AquaGPIO"/> object by initialzing the gpio pins for the raspberry pi
         /// </summary>
-        public PinControllerEmpty()
+        public EmptyPinController()
         {
             Console.WriteLine($"----------------{DateTime.Now}: Initializing Pin Controller");
             _timerController = new TimerController();
