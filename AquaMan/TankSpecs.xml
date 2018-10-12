@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TankSpecs>
-  <Height>60</Height>
-  <Width>25</Width>
+  <Height>12</Height>
+  <Width>14</Width>
   <Depth>30</Depth>
 </TankSpecs>

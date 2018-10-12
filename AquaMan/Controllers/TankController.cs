@@ -44,7 +44,6 @@ namespace AquaMan.Controllers
         {
             if (ModelState.IsValid)
             {
-                tankSpecs.Initialized = true;
                 _formDataService.SetTankSpecs(tankSpecs);
                 return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
             }

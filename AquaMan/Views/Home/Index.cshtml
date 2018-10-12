@@ -4,29 +4,23 @@
 @inject IFormDataService formHelper
 
 <script>
-function Fill() 
-{
-    $.get("/Home/Fill", function (data) 
-    {
-        $("p").html(data);
-    });
-}
+    function Fill() {
+        $.get("/Home/Fill", function (data) {
+            $("p").html(data);
+        });
+    }
 
-function Drain() 
-{
-    $.get("/Home/Drain", function (data) 
-    {
-        $("p").html(data);
-    });
-}
+    function Drain() {
+        $.get("/Home/Drain", function (data) {
+            $("p").html(data);
+        });
+    }
 
-function Feed() 
-{
-    $.get("/Home/Feed", function (data) 
-    {
-        $("p").html(data);
-    });
-}
+    function Feed() {
+        $.get("/Home/Feed", function (data) {
+            $("p").html(data);
+        });
+    }
 </script>
 <div id="page-wrapper">
     <div class="row">
@@ -43,24 +37,27 @@ function Feed()
                 <button type="button" onclick="Fill()" value="Fill">Fill</button>
                 <br />
                 <button type="button" onclick="Drain()" value="Drain">Drain</button>
-                <br/>
+                <br />
                 <button type="button" onclick="Feed()" value="Feed">Feed</button>
                 <br />
             </form>
-            @if (!formHelper.GetTankSpecs().Initialized)
-            {
-                <label>Tanks specifications are needed to intitailize the system.</label>
-                <br />
-                <label> Please go to the </label>
-                <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup Page</a>
-            }
-            @if (formHelper.GetFeedingTimes()?.Time1 == null)
-            {
-                <br />
-                <label>At least one feeding time is needed.</label>
-                <br />
-                <label> Please go to the </label>
-                <a asp-controller="Feeding" asp-action="FeedingTimes">Feeding Times Setup Page</a>
+            @{
+                TankSpecs tankSpecs = formHelper.GetTankSpecs();
+                @if(tankSpecs.Depth <= 0 && tankSpecs.Width <= 0 && tankSpecs.Height <= 0)
+                {
+                    <label>Tanks specifications are needed to intitailize the system.</label>
+                    <br />
+                    <label> Please go to the </label>
+                    <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup Page</a>
+                }
+                @if (formHelper.GetFeedingTimes()?.Time1 == null)
+                {
+                    <br />
+                    <label>At least one feeding time is needed.</label>
+                    <br />
+                    <label> Please go to the </label>
+                    <a asp-controller="Feeding" asp-action="FeedingTimes">Feeding Times Setup Page</a>
+                }
             }
         </div>
     </div>

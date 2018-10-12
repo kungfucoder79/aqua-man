@@ -38,10 +38,21 @@ namespace AquaMan.Services
         /// <returns></returns>
         public FeedingTimes GetFeedingTimes()
         {
-            string feedingTimesXml = FEEDING_TIMES_FILE;
+            FeedingTimes feedingTimes;
+            try
+            {
+                string feedingTimesXml = FEEDING_TIMES_FILE;
 
-            feedingTimesXml = GetXmlFromFile(feedingTimesXml);
-            FeedingTimes feedingTimes = DeSerializeFeedingTimes(feedingTimesXml);
+                feedingTimesXml = GetXmlFromFile(feedingTimesXml);
+                feedingTimes = DeSerializeFeedingTimes(feedingTimesXml);
+            }
+            catch(Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+
+                feedingTimes = new FeedingTimes();
+            }
+
             return feedingTimes;
         }
 
@@ -62,16 +73,29 @@ namespace AquaMan.Services
 
                 XmlNode rootNode = document.SelectSingleNode(FEEDING_TIME_START_ELM);
 
-                feedingTimes.Time1 = DateTime.Parse(rootNode.SelectSingleNode(FEEDING_TIME_1).FirstChild.Value);
-                feedingTimes.Time2 = DateTime.Parse(rootNode.SelectSingleNode(FEEDING_TIME_2).FirstChild.Value);
-                feedingTimes.Time3 = DateTime.Parse(rootNode.SelectSingleNode(FEEDING_TIME_3).FirstChild.Value);
-                feedingTimes.Time4 = DateTime.Parse(rootNode.SelectSingleNode(FEEDING_TIME_4).FirstChild.Value);
-                feedingTimes.Time5 = DateTime.Parse(rootNode.SelectSingleNode(FEEDING_TIME_5).FirstChild.Value);
+                feedingTimes.Time1 = GetFeedingTime(rootNode.SelectSingleNode(FEEDING_TIME_1).FirstChild?.Value);
+                feedingTimes.Time2 = GetFeedingTime(rootNode.SelectSingleNode(FEEDING_TIME_2).FirstChild?.Value);
+                feedingTimes.Time3 = GetFeedingTime(rootNode.SelectSingleNode(FEEDING_TIME_3).FirstChild?.Value);
+                feedingTimes.Time4 = GetFeedingTime(rootNode.SelectSingleNode(FEEDING_TIME_4).FirstChild?.Value);
+                feedingTimes.Time5 = GetFeedingTime(rootNode.SelectSingleNode(FEEDING_TIME_5).FirstChild?.Value);
             }
 
             return feedingTimes;
         }
 
+        private DateTime? GetFeedingTime(string xmlDateTime)
+        {
+            DateTime? dateTime;
+            if (string.IsNullOrEmpty(xmlDateTime))
+            {
+                dateTime = null;
+            }
+            else
+            {
+                dateTime = DateTime.Parse(xmlDateTime);
+            }
+            return dateTime;
+        }
         /// <summary>
         /// Sets the feeding times
         /// </summary>
@@ -101,10 +125,20 @@ namespace AquaMan.Services
         /// </summary>
         public TankSpecs GetTankSpecs()
         {
-            string tankSpecsXml = TANK_SPEC_FILE;
+            TankSpecs tankSpecs;
+            try
+            {
+                string tankSpecsXml = TANK_SPEC_FILE;
 
-            tankSpecsXml = GetXmlFromFile(tankSpecsXml);
-            TankSpecs tankSpecs = DeSerializeTankSpecs(tankSpecsXml);
+                tankSpecsXml = GetXmlFromFile(tankSpecsXml);
+                tankSpecs = DeSerializeTankSpecs(tankSpecsXml);
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+
+                tankSpecs = new TankSpecs();
+            }
             return tankSpecs;
         }
 

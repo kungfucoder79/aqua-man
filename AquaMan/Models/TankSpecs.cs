@@ -12,11 +12,6 @@ namespace AquaMan.Models
     public class TankSpecs
     {
         /// <summary>
-        /// Gets or sets whether or not the tanks specs have been initialized
-        /// </summary>
-        public bool Initialized { get; set; }
-
-        /// <summary>
         /// Height of the tank
         /// </summary>
         [Required]
