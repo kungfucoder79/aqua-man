@@ -14,10 +14,12 @@ namespace AquaMan.Controllers
     public class HomeController : Controller
     {
         private IAquaPinController _aquaPinController;
+        private IAquaI2CController _aquaI2CController;
 
-        public HomeController(IAquaPinController aquaPinController)
+        public HomeController(IAquaPinController aquaPinController, IAquaI2CController aquaI2CController)
         {
             _aquaPinController = aquaPinController;
+            _aquaI2CController = aquaI2CController;
         }
 
         public IActionResult Index()
@@ -61,6 +63,11 @@ namespace AquaMan.Controllers
             _aquaPinController.FeedMe(2000);
             return Ok();
         }
-
+        public IActionResult ResetI2C()
+        {
+            _aquaI2CController.Reset();
+            return Ok();
+        }
+        
     }
 }

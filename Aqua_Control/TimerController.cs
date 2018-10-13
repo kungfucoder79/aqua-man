@@ -26,7 +26,7 @@ namespace Aqua_Control
         #region ctor
         public TimerController()
         {
-            _fillDrainInterval = TimeSpan.FromSeconds(15);
+            _fillDrainInterval = TimeSpan.FromSeconds(2);
             _timer_fill = new Timer(Timer_fill_Tick, null, Timeout.Infinite, Timeout.Infinite);
 
             _timer_drain = new Timer(Timer_drain_Tick, null, Timeout.Infinite, Timeout.Infinite);

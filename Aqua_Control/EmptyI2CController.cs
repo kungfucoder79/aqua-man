@@ -40,6 +40,11 @@ namespace Aqua_Control
             Console.WriteLine($"----------------{DateTime.Now}: {nameof(GetWaterHeight)}");
             return 0.0;
         }
+
+        public void InitI2C()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

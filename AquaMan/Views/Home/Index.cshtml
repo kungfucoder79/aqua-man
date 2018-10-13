@@ -21,6 +21,11 @@
             $("p").html(data);
         });
     }
+    function ResetI2C() {
+        $.get("/Home/ResetI2C", function (data) {
+            $("p").html(data);
+        });
+    }
 </script>
 <div id="page-wrapper">
     <div class="row">
@@ -39,6 +44,8 @@
                 <button type="button" onclick="Drain()" value="Drain">Drain</button>
                 <br />
                 <button type="button" onclick="Feed()" value="Feed">Feed</button>
+                <br />
+                <button type="button" onclick="ResetI2C()" value="ResetI2C">ResetI2C</button>
                 <br />
             </form>
             @{

@@ -30,8 +30,8 @@ namespace Aqua_Control
 
         private GpioPin _inPin4;
 
-        private const GpioPinValue _0 = GpioPinValue.High;
-        private const GpioPinValue _1 = GpioPinValue.Low;
+        private const GpioPinValue _0 = GpioPinValue.Low;
+        private const GpioPinValue _1 = GpioPinValue.High;
 
         private GpioPinValue[][] _feederSequences = new GpioPinValue[][]{
             new[] {_0, _1, _1, _1},
@@ -55,28 +55,28 @@ namespace Aqua_Control
             _timerController.PumpOn += _timerController_PumpOn;
 
 
-            GpioController gpio = GpioController.Instance;
+            GpioController gpioController = GpioController.Instance;
 
             // Below are the separate pins being used from the raspberry pi and how they are setup
             // need to assign pins, values, and driver output
 
-            _pumpPin = InitializePin(gpio.Pin17, _0, GpioPinDriveMode.Output);
+            _pumpPin = InitializePin(gpioController[P1.Gpio16], _0, GpioPinDriveMode.Output);
 
-            _fillPin = InitializePin(gpio.Pin20, _0, GpioPinDriveMode.Output);
+            _fillPin = InitializePin(gpioController[P1.Gpio20], _0, GpioPinDriveMode.Output);
 
-            _wastePin = InitializePin(gpio.Pin21, _0, GpioPinDriveMode.Output);
+            _wastePin = InitializePin(gpioController[P1.Gpio21], _0, GpioPinDriveMode.Output);
 
-            _inPin = InitializePin(gpio.Pin19, _0, GpioPinDriveMode.Output);
+            _inPin = InitializePin(gpioController[P1.Gpio19], _0, GpioPinDriveMode.Output);
 
-            _outPin = InitializePin(gpio.Pin26, _0, GpioPinDriveMode.Output);
+            _outPin = InitializePin(gpioController[P1.Gpio26], _0, GpioPinDriveMode.Output);
 
-            _inPin1 = InitializePin(gpio.Pin23, _0, GpioPinDriveMode.Output);
+            _inPin1 = InitializePin(gpioController[P1.Gpio23], _0, GpioPinDriveMode.Output);
 
-            _inPin2 = InitializePin(gpio.Pin24, _0, GpioPinDriveMode.Output);
+            _inPin2 = InitializePin(gpioController[P1.Gpio24], _0, GpioPinDriveMode.Output);
 
-            _inPin3 = InitializePin(gpio.Pin25, _0, GpioPinDriveMode.Output);
+            _inPin3 = InitializePin(gpioController[P1.Gpio25], _0, GpioPinDriveMode.Output);
 
-            _inPin4 = InitializePin(gpio.Pin08, _0, GpioPinDriveMode.Output);
+            _inPin4 = InitializePin(gpioController[P1.Gpio08], _0, GpioPinDriveMode.Output);
         }
 
         private void _timerController_PumpOn(object sender, EventArgs e)
