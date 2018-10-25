@@ -31,14 +31,14 @@ namespace Aqua_Control
         /// </summary>
         public void Reset()
         {
-            Console.WriteLine($"----------------{DateTime.Now}: {nameof(Reset)}");
+            Console.WriteLine($"WTR----------------{DateTime.Now}: {nameof(Reset)}");
         }
 
         Random random = new Random();
         public double GetWaterHeight()
         {
-            double testVal = random.Next(0, 101);
-            Console.WriteLine($"----------------{DateTime.Now}: {testVal}");
+            double testVal = random.Next(0, 5);
+            Console.WriteLine($"WTR----------------{DateTime.Now}: {testVal}");
             return testVal;
         }
 

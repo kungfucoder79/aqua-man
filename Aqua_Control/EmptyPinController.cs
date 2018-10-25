@@ -21,7 +21,7 @@ namespace Aqua_Control
         /// </summary>
         public EmptyPinController()
         {
-            Console.WriteLine($"----------------{DateTime.Now}: Initializing Pin Controller");
+            Console.WriteLine($"--------------{DateTime.Now}: Initializing Pin Controller");
             _timerController = new TimerController();
             _timerController.DrainDone += _timerController_DrainDone;
             _timerController.FillDone += _timerController_FillDone;
@@ -31,12 +31,12 @@ namespace Aqua_Control
 
         private void _timerController_PumpOn(object sender, EventArgs e)
         {
-            Console.WriteLine($"----------------{DateTime.Now}: TURNING PUMP ON");
+            Console.WriteLine($"PUMP----------------{DateTime.Now}: TURNING PUMP ON");
         }
 
         private void _timerController_PumpOff(object sender, EventArgs e)
         {
-            Console.WriteLine($"----------------{DateTime.Now}: TURNING PUMP OFF");
+            Console.WriteLine($"PUMP----------------{DateTime.Now}: TURNING PUMP OFF");
         }
 
         private void _timerController_FillDone(object sender, EventArgs e)
@@ -91,7 +91,7 @@ namespace Aqua_Control
             int delay = 1;
             for (int i = 0; i < numberOfTimes; i++)
             {
-                Console.WriteLine($"----------------{DateTime.Now}: {i}");
+                Console.WriteLine($"FEEDING----------------{DateTime.Now}: {i}");
                 await Task.Delay(delay);
             }
             Console.WriteLine($"----------------{DateTime.Now}: FEEDING STOPPED");
