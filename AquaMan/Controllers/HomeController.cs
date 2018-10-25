@@ -15,6 +15,7 @@ namespace AquaMan.Controllers
     {
         private IAquaPinController _aquaPinController;
         private IAquaI2CController _aquaI2CController;
+        private double _waterHeight = 0.0;
 
         public HomeController(IAquaPinController aquaPinController, IAquaI2CController aquaI2CController)
         {
@@ -67,6 +68,12 @@ namespace AquaMan.Controllers
         {
             _aquaI2CController.Reset();
             return Ok();
+        }
+        
+        public IActionResult GetWaterHeight()
+        {
+            _waterHeight = _aquaI2CController.GetWaterHeight();
+            return Ok(_waterHeight);
         }
         
     }

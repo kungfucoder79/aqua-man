@@ -34,11 +34,12 @@ namespace Aqua_Control
             Console.WriteLine($"----------------{DateTime.Now}: {nameof(Reset)}");
         }
 
-
+        Random random = new Random();
         public double GetWaterHeight()
         {
-            Console.WriteLine($"----------------{DateTime.Now}: {nameof(GetWaterHeight)}");
-            return 0.0;
+            double testVal = random.Next(0, 101);
+            Console.WriteLine($"----------------{DateTime.Now}: {testVal}");
+            return testVal;
         }
 
         public void InitI2C()
