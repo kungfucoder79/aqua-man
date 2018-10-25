@@ -30,10 +30,15 @@
 
     setInterval(GetWaterHeight, 1000);
 
-    function GetWaterHeight() {
-        $.get("/Home/GetWaterHeight", function (data) {
-            $("#waterHeight").css('width', data + "%");
-        });
+    function GetWaterHeight() 
+	{
+        $.get("/Home/GetWaterHeight", function (data) 
+		{ 
+			var waterPercent = (data / 5) *100;
+			$("#waterHeight").css('width', waterPercent + "%");
+			$("#WaterNum").html(data);
+			
+		});
     }
 </script>
 <div id="page-wrapper">
@@ -56,6 +61,8 @@
                 <br />
                 <button type="button" onclick="ResetI2C()" value="ResetI2C">ResetI2C</button>
                 <br />
+				<p id="WaterNum"/>
+				<br />
                 <div class="progress">
                     <progressbar id="waterHeight" />
                 </div>
