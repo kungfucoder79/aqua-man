@@ -20,6 +20,7 @@ namespace AquaMan.Services
         private const string FEEDING_TIMES_FILE = "FeedingTimes.xml";
 
         private const string FEEDING_TIME_START_ELM = "FeedingTimes";
+        private const string FEEDING_TIME = "Time";
         private const string FEEDING_TIME_1 = "Time1";
         private const string FEEDING_TIME_2 = "Time2";
         private const string FEEDING_TIME_3 = "Time3";
@@ -47,7 +48,7 @@ namespace AquaMan.Services
                 feedingTimesXml = GetXmlFromFile(feedingTimesXml);
                 feedingTimes = DeSerializeFeedingTimes(feedingTimesXml);
             }
-            catch(Exception exp)
+            catch (Exception exp)
             {
                 Console.WriteLine(exp.Message);
 
@@ -73,12 +74,10 @@ namespace AquaMan.Services
                 document.SecureLoadXml(xmlData);
 
                 XmlNode rootNode = document.SelectSingleNode(FEEDING_TIME_START_ELM);
-
-                feedingTimes.Time1 = GetFeedingTime(rootNode.SelectSingleNode(FEEDING_TIME_1).FirstChild?.Value);
-                feedingTimes.Time2 = GetFeedingTime(rootNode.SelectSingleNode(FEEDING_TIME_2).FirstChild?.Value);
-                feedingTimes.Time3 = GetFeedingTime(rootNode.SelectSingleNode(FEEDING_TIME_3).FirstChild?.Value);
-                feedingTimes.Time4 = GetFeedingTime(rootNode.SelectSingleNode(FEEDING_TIME_4).FirstChild?.Value);
-                feedingTimes.Time5 = GetFeedingTime(rootNode.SelectSingleNode(FEEDING_TIME_5).FirstChild?.Value);
+                for (int x = 1; x <= rootNode.ChildNodes.Count; x++)
+                {
+                    feedingTimes.Feedings.Add(GetFeedingTime(rootNode.SelectSingleNode($"{FEEDING_TIME}{x}").FirstChild?.Value));
+                }
             }
 
             return feedingTimes;
@@ -109,12 +108,10 @@ namespace AquaMan.Services
                 xmlWriter.WriteStartDocument();
                 xmlWriter.WriteStartElement(FEEDING_TIME_START_ELM);
 
-                xmlWriter.WriteElementString(FEEDING_TIME_1, feedingTimes.Time1.ToString());
-                xmlWriter.WriteElementString(FEEDING_TIME_2, feedingTimes.Time2.ToString());
-                xmlWriter.WriteElementString(FEEDING_TIME_3, feedingTimes.Time3.ToString());
-                xmlWriter.WriteElementString(FEEDING_TIME_4, feedingTimes.Time4.ToString());
-                xmlWriter.WriteElementString(FEEDING_TIME_5, feedingTimes.Time5.ToString());
-
+                for (int x = 0; x < feedingTimes.Feedings.Count; x++)
+                {
+                    xmlWriter.WriteElementString($"{FEEDING_TIME}{x+1}", feedingTimes.Feedings[x].ToString());
+                }
                 xmlWriter.WriteEndElement();
                 xmlWriter.WriteEndDocument();
                 xmlWriter.Close();
@@ -207,7 +204,7 @@ namespace AquaMan.Services
                 }
             }
 
-            return xmlString ;
+            return xmlString;
         }
         #endregion
     }

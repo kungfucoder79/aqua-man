@@ -2,6 +2,7 @@ using AquaMan.Models;
 using AquaMan.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 
 namespace AquaMan.Tests
 {
@@ -25,21 +26,18 @@ namespace AquaMan.Tests
         [TestMethod]
         public void FormDataService_DeSerializeFeedingTimes_Deserializes()
         {
-            DateTime expectedTime1 = new DateTime(2018, 10, 10, 1, 0, 0);
-            DateTime expectedTime2 = new DateTime(2018, 10, 10, 14, 1, 0);
-            DateTime expectedTime3 = new DateTime(2018, 10, 10, 17, 0, 0);
-            DateTime expectedTime4 = new DateTime(2018, 10, 10, 2, 0, 0);
-            DateTime expectedTime5 = new DateTime(2018, 10, 10, 11, 0, 0);
+            List<DateTime> expectedTimes = new List<DateTime>();
+            expectedTimes.Add(new DateTime(2018, 10, 10, 1, 0, 0));
+            expectedTimes.Add(new DateTime(2018, 10, 10, 14, 1, 0));
+            expectedTimes.Add(new DateTime(2018, 10, 10, 17, 0, 0));
+            expectedTimes.Add(new DateTime(2018, 10, 10, 2, 0, 0));
+            expectedTimes.Add(new DateTime(2018, 10, 10, 11, 0, 0));
 
 
             FormDataService formDataService = new FormDataService();
             FeedingTimes feedingTimes = formDataService.DeSerializeFeedingTimes(feedingXML);
 
-            Assert.AreEqual(expectedTime1, feedingTimes.Time1, $"{nameof(feedingTimes.Time1)} is not the same");
-            Assert.AreEqual(expectedTime2, feedingTimes.Time2, $"{nameof(feedingTimes.Time2)} is not the same");
-            Assert.AreEqual(expectedTime3, feedingTimes.Time3, $"{nameof(feedingTimes.Time3)} is not the same");
-            Assert.AreEqual(expectedTime4, feedingTimes.Time4, $"{nameof(feedingTimes.Time4)} is not the same");
-            Assert.AreEqual(expectedTime5, feedingTimes.Time5, $"{nameof(feedingTimes.Time5)} is not the same");
+            CollectionAssert.AreEqual(expectedTimes, feedingTimes.Feedings, $"feeding times are not the same");
         }
 
         [TestMethod]

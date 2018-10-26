@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Aqua_Control;
 using AquaMan.Extensions;
 using AquaMan.Models;
 using AquaMan.Services;
@@ -15,14 +16,16 @@ namespace AquaMan.Controllers
     public class FeedingController : Controller
     {
         private IFormDataService _formDataService;
+        IAquaPinController _aquaPinController;
 
         /// <summary>
         /// Constructs a new 
         /// </summary>
         /// <param name="formDataService"></param>
-        public FeedingController(IFormDataService formDataService)
+        public FeedingController(IFormDataService formDataService, IAquaPinController aquaPinController)
         {
             _formDataService = formDataService;
+            _aquaPinController = aquaPinController;
         }
         // GET: /<controller>/
         /// <summary>
@@ -45,6 +48,7 @@ namespace AquaMan.Controllers
             if (ModelState.IsValid)
             {
                 _formDataService.SetFeedingTimes(feedingTimes);
+                _aquaPinController.UpdateFeedingTimes(feedingTimes.Feedings);
                 return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
             }
             return View(feedingTimes);

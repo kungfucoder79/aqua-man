@@ -77,7 +77,7 @@
                     <label> Please go to the </label>
                     <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup Page</a>
                 }
-                @if (formHelper.GetFeedingTimes()?.Time1 == null)
+                @if (formHelper.GetFeedingTimes()?.Feedings[0] == null)
                 {
                     <br />
                     <label>At least one feeding time is needed.</label>

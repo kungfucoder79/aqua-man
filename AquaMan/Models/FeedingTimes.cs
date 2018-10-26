@@ -7,34 +7,17 @@ using System.Threading.Tasks;
 namespace AquaMan.Models
 {
     /// <summary>
-    /// Class for the feeding time
+    /// Class for the feeding times
     /// </summary>
     public class FeedingTimes
     {
+        public FeedingTimes()
+        {
+            Feedings = new List<DateTime?>();
+        }
         /// <summary>
-        /// First feeding time
+        /// A list of times to initiate the feeding sequence
         /// </summary>
-        [Required(ErrorMessage = "At least one feeding time is required.")]
-        public DateTime? Time1 { get; set; }
-
-        /// <summary>
-        /// Second feeding time
-        /// </summary>
-        public DateTime? Time2 { get; set; }
-
-        /// <summary>
-        /// Third feeding time
-        /// </summary>
-        public DateTime? Time3 { get; set; }
-
-        /// <summary>
-        /// Third feeding time
-        /// </summary>
-        public DateTime? Time4 { get; set; }
-
-        /// <summary>
-        /// Fifth feeding time
-        /// </summary>
-        public DateTime? Time5 { get; set; }
+        public List<DateTime?> Feedings { get; private set; }
     }
 }
