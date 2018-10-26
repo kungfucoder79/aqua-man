@@ -53,6 +53,7 @@ namespace Aqua_Control
             _timerController.FillDone += _timerController_FillDone;
             _timerController.PumpOff += _timerController_PumpOff;
             _timerController.PumpOn += _timerController_PumpOn;
+            _timerController.FeederStart += _timerController_FeederStart;
 
 
             GpioController gpioController = GpioController.Instance;
@@ -77,6 +78,11 @@ namespace Aqua_Control
             _inPin3 = InitializePin(gpioController[P1.Gpio25], _0, GpioPinDriveMode.Output);
 
             _inPin4 = InitializePin(gpioController[P1.Gpio08], _0, GpioPinDriveMode.Output);
+        }
+
+        private void _timerController_FeederStart(object sender, EventArgs e)
+        {
+            FeedMe(2000);
         }
 
         private void _timerController_PumpOn(object sender, EventArgs e)

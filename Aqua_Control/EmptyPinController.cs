@@ -27,6 +27,15 @@ namespace Aqua_Control
             _timerController.FillDone += _timerController_FillDone;
             _timerController.PumpOff += _timerController_PumpOff;
             _timerController.PumpOn += _timerController_PumpOn;
+            _timerController.FeederStart += _timerController_FeederStart;
+        }
+
+        #endregion
+
+        #region Methods
+        private void _timerController_FeederStart(object sender, EventArgs e)
+        {
+            FeedMe(20);
         }
 
         private void _timerController_PumpOn(object sender, EventArgs e)
@@ -48,9 +57,6 @@ namespace Aqua_Control
         {
             TurnValvesOff();
         }
-        #endregion
-
-        #region Methods
         /// <summary>
         /// Set the pins to high which turns the valves off
         /// </summary>

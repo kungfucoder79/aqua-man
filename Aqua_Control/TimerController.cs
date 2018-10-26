@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -10,9 +11,16 @@ namespace Aqua_Control
         #region Memebers
         private Timer _timer_fill;
         private Timer _timer_drain;
+        private Timer _timer_feeder;
         private Timer _timer_pumpOnDelay;
         private Timer _timer_pumpOffDelay;
         private TimeSpan _fillDrainInterval;
+        private TimeSpan _feedingInterval;
+
+        private DateTime?[] _feedingTimes; /*= new DateTime?[] { new DateTime(2018, 10, 25, 23, 53, 00),
+                                                              new DateTime(2018, 10, 25, 23, 53, 10),
+                                                              new DateTime(2018, 10, 25, 23, 53, 13),
+                                                            };*/
         #endregion
 
         #region Properties
@@ -20,16 +28,22 @@ namespace Aqua_Control
         public event EventHandler FillDone;
         public event EventHandler PumpOn;
         public event EventHandler PumpOff;
-
+        public event EventHandler FeederStart;
         #endregion
 
         #region ctor
         public TimerController()
         {
+            _feedingTimes = Array.Empty<DateTime?>();
+
             _fillDrainInterval = TimeSpan.FromSeconds(2);
+            _feedingInterval = TimeSpan.FromSeconds(2);
+
             _timer_fill = new Timer(Timer_fill_Tick, null, Timeout.Infinite, Timeout.Infinite);
 
             _timer_drain = new Timer(Timer_drain_Tick, null, Timeout.Infinite, Timeout.Infinite);
+
+            _timer_feeder = new Timer(CheckFeedingTimes, null, TimeSpan.Zero, _feedingInterval);
 
             _timer_pumpOnDelay = new Timer(_timer_pumpOnDelay_Tick, null, Timeout.Infinite, Timeout.Infinite);
             _timer_pumpOffDelay = new Timer(_timer_pumpOffDelay_Tick, null, Timeout.Infinite, Timeout.Infinite);
@@ -56,6 +70,11 @@ namespace Aqua_Control
         protected virtual void OnPumpOff(EventArgs e)
         {
             PumpOff?.Invoke(this, e);
+        }
+
+        protected virtual void OnFeederStart(EventArgs e)
+        {
+            FeederStart?.Invoke(this, e);
         }
 
         private void Timer_fill_Tick(object sender)
@@ -98,6 +117,26 @@ namespace Aqua_Control
         {
             _timer_drain.Change(_fillDrainInterval, Timeout.InfiniteTimeSpan);
             _timer_pumpOnDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+        }
+
+        private void CheckFeedingTimes(object state)
+        {
+            foreach (DateTime feedingTime in _feedingTimes.Where(p => p != null).ToArray())
+            {
+                if (IsFeederReadyToRun(feedingTime))
+                    OnFeederStart(EventArgs.Empty);
+            }
+        }
+        private bool IsFeederReadyToRun(DateTime timeToCheck)
+        {
+            DateTime currentTime = GetCurrentDayTime(DateTime.Now);
+            DateTime lastTime = currentTime - _feedingInterval;
+            return (lastTime <= timeToCheck && timeToCheck < currentTime);
+        }
+
+        private DateTime GetCurrentDayTime(DateTime dt)
+        {
+            return new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, dt.Hour, dt.Minute, dt.Second);
         }
         #endregion
     }
