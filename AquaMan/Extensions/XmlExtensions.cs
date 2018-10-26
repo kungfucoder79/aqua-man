@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 
-namespace Aqua_Control
+namespace AquaMan.Extensions
 {
     public static class XmlExtensions
     {
