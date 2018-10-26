@@ -61,7 +61,7 @@ namespace AquaMan.Controllers
 
         public IActionResult Feed()
         {
-            _aquaPinController.FeedMe(2000);
+            _aquaPinController.Feed();
             return Ok();
         }
         public IActionResult ResetI2C()

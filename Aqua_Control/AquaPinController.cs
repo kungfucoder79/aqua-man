@@ -8,7 +8,7 @@ using Unosquare.RaspberryIO.Gpio;
 
 namespace Aqua_Control
 {
-    public class AquaPinController : IAquaPinController
+    public class AquaPinController : BasePinController, IAquaPinController
     {
         #region Members
         //the gpio pins and their respective pin numbers on the board
@@ -38,8 +38,6 @@ namespace Aqua_Control
             new[] {_1, _0, _1, _1},
             new[] {_1, _1, _0, _1},
             new[] {_1, _1, _1, _0}};
-
-        private TimerController _timerController;
         #endregion
 
         #region ctor
@@ -47,15 +45,8 @@ namespace Aqua_Control
         /// Constructs a new <see cref="AquaGPIO"/> object by initialzing the gpio pins for the raspberry pi
         /// </summary>
         public AquaPinController()
+            :base()
         {
-            _timerController = new TimerController();
-            _timerController.DrainDone += _timerController_DrainDone;
-            _timerController.FillDone += _timerController_FillDone;
-            _timerController.PumpOff += _timerController_PumpOff;
-            _timerController.PumpOn += _timerController_PumpOn;
-            _timerController.FeederStart += _timerController_FeederStart;
-
-
             GpioController gpioController = GpioController.Instance;
 
             // Below are the separate pins being used from the raspberry pi and how they are setup
@@ -80,29 +71,19 @@ namespace Aqua_Control
             _inPin4 = InitializePin(gpioController[P1.Gpio08], _0, GpioPinDriveMode.Output);
         }
 
-        private void _timerController_FeederStart(object sender, EventArgs e)
+        protected override void _timerController_FeederStart(object sender, EventArgs e)
         {
-            FeedMe(2000);
+            Feed();
         }
 
-        private void _timerController_PumpOn(object sender, EventArgs e)
+        protected override void _timerController_PumpOn(object sender, EventArgs e)
         {
             _pumpPin.Write(_1);
         }
 
-        private void _timerController_PumpOff(object sender, EventArgs e)
+        protected override void _timerController_PumpOff(object sender, EventArgs e)
         {
             _pumpPin.Write(_0);
-        }
-
-        private void _timerController_FillDone(object sender, EventArgs e)
-        {
-            TurnValvesOff();
-        }
-
-        private void _timerController_DrainDone(object sender, EventArgs e)
-        {
-            TurnValvesOff();
         }
 
         #endregion
@@ -118,7 +99,7 @@ namespace Aqua_Control
         /// <summary>
         /// Set the pins to high which turns the valves off
         /// </summary>
-        private void TurnValvesOff()
+        protected override void TurnValvesOff()
         {
             _inPin.Write(_0);
 
@@ -144,7 +125,7 @@ namespace Aqua_Control
 
             _wastePin.Write(_0);
 
-            _timerController.SetFillTimer();
+            TimerController.SetFillTimer();
         }
 
         /// <summary>
@@ -159,15 +140,16 @@ namespace Aqua_Control
             _inPin.Write(_0);
             _fillPin.Write(_0);
 
-            _timerController.SetDrainTimer();
+            TimerController.SetDrainTimer();
         }
 
         /// <summary>
         /// Starts the feeding auger sequence with the specified number of times to step.
         /// </summary>
         /// <param name="numberOfTimes"></param>
-        public async void FeedMe(int numberOfTimes)
+        public async void Feed()
         {
+            int numberOfTimes = 40;
             int delay = 1;
             for (int i = 0; i < numberOfTimes; i++)
             {

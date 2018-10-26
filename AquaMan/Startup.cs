@@ -45,8 +45,8 @@ namespace OrderingApplication
             ContainerBuilder builder = new ContainerBuilder();
             builder.Populate(services);
 
-            IAquaPinController pinController = new AquaPinController();
-            IAquaI2CController i2CController = new AquaI2CController();
+            IAquaPinController pinController = new EmptyPinController();
+            IAquaI2CController i2CController = new EmptyI2CController();
 
             builder.RegisterInstance(pinController);
             builder.RegisterInstance(i2CController);

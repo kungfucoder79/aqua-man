@@ -16,8 +16,7 @@ namespace Aqua_Control
         private Timer _timer_pumpOffDelay;
         private TimeSpan _fillDrainInterval;
         private TimeSpan _feedingInterval;
-
-        private DateTime?[] _feedingTimes; /*= new DateTime?[] { new DateTime(2018, 10, 25, 23, 53, 00),
+        /*= new DateTime?[] { new DateTime(2018, 10, 25, 23, 53, 00),
                                                               new DateTime(2018, 10, 25, 23, 53, 10),
                                                               new DateTime(2018, 10, 25, 23, 53, 13),
                                                             };*/
@@ -29,12 +28,13 @@ namespace Aqua_Control
         public event EventHandler PumpOn;
         public event EventHandler PumpOff;
         public event EventHandler FeederStart;
+        public List<DateTime?> FeedingTimes { get; private set; }
         #endregion
 
         #region ctor
         public TimerController()
         {
-            _feedingTimes = Array.Empty<DateTime?>();
+            FeedingTimes = new List<DateTime?>(5);
 
             _fillDrainInterval = TimeSpan.FromSeconds(2);
             _feedingInterval = TimeSpan.FromSeconds(2);
@@ -121,7 +121,7 @@ namespace Aqua_Control
 
         private void CheckFeedingTimes(object state)
         {
-            foreach (DateTime feedingTime in _feedingTimes.Where(p => p != null).ToArray())
+            foreach (DateTime feedingTime in FeedingTimes.Where(p => p != null).ToArray())
             {
                 if (IsFeederReadyToRun(feedingTime))
                     OnFeederStart(EventArgs.Empty);

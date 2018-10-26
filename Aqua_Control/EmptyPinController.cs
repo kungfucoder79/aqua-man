@@ -9,58 +9,40 @@ namespace Aqua_Control
     /// <summary>
     /// Empty impelmentation for testing on a device with out pins
     /// </summary>
-    public class EmptyPinController : IAquaPinController
+    public class EmptyPinController : BasePinController, IAquaPinController
     {
-        #region Members
-        private TimerController _timerController;
-        #endregion
-
         #region ctor
         /// <summary>
         /// Constructs a new <see cref="AquaGPIO"/> object by initialzing the gpio pins for the raspberry pi
         /// </summary>
         public EmptyPinController()
+            : base()
         {
             Console.WriteLine($"--------------{DateTime.Now}: Initializing Pin Controller");
-            _timerController = new TimerController();
-            _timerController.DrainDone += _timerController_DrainDone;
-            _timerController.FillDone += _timerController_FillDone;
-            _timerController.PumpOff += _timerController_PumpOff;
-            _timerController.PumpOn += _timerController_PumpOn;
-            _timerController.FeederStart += _timerController_FeederStart;
         }
 
         #endregion
 
         #region Methods
-        private void _timerController_FeederStart(object sender, EventArgs e)
+        protected override void _timerController_FeederStart(object sender, EventArgs e)
         {
-            FeedMe(20);
+            Feed();
         }
 
-        private void _timerController_PumpOn(object sender, EventArgs e)
+        protected override void _timerController_PumpOn(object sender, EventArgs e)
         {
             Console.WriteLine($"PUMP----------------{DateTime.Now}: TURNING PUMP ON");
         }
 
-        private void _timerController_PumpOff(object sender, EventArgs e)
+        protected override void _timerController_PumpOff(object sender, EventArgs e)
         {
             Console.WriteLine($"PUMP----------------{DateTime.Now}: TURNING PUMP OFF");
         }
 
-        private void _timerController_FillDone(object sender, EventArgs e)
-        {
-            TurnValvesOff();
-        }
-
-        private void _timerController_DrainDone(object sender, EventArgs e)
-        {
-            TurnValvesOff();
-        }
         /// <summary>
         /// Set the pins to high which turns the valves off
         /// </summary>
-        private void TurnValvesOff()
+        protected override void TurnValvesOff()
         {
             Console.WriteLine($"----------------{DateTime.Now}: TURNING VALVE OFF");
         }
@@ -73,7 +55,7 @@ namespace Aqua_Control
         public void Fill()
         {
             Console.WriteLine($"----------------{DateTime.Now}: FILL ON");
-            _timerController.SetFillTimer();
+            TimerController.SetFillTimer();
         }
 
         /// <summary>
@@ -84,22 +66,19 @@ namespace Aqua_Control
         public void Drain()
         {
             Console.WriteLine($"----------------{DateTime.Now}: DRAIN ON");
-            _timerController.SetDrainTimer();
+            TimerController.SetDrainTimer();
         }
 
         /// <summary>
         /// Starts the feeding auger sequence with the specified number of times to step.
         /// </summary>
         /// <param name="numberOfTimes"></param>
-        public async void FeedMe(int numberOfTimes)
+        public async void Feed()
         {
             Console.WriteLine($"----------------{DateTime.Now}: FEEDING STARTED");
-            int delay = 1;
-            for (int i = 0; i < numberOfTimes; i++)
-            {
-                Console.WriteLine($"FEEDING----------------{DateTime.Now}: {i}");
-                await Task.Delay(delay);
-            }
+
+            await Task.Delay(300);
+
             Console.WriteLine($"----------------{DateTime.Now}: FEEDING STOPPED");
         }
         #endregion
