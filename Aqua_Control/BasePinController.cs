@@ -25,8 +25,7 @@ namespace Aqua_Control
         {
             Console.WriteLine($"--------------{DateTime.Now}: Initializing Pin Controller");
             TimerController = new TimerController();
-            TimerController.DrainDone += _timerController_DrainDone;
-            TimerController.FillDone += _timerController_FillDone;
+            TimerController.Done += _timerController_Done;
             TimerController.PumpOff += _timerController_PumpOff;
             TimerController.PumpOn += _timerController_PumpOn;
             TimerController.FeederStart += _timerController_FeederStart;
@@ -43,16 +42,10 @@ namespace Aqua_Control
 
         protected abstract void TurnValvesOff();
 
-        protected void _timerController_FillDone(object sender, EventArgs e)
+        protected void _timerController_Done(object sender, EventArgs e)
         {
             TurnValvesOff();
         }
-
-        protected void _timerController_DrainDone(object sender, EventArgs e)
-        {
-            TurnValvesOff();
-        }
-
 
         public void UpdateFeedingTimes(IEnumerable<DateTime?> _feedingTimes)
         {

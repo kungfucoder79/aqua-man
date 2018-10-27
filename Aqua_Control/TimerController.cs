@@ -19,8 +19,7 @@ namespace Aqua_Control
         #endregion
 
         #region Properties
-        public event EventHandler DrainDone;
-        public event EventHandler FillDone;
+        public event EventHandler Done;
         public event EventHandler PumpOn;
         public event EventHandler PumpOff;
         public event EventHandler FeederStart;
@@ -48,14 +47,9 @@ namespace Aqua_Control
 
         #region Methods
 
-        protected virtual void OnDrainDone(EventArgs e)
+        protected virtual void OnDone(EventArgs e)
         {
-            DrainDone?.Invoke(this, e);
-        }
-
-        protected virtual void OnFillDone(EventArgs e)
-        {
-            FillDone?.Invoke(this, e);
+            Done?.Invoke(this, e);
         }
 
         protected virtual void OnPumpOn(EventArgs e)
@@ -79,7 +73,7 @@ namespace Aqua_Control
 
             _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
 
-            OnFillDone(EventArgs.Empty);
+            OnDone(EventArgs.Empty);
         }
 
         private void Timer_drain_Tick(object sender)
@@ -88,7 +82,7 @@ namespace Aqua_Control
 
             _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
 
-            OnDrainDone(EventArgs.Empty);
+            OnDone(EventArgs.Empty);
         }
 
         private void _timer_pumpOnDelay_Tick(object sender)
