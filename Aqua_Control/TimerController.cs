@@ -16,10 +16,6 @@ namespace Aqua_Control
         private Timer _timer_pumpOffDelay;
         private TimeSpan _fillDrainInterval;
         private TimeSpan _feedingInterval;
-        /*= new DateTime?[] { new DateTime(2018, 10, 25, 23, 53, 00),
-                                                              new DateTime(2018, 10, 25, 23, 53, 10),
-                                                              new DateTime(2018, 10, 25, 23, 53, 13),
-                                                            };*/
         #endregion
 
         #region Properties

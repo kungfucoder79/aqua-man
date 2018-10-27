@@ -54,6 +54,7 @@ namespace Aqua_Control
         /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Fill()
         {
+            IsFillActive = true;
             Console.WriteLine($"----------------{DateTime.Now}: FILL ON");
             TimerController.SetFillTimer();
         }
@@ -65,6 +66,7 @@ namespace Aqua_Control
         /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Drain()
         {
+            IsDrainActive = true;
             Console.WriteLine($"----------------{DateTime.Now}: DRAIN ON");
             TimerController.SetDrainTimer();
         }

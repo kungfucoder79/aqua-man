@@ -11,6 +11,15 @@ namespace Aqua_Control
     {
         #region Properties
         protected TimerController TimerController { get; private set; }
+        /// <summary>
+        /// Gets if the drain is currently running
+        /// </summary>
+        public bool IsDrainActive { get; protected set; }
+
+        /// <summary>
+        /// Gets if the fill is currently running
+        /// </summary>
+        public bool IsFillActive { get; protected set; }
         #endregion
 
         #region ctor
@@ -26,6 +35,8 @@ namespace Aqua_Control
             TimerController.PumpOff += _timerController_PumpOff;
             TimerController.PumpOn += _timerController_PumpOn;
             TimerController.FeederStart += _timerController_FeederStart;
+            IsDrainActive = false;
+            IsFillActive = false;
         }
         #endregion
 
@@ -41,11 +52,13 @@ namespace Aqua_Control
         protected void _timerController_FillDone(object sender, EventArgs e)
         {
             TurnValvesOff();
+            IsFillActive = false;
         }
 
         protected void _timerController_DrainDone(object sender, EventArgs e)
         {
             TurnValvesOff();
+            IsDrainActive = false;
         }
 
 
