@@ -36,6 +36,8 @@ namespace Aqua_Control
 
         protected override void _timerController_PumpOff(object sender, EventArgs e)
         {
+            IsFillActive = false;
+            IsDrainActive = false;
             Console.WriteLine($"PUMP----------------{DateTime.Now}: TURNING PUMP OFF");
         }
 

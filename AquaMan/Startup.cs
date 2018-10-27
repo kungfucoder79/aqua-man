@@ -20,9 +20,7 @@ namespace OrderingApplication
         #region Members
         private IAquaPinController _pinController;
         private IAquaI2CController _i2CController;
-        private Timer _waterLevelTimer;
-        private static TimeSpan _waterLevelCheckInterval = TimeSpan.FromSeconds(1);
-        private double _waterHeight;
+        private PinMasterController _pinMasterController;
         #endregion
 
         #region Properties
@@ -45,8 +43,7 @@ namespace OrderingApplication
 
             _pinController = new EmptyPinController();
             _i2CController = new EmptyI2CController();
-
-            _waterLevelTimer = new Timer(CheckWaterLevel, null, TimeSpan.Zero, _waterLevelCheckInterval);
+            _pinMasterController = new PinMasterController(_i2CController, _pinController);
         }
 
         #endregion
@@ -103,19 +100,6 @@ namespace OrderingApplication
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-        }
-
-        /// <summary>
-        /// Checks the water level of the tank and decides if it need to fill
-        /// </summary>
-        /// <param name="state"></param>
-        private void CheckWaterLevel(object state)
-        {
-            _waterHeight = _i2CController.GetWaterHeight();
-            if(_waterHeight >= 4 && (!_pinController.IsFillActive && !_pinController.IsDrainActive))
-            {
-                _pinController.Fill();
-            }
         }
         #endregion
     }

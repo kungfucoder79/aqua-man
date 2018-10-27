@@ -52,7 +52,6 @@ namespace Aqua_Control
         protected void _timerController_FillDone(object sender, EventArgs e)
         {
             TurnValvesOff();
-            IsFillActive = false;
         }
 
         protected void _timerController_DrainDone(object sender, EventArgs e)
