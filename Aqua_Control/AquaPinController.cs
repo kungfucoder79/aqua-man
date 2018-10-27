@@ -84,6 +84,7 @@ namespace Aqua_Control
         protected override void _timerController_PumpOff(object sender, EventArgs e)
         {
             _pumpPin.Write(_0);
+            IsPumpActive = false;
         }
 
         #endregion

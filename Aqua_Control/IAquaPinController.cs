@@ -8,14 +8,9 @@ namespace Aqua_Control
     public interface IAquaPinController
     {
         /// <summary>
-        /// Gets if the Drain sequence is currently running
+        /// Gets if the pump is currently running
         /// </summary>
-        bool IsDrainActive { get; }
-
-        /// <summary>
-        /// Gets if the Fill sequence is currently running 
-        /// </summary>
-        bool IsFillActive { get; }
+        bool IsPumpActive { get; }
 
         /// <summary>
         /// Update the list of feeding times
