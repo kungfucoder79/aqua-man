@@ -27,7 +27,6 @@ namespace Aqua_Control
         #endregion
 
         #region Methods
-
         /// <summary>
         /// Checks the water level of the tank and decides if it need to fill
         /// </summary>
@@ -35,9 +34,14 @@ namespace Aqua_Control
         private void CheckWaterLevel(object state)
         {
             _waterHeight = _aquaI2CController.GetWaterHeight();
-            if (_waterHeight <= 4 && !_aquaPinController.IsPumpActive)
+            if (_waterHeight < 4 && !_aquaPinController.IsPumpActive)
             {
                 _aquaPinController.Fill();
+            }
+
+            if (_waterHeight >= 4 && _aquaPinController.IsPumpActive)
+            {
+                _aquaPinController.Stop();
             }
         }
         #endregion

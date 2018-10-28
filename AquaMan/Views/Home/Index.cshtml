@@ -28,6 +28,12 @@
         });
     }
 
+    function Stop() {
+        $.get("/Home/Stop", function (data) {
+            $("p").html(data);
+        });
+    }
+
     setInterval(GetWaterHeight, 1000);
 
     function GetWaterHeight() 
@@ -57,12 +63,14 @@
                 <br />
                 <button type="button" onclick="Drain()" value="Drain">Drain</button>
                 <br />
+                <button type="button" onclick="Stop()" value="Stop">Stop</button>
+                <br />
                 <button type="button" onclick="Feed()" value="Feed">Feed</button>
                 <br />
                 <button type="button" onclick="ResetI2C()" value="ResetI2C">ResetI2C</button>
                 <br />
-				<p id="WaterNum"/>
-				<br />
+                <p id="WaterNum" />
+                <br />
                 <div class="progress">
                     <progressbar id="waterHeight" />
                 </div>

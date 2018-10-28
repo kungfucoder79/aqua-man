@@ -8,7 +8,7 @@ namespace Aqua_Control
     public interface IAquaPinController
     {
         /// <summary>
-        /// Gets if the pump is currently running
+        /// Gets if the pump and valves are currently running a fill or drain sequence
         /// </summary>
         bool IsPumpActive { get; }
 
@@ -22,6 +22,11 @@ namespace Aqua_Control
         /// Starts the Drain sequence
         /// </summary>
         void Drain();
+
+        /// <summary>
+        /// Shuts off valves and pump
+        /// </summary>
+        void Stop();
 
         /// <summary>
         /// Starts the Fill sequence

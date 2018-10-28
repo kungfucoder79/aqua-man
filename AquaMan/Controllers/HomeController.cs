@@ -49,13 +49,15 @@ namespace AquaMan.Controllers
 
         public IActionResult Fill()
         {
-            _aquaPinController.Fill();
+            if (!_aquaPinController.IsPumpActive)
+                _aquaPinController.Fill();
             return Ok();
         }
 
         public IActionResult Drain()
         {
-            _aquaPinController.Drain();
+            if(!_aquaPinController.IsPumpActive)
+                _aquaPinController.Drain();
             return Ok();
         }
 
@@ -69,7 +71,13 @@ namespace AquaMan.Controllers
             _aquaI2CController.Reset();
             return Ok();
         }
-        
+
+        public IActionResult Stop()
+        {
+            _aquaPinController.Stop();
+            return Ok();
+        }
+
         public IActionResult GetWaterHeight()
         {
             _waterHeight = _aquaI2CController.GetWaterHeight();

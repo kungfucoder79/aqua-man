@@ -11,8 +11,9 @@ namespace Aqua_Control
     {
         #region Properties
         protected TimerController TimerController { get; private set; }
+        
         /// <summary>
-        /// Gets if the drain is currently running
+        /// Gets if the <see cref="BasePinController"/> is currently running a fill or drain sequence
         /// </summary>
         public bool IsPumpActive { get; protected set; }
         #endregion
@@ -25,7 +26,6 @@ namespace Aqua_Control
         {
             Console.WriteLine($"--------------{DateTime.Now}: Initializing Pin Controller");
             TimerController = new TimerController();
-            TimerController.Done += _timerController_Done;
             TimerController.PumpOff += _timerController_PumpOff;
             TimerController.PumpOn += _timerController_PumpOn;
             TimerController.FeederStart += _timerController_FeederStart;
@@ -42,11 +42,6 @@ namespace Aqua_Control
 
         protected abstract void TurnValvesOff();
 
-        protected void _timerController_Done(object sender, EventArgs e)
-        {
-            TurnValvesOff();
-        }
-
         public void UpdateFeedingTimes(IEnumerable<DateTime?> _feedingTimes)
         {
             TimerController.FeedingTimes.Clear();
@@ -54,6 +49,12 @@ namespace Aqua_Control
             {
                 TimerController.FeedingTimes.Add(feedingTime);
             }
+        }
+
+        public void Stop()
+        {
+            TurnValvesOff();
+            TimerController.SetPumpOffDelay();
         }
         #endregion
     }

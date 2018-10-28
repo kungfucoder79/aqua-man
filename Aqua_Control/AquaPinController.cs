@@ -118,15 +118,14 @@ namespace Aqua_Control
         /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Fill()
         {
+            IsPumpActive = true;
+
             _inPin.Write(_1);
-
             _fillPin.Write(_1);
-
             _outPin.Write(_0);
-
             _wastePin.Write(_0);
 
-            TimerController.SetFillTimer();
+            TimerController.SetPumpOnDelay();
         }
 
         /// <summary>
@@ -136,12 +135,14 @@ namespace Aqua_Control
         /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Drain()
         {
+            IsPumpActive = true;
+
             _outPin.Write(_1);
             _wastePin.Write(_1);
             _inPin.Write(_0);
             _fillPin.Write(_0);
 
-            TimerController.SetDrainTimer();
+            TimerController.SetPumpOnDelay();
         }
 
         /// <summary>

@@ -9,17 +9,13 @@ namespace Aqua_Control
     public class TimerController
     {
         #region Memebers
-        private Timer _timer_fill;
-        private Timer _timer_drain;
         private Timer _timer_feeder;
         private Timer _timer_pumpOnDelay;
         private Timer _timer_pumpOffDelay;
-        private TimeSpan _fillDrainInterval;
         private TimeSpan _feedingInterval;
         #endregion
 
         #region Properties
-        public event EventHandler Done;
         public event EventHandler PumpOn;
         public event EventHandler PumpOff;
         public event EventHandler FeederStart;
@@ -31,12 +27,7 @@ namespace Aqua_Control
         {
             FeedingTimes = new List<DateTime?>(5);
 
-            _fillDrainInterval = TimeSpan.FromSeconds(2);
             _feedingInterval = TimeSpan.FromSeconds(2);
-
-            _timer_fill = new Timer(Timer_fill_Tick, null, Timeout.Infinite, Timeout.Infinite);
-
-            _timer_drain = new Timer(Timer_drain_Tick, null, Timeout.Infinite, Timeout.Infinite);
 
             _timer_feeder = new Timer(CheckFeedingTimes, null, TimeSpan.Zero, _feedingInterval);
 
@@ -46,12 +37,6 @@ namespace Aqua_Control
         #endregion
 
         #region Methods
-
-        protected virtual void OnDone(EventArgs e)
-        {
-            Done?.Invoke(this, e);
-        }
-
         protected virtual void OnPumpOn(EventArgs e)
         {
             PumpOn?.Invoke(this, e);
@@ -67,22 +52,9 @@ namespace Aqua_Control
             FeederStart?.Invoke(this, e);
         }
 
-        private void Timer_fill_Tick(object sender)
+        public void SetPumpOffDelay()
         {
-            _timer_fill.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-
             _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
-
-            OnDone(EventArgs.Empty);
-        }
-
-        private void Timer_drain_Tick(object sender)
-        {
-            _timer_drain.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-
-            _timer_pumpOffDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
-
-            OnDone(EventArgs.Empty);
         }
 
         private void _timer_pumpOnDelay_Tick(object sender)
@@ -97,15 +69,8 @@ namespace Aqua_Control
             OnPumpOff(EventArgs.Empty);
         }
 
-        public void SetFillTimer()
+        public void SetPumpOnDelay()
         {
-            _timer_fill.Change(_fillDrainInterval, Timeout.InfiniteTimeSpan);
-            _timer_pumpOnDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
-        }
-
-        public void SetDrainTimer()
-        {
-            _timer_drain.Change(_fillDrainInterval, Timeout.InfiniteTimeSpan);
             _timer_pumpOnDelay.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
         }
 
