@@ -29,4 +29,13 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="FeedingTimes.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TankSpecs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
