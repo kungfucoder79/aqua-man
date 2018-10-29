@@ -41,7 +41,7 @@
         $.get("/Home/GetWaterHeight", function (data) 
 		{ 
 			var waterPercent = (data / 5) *100;
-			$("#waterHeight").css('width', waterPercent + "%");
+			$("#waterHeight").css('width', data + "%");
 			$("#WaterNum").html(data);
 			
 		});
@@ -67,7 +67,7 @@
                 <br />
                 <button type="button" onclick="Feed()" value="Feed">Feed</button>
                 <br />
-                <button type="button" onclick="ResetI2C()" value="ResetI2C">ResetI2C</button>
+                <button type="button" onclick="GetWaterHeight()" value="GetWaterHeight">GetWaterHeight</button>
                 <br />
                 <p id="WaterNum" />
                 <br />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using Unosquare.RaspberryIO;
@@ -88,12 +89,14 @@ namespace Aqua_Control
             int Meas3AddrBufMSB = 0x05;
 
             //DataIn = ReadOneReg(FDCCongAddrBuf);
-
+            Console.WriteLine($"{nameof(FinalCapMeasure1)}");
             FinalCapMeasure1 = ReadCapSen1_1(Meas1AddrBufLSB, Meas1AddrBufMSB);
+            Console.WriteLine($"{nameof(FinalCapMeasure2)}");
             FinalCapMeasure2 = ReadCapSen1_1(Meas2AddrBufLSB, Meas2AddrBufMSB);
+            Console.WriteLine($"{nameof(FinalCapMeasure3)}");
             FinalCapMeasure3 = ReadCapSen1_1(Meas3AddrBufLSB, Meas3AddrBufMSB);
 
-            double WaterHeight = (5 * ((FinalCapMeasure2 - 1.80) / (FinalCapMeasure1 - FinalCapMeasure3)));
+            double WaterHeight = (5 * ((FinalCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
             return WaterHeight;
         }
 
@@ -118,42 +121,36 @@ namespace Aqua_Control
              * The third byte is the contents of the LSB that we want to write to the register.
              */
             //byte[] WriteBuf_MeasurementOneFormat = new byte[] { MEAS_ONE_CONTROL, 0x1c, 0x00 };     // configs measurement 1 
-            byte[] WriteBuf_MeasurementOneFormat = new byte[] {  0x1c, 0x00 };     // configs measurement 1 
+            byte[] WriteBuf_MeasurementOneFormat = new byte[] { 0x1c, 0x00 };     // configs measurement 1 
             byte[] WriteBuf_MeasurementTwoFormat = new byte[] { 0x3c, 0x00 };     // configs measurement 2                         
             byte[] WriteBuf_MeasurementThreeFormat = new byte[] { 0x5c, 0x00 }; // configs measurement 3                        
-            byte[] WriteBuf_Cin1 = new byte[] { 0x30, 0x00 };             // Set Offset for Cin1 to "6"pF based on datsheet calculations
+            //byte[] WriteBuf_Cin1 = new byte[] { 0x30, 0x00 };             // Set Offset for Cin1 to "6"pF based on datsheet calculations
             byte[] WriteBuf_FDC_Config = new byte[] { 0x0D, 0xE0 };   //set to read at 400S/s with repeat and read at measurement #1,#2,#3
 
             I2CSensor.WriteAddressWord(MEAS_ONE_CONTROL, BitConverter.ToUInt16(WriteBuf_MeasurementOneFormat));
             I2CSensor.WriteAddressWord(MEAS_TWO_CONTROL, BitConverter.ToUInt16(WriteBuf_MeasurementTwoFormat));
             I2CSensor.WriteAddressWord(MEAS_THREE_CONTROL, BitConverter.ToUInt16(WriteBuf_MeasurementThreeFormat));
-            I2CSensor.WriteAddressWord(CIN1_CONTROL, BitConverter.ToUInt16(WriteBuf_Cin1));
+            //I2CSensor.WriteAddressWord(CIN1_CONTROL, BitConverter.ToUInt16(WriteBuf_Cin1));
             I2CSensor.WriteAddressWord(FDC_CONF_CONTROL, BitConverter.ToUInt16(WriteBuf_FDC_Config));
         }
 
         private float ReadCapSen1_1(int RegAddrBuf1, int RegAddrBuf2)
         {
-            int ReadBuf1;/* We read 2 bytes sequentially  */
-            int ReadBuf2;/* We read 2 bytes sequentially  */
+            int temp1 = (I2CSensor.ReadAddressWord(RegAddrBuf1));
+            int temp2 = (I2CSensor.ReadAddressWord(RegAddrBuf2));
 
-            ReadBuf1 = I2CSensor.ReadAddressWord(RegAddrBuf1);
-            ReadBuf2 = I2CSensor.ReadAddressWord(RegAddrBuf2);
-            /* In order to get the raw 16-bit data values, we need to separate the bytes */
+            byte[] byteData1 = BitConverter.GetBytes(temp1);
+            byte[] byteData2 = BitConverter.GetBytes(temp2);
+            byte[] byteData3 = {byteData2[0], byteData1[1], byteData1[0],0 };
 
-            CapMeasure capMeas1_1;
-            capMeas1_1.CapReadLSB1_1 = (0xFF00 & ReadBuf1) >> 8;
-            capMeas1_1.CapreadMSB1_1 = 0x00FF & ReadBuf1;
+            int CapLabel1Both = BitConverter.ToInt32(byteData3);
 
-            /* In order to get the raw 16-bit data values, we need to separate the bytes */
+            float FinalCapMeasure = CapLabel1Both / 524288f;
 
-            capMeas1_1.CapReadLSB1_2 = (0xFF00 & ReadBuf2) >> 8;
-            capMeas1_1.CapreadMSB1_2 = 0x00FF & ReadBuf2;
-
-            int CapLabel1_1 = (capMeas1_1.CapreadMSB1_1 * 256 + capMeas1_1.CapReadLSB1_1);
-            int CapLabel1_2 = capMeas1_1.CapreadMSB1_2 * 256 + capMeas1_1.CapReadLSB1_2;
-            int CapLabel1Both = (CapLabel1_1 * 256 + capMeas1_1.CapreadMSB1_2);
-            float FinalCapMeasure = CapLabel1Both / 524288;
-
+            Console.WriteLine($"{nameof(byteData3)} = {Convert.ToString(byteData3[0], 2)} {Convert.ToString(byteData3[1], 2)} {Convert.ToString(byteData3[2], 2)} {Convert.ToString(byteData3[3], 2)}");
+            Console.WriteLine($"CapLabel1Both = {CapLabel1Both}");
+            Console.WriteLine($"FinalCapMeasure = {FinalCapMeasure.ToString(".0###########")}");
+            Console.WriteLine();
             return FinalCapMeasure;
         }
 
