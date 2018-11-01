@@ -78,6 +78,12 @@ namespace AquaMan.Controllers
             return Ok();
         }
 
+        public IActionResult Calabrate()
+        {
+            _aquaI2CController.CalabrateSensor();
+            return Ok();
+
+        }
         public IActionResult GetWaterHeight()
         {
             _waterHeight = _aquaI2CController.GetWaterHeight();

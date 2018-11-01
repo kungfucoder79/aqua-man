@@ -46,6 +46,11 @@ namespace Aqua_Control
         {
             throw new NotImplementedException();
         }
+
+        public void CalabrateSensor()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

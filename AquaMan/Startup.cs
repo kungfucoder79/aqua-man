@@ -41,8 +41,8 @@ namespace OrderingApplication
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
 
-            _pinController = new AquaPinController();
-            _i2CController = new AquaI2CController();
+            _pinController = new EmptyPinController();
+            _i2CController = new EmptyI2CController();
             //_pinMasterController = new PinMasterController(_i2CController, _pinController);
         }
 

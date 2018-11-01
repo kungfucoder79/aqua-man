@@ -40,11 +40,16 @@
 	{
         $.get("/Home/GetWaterHeight", function (data) 
 		{ 
-			var waterPercent = (data / 5) *100;
-			$("#waterHeight").css('width', data + "%");
+            var waterPercent = (data / 4.6) * 100;
+            $("#waterHeight").css('width', waterPercent + "%");
 			$("#WaterNum").html(data);
 			
 		});
+    }
+    function Calabrate() {
+        $.get("/Home/Calabrate", function (data) {
+            $("p").html(data);
+        });
     }
 </script>
 <div id="page-wrapper">
@@ -67,7 +72,7 @@
                 <br />
                 <button type="button" onclick="Feed()" value="Feed">Feed</button>
                 <br />
-                <button type="button" onclick="GetWaterHeight()" value="GetWaterHeight">GetWaterHeight</button>
+                <button type="button" onclick="Calabrate()" value="Calabrate">Calabrate</button>
                 <br />
                 <p id="WaterNum" />
                 <br />

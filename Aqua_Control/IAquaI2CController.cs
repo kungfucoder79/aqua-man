@@ -11,6 +11,7 @@ namespace Aqua_Control
         I2CDevice I2CSensor { get; }
         void InitI2C();
         double GetWaterHeight();
+        void CalabrateSensor();
         void Reset();
     }
 }
