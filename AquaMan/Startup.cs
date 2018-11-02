@@ -1,4 +1,5 @@
 ﻿using Aqua_Control;
+using AquaMan.Models;
 using AquaMan.Services;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ namespace OrderingApplication
         #region Members
         private IAquaPinController _pinController;
         private IAquaI2CController _i2CController;
+        private IFormDataService _formDataService;
         private PinMasterController _pinMasterController;
         #endregion
 
@@ -41,8 +43,11 @@ namespace OrderingApplication
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
 
-            _pinController = new EmptyPinController();
-            _i2CController = new EmptyI2CController();
+            _formDataService = new FormDataService();
+            _pinController = new AquaPinController();
+
+            TankSpecs tankSpecs = _formDataService.GetTankSpecs();
+            _i2CController = new EmptyI2CController(tankSpecs.Width, tankSpecs.Height, tankSpecs.Depth);
             //_pinMasterController = new PinMasterController(_i2CController, _pinController);
         }
 
@@ -65,8 +70,7 @@ namespace OrderingApplication
             builder.Populate(services);
             builder.RegisterInstance(_pinController);
             builder.RegisterInstance(_i2CController);
-
-            builder.RegisterType<FormDataService>().As<IFormDataService>();
+            builder.RegisterInstance(_formDataService);
 
             return new AutofacServiceProvider(builder.Build());
         }

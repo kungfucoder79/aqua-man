@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Aqua_Control;
 using AquaMan.Extensions;
 using AquaMan.Models;
 using AquaMan.Services;
@@ -15,14 +16,16 @@ namespace AquaMan.Controllers
     public class TankController : Controller
     {
         private IFormDataService _formDataService;
+        private IAquaI2CController _aquaI2CController;
 
         /// <summary>
         /// Constructs a new 
         /// </summary>
         /// <param name="formDataService"></param>
-        public TankController(IFormDataService formDataService)
+        public TankController(IFormDataService formDataService, IAquaI2CController aquaI2CController)
         {
             _formDataService = formDataService;
+            _aquaI2CController = aquaI2CController;
         }
         // GET: /<controller>/
         /// <summary>
@@ -45,6 +48,7 @@ namespace AquaMan.Controllers
             if (ModelState.IsValid)
             {
                 _formDataService.SetTankSpecs(tankSpecs);
+                _aquaI2CController.UpdateTankSpecs(tankSpecs.Width, tankSpecs.Height, tankSpecs.Depth);
                 return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
             }
             
