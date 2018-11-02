@@ -43,7 +43,12 @@ namespace Aqua_Control
 
         private static float _InitCapMeasure2;
 
-        private Timer _timer;
+        private readonly Timer _timer;
+
+        private double _TankHeight;
+        private double _TankWidth;
+        private double _TankDepth;
+
         #endregion
 
         #region Properties
@@ -58,11 +63,15 @@ namespace Aqua_Control
         /// <summary>
         /// Creates a new <see cref="AquaI2C"/>
         /// </summary>
-        public AquaI2CController()
+        public AquaI2CController(double tankWidth, double tankHeight, double tankDepth)
         {
             InitI2C();
 
             _timer = new Timer(I2CCheck, null, 0, 250);
+
+            _TankHeight = tankHeight;
+            _TankWidth = tankWidth;
+            _TankDepth = tankDepth;
         }
 
         public void InitI2C()
@@ -180,6 +189,13 @@ namespace Aqua_Control
         public void CalabrateSensor()
         {
             _InitCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
+        }
+
+        public void UpdateTankSpecs(double tankWidth, double tankHeight, double tankDepth)
+        {
+            _TankHeight = tankHeight;
+            _TankWidth = tankWidth;
+            _TankDepth = tankDepth;
         }
         #endregion
     }
