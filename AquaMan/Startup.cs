@@ -44,7 +44,9 @@ namespace OrderingApplication
             Configuration = builder.Build();
 
             _formDataService = new FormDataService();
-            _pinController = new AquaPinController();
+
+            FeedingTimes feedingTimes = _formDataService.GetFeedingTimes();
+            _pinController = new EmptyPinController(feedingTimes.Feedings);
 
             TankSpecs tankSpecs = _formDataService.GetTankSpecs();
             _i2CController = new EmptyI2CController(tankSpecs.Width, tankSpecs.Height, tankSpecs.Depth);

@@ -22,10 +22,10 @@ namespace Aqua_Control
         /// <summary>
         /// Constructs a new <see cref="BasePinController"/> object by initialzing the timer controller
         /// </summary>
-        public BasePinController()
+        public BasePinController(IEnumerable<DateTime?> feedingTimes)
         {
             Console.WriteLine($"--------------{DateTime.Now}: Initializing Pin Controller");
-            TimerController = new TimerController();
+            TimerController = new TimerController(feedingTimes);
             TimerController.PumpOff += _timerController_PumpOff;
             TimerController.PumpOn += _timerController_PumpOn;
             TimerController.FeederStart += _timerController_FeederStart;

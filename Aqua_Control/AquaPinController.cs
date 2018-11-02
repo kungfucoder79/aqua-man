@@ -48,8 +48,8 @@ namespace Aqua_Control
         /// <summary>
         /// Constructs a new <see cref="AquaGPIO"/> object by initialzing the gpio pins for the raspberry pi
         /// </summary>
-        public AquaPinController()
-            :base()
+        public AquaPinController(IEnumerable<DateTime?> feedingTimes)
+            :base(feedingTimes)
         {
             GpioController gpioController = GpioController.Instance;
 

@@ -15,8 +15,8 @@ namespace Aqua_Control
         /// <summary>
         /// Constructs a new <see cref="AquaGPIO"/> object by initialzing the gpio pins for the raspberry pi
         /// </summary>
-        public EmptyPinController()
-            : base()
+        public EmptyPinController(IEnumerable<DateTime?> feedingTimes)
+            : base(feedingTimes)
         {
             Console.WriteLine($"--------------{DateTime.Now}: Initializing Pin Controller");
         }

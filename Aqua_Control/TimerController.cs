@@ -23,9 +23,9 @@ namespace Aqua_Control
         #endregion
 
         #region ctor
-        public TimerController()
+        public TimerController(IEnumerable<DateTime?> feedingTimes)
         {
-            FeedingTimes = new List<DateTime?>(5);
+            FeedingTimes = feedingTimes.ToList();
 
             _feedingInterval = TimeSpan.FromSeconds(2);
 
@@ -79,14 +79,17 @@ namespace Aqua_Control
             foreach (DateTime feedingTime in FeedingTimes.Where(p => p != null).ToArray())
             {
                 if (IsFeederReadyToRun(feedingTime))
+                {
                     OnFeederStart(EventArgs.Empty);
+                }
             }
         }
         private bool IsFeederReadyToRun(DateTime timeToCheck)
         {
             DateTime currentTime = GetCurrentDayTime(DateTime.Now);
+            DateTime currentTimeToCheck = GetCurrentDayTime(timeToCheck);
             DateTime lastTime = currentTime - _feedingInterval;
-            return (lastTime <= timeToCheck && timeToCheck < currentTime);
+            return (lastTime <= currentTimeToCheck && currentTimeToCheck < currentTime);
         }
 
         private DateTime GetCurrentDayTime(DateTime dt)
