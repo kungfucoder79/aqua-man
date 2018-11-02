@@ -12,23 +12,27 @@ namespace Aqua_Control
     {
         #region Members
         //the gpio pins and their respective pin numbers on the board
-        private GpioPin _fillPin;
+        private GpioPin _fillPin_Open;
+
+        private GpioPin _fillPin_Close;
 
         private GpioPin _wastePin;
 
-        private GpioPin _inPin;
+        private GpioPin _inPin_Open;
+
+        private GpioPin _inPin_Close;
 
         private GpioPin _outPin;
 
         private GpioPin _pumpPin;
 
-        private GpioPin _inPin1;
+        private GpioPin _feedPin1;
 
-        private GpioPin _inPin2;
+        private GpioPin _feedPin2;
 
-        private GpioPin _inPin3;
+        private GpioPin _feedPin3;
 
-        private GpioPin _inPin4;
+        private GpioPin _feedPin4;
 
         private const GpioPinValue _0 = GpioPinValue.Low;
         private const GpioPinValue _1 = GpioPinValue.High;
@@ -52,23 +56,27 @@ namespace Aqua_Control
             // Below are the separate pins being used from the raspberry pi and how they are setup
             // need to assign pins, values, and driver output
 
-            _pumpPin = InitializePin(gpioController[P1.Gpio16], _0, GpioPinDriveMode.Output);
+            _pumpPin = InitializePin(gpioController[P1.Gpio26], _0, GpioPinDriveMode.Output);
 
-            _fillPin = InitializePin(gpioController[P1.Gpio20], _0, GpioPinDriveMode.Output);
+            _fillPin_Open = InitializePin(gpioController[P1.Gpio11], _0, GpioPinDriveMode.Output);
+
+            _fillPin_Close = InitializePin(gpioController[P1.Gpio09], _1, GpioPinDriveMode.Output);
+
+            _inPin_Open = InitializePin(gpioController[P1.Gpio06], _0, GpioPinDriveMode.Output);
+
+            _inPin_Close = InitializePin(gpioController[P1.Gpio05], _1, GpioPinDriveMode.Output);
 
             _wastePin = InitializePin(gpioController[P1.Gpio21], _0, GpioPinDriveMode.Output);
-
-            _inPin = InitializePin(gpioController[P1.Gpio19], _0, GpioPinDriveMode.Output);
-
+            
             _outPin = InitializePin(gpioController[P1.Gpio26], _0, GpioPinDriveMode.Output);
 
-            _inPin1 = InitializePin(gpioController[P1.Gpio23], _0, GpioPinDriveMode.Output);
+            _feedPin1 = InitializePin(gpioController[P1.Gpio23], _0, GpioPinDriveMode.Output);
 
-            _inPin2 = InitializePin(gpioController[P1.Gpio24], _0, GpioPinDriveMode.Output);
+            _feedPin2 = InitializePin(gpioController[P1.Gpio24], _0, GpioPinDriveMode.Output);
 
-            _inPin3 = InitializePin(gpioController[P1.Gpio25], _0, GpioPinDriveMode.Output);
+            _feedPin3 = InitializePin(gpioController[P1.Gpio25], _0, GpioPinDriveMode.Output);
 
-            _inPin4 = InitializePin(gpioController[P1.Gpio08], _0, GpioPinDriveMode.Output);
+            _feedPin4 = InitializePin(gpioController[P1.Gpio08], _0, GpioPinDriveMode.Output);
         }
 
         protected override void _timerController_FeederStart(object sender, EventArgs e)
@@ -102,9 +110,11 @@ namespace Aqua_Control
         /// </summary>
         protected override void TurnValvesOff()
         {
-            _inPin.Write(_0);
+            _inPin_Open.Write(_0);
+            _inPin_Close.Write(_1);
 
-            _fillPin.Write(_0);
+            _fillPin_Open.Write(_0);
+            _fillPin_Close.Write(_1);
 
             _outPin.Write(_0);
 
@@ -120,8 +130,12 @@ namespace Aqua_Control
         {
             IsPumpActive = true;
 
-            _inPin.Write(_1);
-            _fillPin.Write(_1);
+            _inPin_Open.Write(_1);
+            _inPin_Close.Write(_0);
+
+            _fillPin_Open.Write(_1);
+            _fillPin_Close.Write(_0);
+
             _outPin.Write(_0);
             _wastePin.Write(_0);
 
@@ -139,8 +153,12 @@ namespace Aqua_Control
 
             _outPin.Write(_1);
             _wastePin.Write(_1);
-            _inPin.Write(_0);
-            _fillPin.Write(_0);
+
+            _inPin_Open.Write(_0);
+            _inPin_Close.Write(_1);
+
+            _fillPin_Open.Write(_0);
+            _fillPin_Close.Write(_1);
 
             TimerController.SetPumpOnDelay();
         }
@@ -157,10 +175,10 @@ namespace Aqua_Control
             {
                 for (int j = 0; j < _feederSequences[0].Length; j++)
                 {
-                    _inPin1.Write(_feederSequences[j][0]);
-                    _inPin2.Write(_feederSequences[j][1]);
-                    _inPin3.Write(_feederSequences[j][2]);
-                    _inPin4.Write(_feederSequences[j][3]);
+                    _feedPin1.Write(_feederSequences[j][0]);
+                    _feedPin2.Write(_feederSequences[j][1]);
+                    _feedPin3.Write(_feederSequences[j][2]);
+                    _feedPin4.Write(_feederSequences[j][3]);
                     await Task.Delay(delay);
                 }
             }
