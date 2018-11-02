@@ -13,5 +13,6 @@ namespace Aqua_Control
         double GetWaterHeight();
         void CalabrateSensor();
         void Reset();
+        void UpdateTankSpecs(double tankWidth, double tankHeight, double tankDepth);
     }
 }

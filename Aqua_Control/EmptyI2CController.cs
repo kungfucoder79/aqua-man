@@ -12,7 +12,7 @@ namespace Aqua_Control
         /// <summary>
         /// Creates a new <see cref="AquaI2C"/>
         /// </summary>
-        public EmptyI2CController()
+        public EmptyI2CController(double tankWidth, double tankHeight, double tankDepth)
         {
         }
         #endregion
@@ -48,6 +48,11 @@ namespace Aqua_Control
         }
 
         public void CalabrateSensor()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateTankSpecs(double tankWidth, double tankHeight, double tankDepth)
         {
             throw new NotImplementedException();
         }
