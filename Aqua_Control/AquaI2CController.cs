@@ -181,6 +181,7 @@ namespace Aqua_Control
         public void CalabrateSensor()
         {
             _InitCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
+            Console.WriteLine($"{nameof(CalabrateSensor)}");
         }
 
         public void UpdateTankSpecs(double tankWidth, double tankHeight, double tankDepth)

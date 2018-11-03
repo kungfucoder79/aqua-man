@@ -42,14 +42,9 @@ namespace Aqua_Control
             return testVal;
         }
 
-        public void InitI2C()
-        {
-            throw new NotImplementedException();
-        }
-
         public void CalabrateSensor()
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"{nameof(CalabrateSensor)}");
         }
 
         public void UpdateTankSpecs(double tankWidth, double tankHeight, double tankDepth)
