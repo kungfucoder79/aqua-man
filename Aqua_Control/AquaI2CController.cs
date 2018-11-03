@@ -70,7 +70,7 @@ namespace Aqua_Control
         {
             I2CSensor = Pi.I2C.AddDevice(FDC1004_I2C_ADDR);
 
-            Console.WriteLine($"device added {I2CSensor.DeviceId}");
+            //Console.WriteLine($"device added {I2CSensor.DeviceId}");
 
             // Write the register settings
             WriteToI2CDevice();
@@ -81,7 +81,7 @@ namespace Aqua_Control
         private void I2CCheck(object state)
         {
             double waterHeight = GetWaterHeight();
-            Console.WriteLine($"{nameof(waterHeight)} = {waterHeight}");
+            //Console.WriteLine($"{nameof(waterHeight)} = {waterHeight}");
         }
         #endregion
 
@@ -96,11 +96,11 @@ namespace Aqua_Control
             //byte[] FDCCongAddrBuf = new byte[] { 0x0C };
 
             //DataIn = ReadOneReg(FDCCongAddrBuf);
-            Console.WriteLine($"{nameof(FinalCapMeasure1)}");
+            //Console.WriteLine($"{nameof(FinalCapMeasure1)}");
             FinalCapMeasure1 = ReadCapSen1_1(_Meas1AddrBufLSB, _Meas1AddrBufMSB);
-            Console.WriteLine($"{nameof(FinalCapMeasure2)}");
+            //Console.WriteLine($"{nameof(FinalCapMeasure2)}");
             FinalCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
-            Console.WriteLine($"{nameof(FinalCapMeasure3)}");
+            //Console.WriteLine($"{nameof(FinalCapMeasure3)}");
             FinalCapMeasure3 = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
 
             double WaterHeight = (0.4 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
@@ -154,10 +154,10 @@ namespace Aqua_Control
 
             float FinalCapMeasure = CapLabel1Both / 524288f;
 
-            Console.WriteLine($"{nameof(byteData3)} = {Convert.ToString(byteData3[0], 2)} {Convert.ToString(byteData3[1], 2)} {Convert.ToString(byteData3[2], 2)} {Convert.ToString(byteData3[3], 2)}");
-            Console.WriteLine($"CapLabel1Both = {CapLabel1Both}");
-            Console.WriteLine($"FinalCapMeasure = {FinalCapMeasure.ToString(".0###########")}");
-            Console.WriteLine();
+            //Console.WriteLine($"{nameof(byteData3)} = {Convert.ToString(byteData3[0], 2)} {Convert.ToString(byteData3[1], 2)} {Convert.ToString(byteData3[2], 2)} {Convert.ToString(byteData3[3], 2)}");
+            //Console.WriteLine($"CapLabel1Both = {CapLabel1Both}");
+            //Console.WriteLine($"FinalCapMeasure = {FinalCapMeasure.ToString(".0###########")}");
+            //Console.WriteLine();
             return FinalCapMeasure;
         }
 
