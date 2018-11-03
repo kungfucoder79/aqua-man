@@ -9,7 +9,6 @@ namespace Aqua_Control
         float FinalCapMeasure2 { get; }
         float FinalCapMeasure3 { get; }
         I2CDevice I2CSensor { get; }
-        void InitI2C();
         double GetWaterHeight();
         void CalabrateSensor();
         void Reset();

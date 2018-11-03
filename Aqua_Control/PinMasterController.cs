@@ -5,6 +5,9 @@ using System.Threading;
 
 namespace Aqua_Control
 {
+    /// <summary>
+    /// Contains the logic for firing sequences in the <see cref="IAquaPinController"/> based on reading from the <see cref="IAquaI2CController"/>
+    /// </summary>
     public class PinMasterController
     {
         #region Members
@@ -17,6 +20,11 @@ namespace Aqua_Control
         #endregion
 
         #region ctor
+        /// <summary>
+        /// Creates a new <see cref="PinMasterController"/>
+        /// </summary>
+        /// <param name="aquaI2CController"></param>
+        /// <param name="aquaPinController"></param>
         public PinMasterController(IAquaI2CController aquaI2CController, IAquaPinController aquaPinController)
         {
             _aquaI2CController = aquaI2CController;
@@ -28,17 +36,12 @@ namespace Aqua_Control
 
         #region Methods
         /// <summary>
-        /// Checks the water level of the tank and decides if it need to fill
+        /// Checks the water level of the tank and decides it need to stop the fill sequence
         /// </summary>
         /// <param name="state"></param>
         private void CheckWaterLevel(object state)
         {
             _waterHeight = _aquaI2CController.GetWaterHeight();
-            if (_waterHeight < 4 && !_aquaPinController.IsPumpActive)
-            {
-                _aquaPinController.Fill();
-            }
-
             if (_waterHeight >= 4 && _aquaPinController.IsPumpActive)
             {
                 _aquaPinController.Stop();

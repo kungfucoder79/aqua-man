@@ -14,14 +14,6 @@ namespace Aqua_Control
         public int DataLSB;
     };
 
-    struct CapMeasure
-    {
-        public int CapReadLSB1_1;
-        public int CapreadMSB1_1;
-        public int CapReadLSB1_2;
-        public int CapreadMSB1_2;
-    };
-
     public class AquaI2CController : IAquaI2CController
     {
         #region Members
@@ -74,7 +66,7 @@ namespace Aqua_Control
             _TankDepth = tankDepth;
         }
 
-        public void InitI2C()
+        private void InitI2C()
         {
             I2CSensor = Pi.I2C.AddDevice(FDC1004_I2C_ADDR);
 
