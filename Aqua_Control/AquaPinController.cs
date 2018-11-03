@@ -76,10 +76,10 @@ namespace Aqua_Control
             _inPin_Close = InitializePin(gpioController[P1.Gpio05], _1, GpioPinDriveMode.Output);
 
             _wastePin_Open = InitializePin(gpioController[P1.Gpio27], _0, GpioPinDriveMode.Output);
-            _wastePin_Close = InitializePin(gpioController[P1.Gpio17], _0, GpioPinDriveMode.Output);
+            _wastePin_Close = InitializePin(gpioController[P1.Gpio17], _1, GpioPinDriveMode.Output);
 
             _outPin_Open = InitializePin(gpioController[P1.Gpio19], _0, GpioPinDriveMode.Output);
-            _outPin_Close = InitializePin(gpioController[P1.Gpio13], _0, GpioPinDriveMode.Output);
+            _outPin_Close = InitializePin(gpioController[P1.Gpio13], _1, GpioPinDriveMode.Output);
 
             _feedPin1 = InitializePin(gpioController[P1.Gpio23], _0, GpioPinDriveMode.Output);
             _feedPin2 = InitializePin(gpioController[P1.Gpio24], _0, GpioPinDriveMode.Output);
