@@ -103,8 +103,9 @@ namespace Aqua_Control
             //Console.WriteLine($"{nameof(FinalCapMeasure3)}");
             FinalCapMeasure3 = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
 
-            double WaterHeight = (0.4 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
-            return WaterHeight;
+            double waterHeight = (0.4 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
+            Console.WriteLine(waterHeight.ToString(".0###########"));
+            return waterHeight;
         }
 
         /// <summary>
