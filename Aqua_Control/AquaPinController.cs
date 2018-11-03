@@ -12,25 +12,31 @@ namespace Aqua_Control
     {
         #region Members
         //the gpio pins and their respective pin numbers on the board
-        private GpioPin _fillSaltPin_Open;
 
-        private GpioPin _fillSaltPin_Close;
+        //Valve 1
+        private GpioPin _outPin_Open;
 
-        private GpioPin _fillFreshPin_Open;
-
-        private GpioPin _fillFreshPin_Close;
-
-        private GpioPin _wastePin_Open;
-
-        private GpioPin _wastePin_Close;
-
+        private GpioPin _outPin_Close;
+        
+        //Valve 2
         private GpioPin _inPin_Open;
 
         private GpioPin _inPin_Close;
 
-        private GpioPin _outPin_Open;
+        //Valve 3
+        private GpioPin _fillFreshPin_Open;
 
-        private GpioPin _outPin_Close;
+        private GpioPin _fillFreshPin_Close;
+
+        //Valve 4
+        private GpioPin _fillSaltPin_Open;
+
+        private GpioPin _fillSaltPin_Close;
+
+        //Valve 5
+        private GpioPin _wastePin_Open;
+
+        private GpioPin _wastePin_Close;
 
         private GpioPin _pumpPin_Open;
 
@@ -132,10 +138,9 @@ namespace Aqua_Control
         }
 
         /// <summary>
-        /// GUI click event for filling.  Will start the associated timer and set the selected GPIO pins LOW
-        /// to turn on the correct valve.
+        /// Initicates the fill sequence. Will start the associated timer and set the GPIO pins.
+        /// to turn on the correct valves.
         /// </summary>
-        /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Fill()
         {
             IsPumpActive = true;
@@ -156,10 +161,9 @@ namespace Aqua_Control
         }
 
         /// <summary>
-        /// GUI click event for draining.  Will start the associated timer and set the selected GPIO pins LOW
+        /// Initicates the drain sequence. Will start the associated timer and set the GPIO pins.
         /// to turn on the correct valves.
         /// </summary>
-        /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Drain()
         {
             IsPumpActive = true;
@@ -180,9 +184,8 @@ namespace Aqua_Control
         }
 
         /// <summary>
-        /// Starts the feeding auger sequence with the specified number of times to step.
+        /// Starts the feeding auger sequence.
         /// </summary>
-        /// <param name="numberOfTimes"></param>
         public async void Feed()
         {
             int numberOfTimes = 40;
