@@ -41,6 +41,9 @@ namespace Aqua_Control
         private double _TankWidth;
         private double _TankDepth;
 
+        private static int queLength = 100;
+        private int queCount = 1;
+        private Queue<double> avg = new Queue<double>(queLength);
         #endregion
 
         #region Properties
@@ -104,8 +107,26 @@ namespace Aqua_Control
             FinalCapMeasure3 = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
 
             double waterHeight = (0.4 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
+
+            waterHeight = Average(waterHeight);
+
             Console.WriteLine(waterHeight.ToString(".0###########"));
             return waterHeight;
+        }
+
+        private double Average(double wtrVal)
+        {
+            if (queCount <= queLength)
+            {
+                queCount++;
+            }
+            else
+            {
+                avg.Dequeue();
+            }
+
+            avg.Enqueue(wtrVal);
+            return avg.Sum() / avg.Count;
         }
 
         /// <summary>
