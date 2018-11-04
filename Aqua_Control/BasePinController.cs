@@ -10,6 +10,12 @@ namespace Aqua_Control
     public abstract class BasePinController
     {
         #region Properties
+        protected bool _V1Latch = false;
+        protected bool _V2Latch = false;
+        protected bool _V3Latch = false;
+        protected bool _V4Latch = false;
+        protected bool _V5Latch = false;
+
         protected TimerController TimerController { get; private set; }
         
         /// <summary>

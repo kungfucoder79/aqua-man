@@ -84,6 +84,31 @@ namespace Aqua_Control
 
             Console.WriteLine($"----------------{DateTime.Now}: FEEDING STOPPED");
         }
+
+        public void ToggleValve1()
+        {
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve1)}");
+        }
+
+        public void ToggleValve2()
+        {
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve2)}");
+        }
+
+        public void ToggleValve3()
+        {
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve3)}");
+        }
+
+        public void ToggleValve4()
+        {
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve4)}");
+        }
+
+        public void ToggleValve5()
+        {
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve5)}");
+        }
         #endregion
     }
 }

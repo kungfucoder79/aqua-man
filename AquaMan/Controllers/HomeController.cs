@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Aqua_Control;
+using AquaMan.Extensions;
+using AquaMan.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using AquaMan.Models;
-using Aqua_Control;
-using AquaMan.Extensions;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace AquaMan.Controllers
 {
@@ -56,8 +56,38 @@ namespace AquaMan.Controllers
 
         public IActionResult Drain()
         {
-            if(!_aquaPinController.IsPumpActive)
+            if (!_aquaPinController.IsPumpActive)
                 _aquaPinController.Drain();
+            return Ok();
+        }
+
+        public IActionResult V1()
+        {
+            _aquaPinController.ToggleValve1();
+            return Ok();
+        }
+
+        public IActionResult V2()
+        {
+            _aquaPinController.ToggleValve2();
+            return Ok();
+        }
+
+        public IActionResult V3()
+        {
+            _aquaPinController.ToggleValve3();
+            return Ok();
+        }
+
+        public IActionResult V4()
+        {
+            _aquaPinController.ToggleValve4();
+            return Ok();
+        }
+
+        public IActionResult V5()
+        {
+            _aquaPinController.ToggleValve5();
             return Ok();
         }
 
@@ -89,6 +119,6 @@ namespace AquaMan.Controllers
             _waterHeight = _aquaI2CController.GetWaterHeight();
             return Ok(_waterHeight);
         }
-        
+
     }
 }

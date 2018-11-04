@@ -202,6 +202,81 @@ namespace Aqua_Control
                 }
             }
         }
+
+        public void ToggleValve1()
+        {
+            if(_V1Latch)
+            {
+                _outPin_Open.Write(_1);
+                _outPin_Close.Write(_0);
+            }
+            else
+            {
+                _outPin_Open.Write(_0);
+                _outPin_Close.Write(_1);
+            }
+            _V1Latch = !_V1Latch;
+        }
+
+        public void ToggleValve2()
+        {
+            if (_V2Latch)
+            {
+                _inPin_Open.Write(_1);
+                _inPin_Close.Write(_0);
+            }
+            else
+            {
+                _inPin_Open.Write(_0);
+                _inPin_Close.Write(_1);
+            }
+            _V2Latch = !_V2Latch;
+        }
+
+        public void ToggleValve3()
+        {
+            if (_V3Latch)
+            {
+                _fillFreshPin_Open.Write(_1);
+                _fillFreshPin_Close.Write(_0);
+            }
+            else
+            {
+                _fillFreshPin_Open.Write(_0);
+                _fillFreshPin_Close.Write(_1);
+            }
+            _V3Latch = !_V3Latch;
+        }
+
+        public void ToggleValve4()
+        {
+            if (_V4Latch)
+            {
+                _fillSaltPin_Open.Write(_1);
+                _fillSaltPin_Close.Write(_0);
+            }
+            else
+            {
+                _fillSaltPin_Open.Write(_0);
+                _fillSaltPin_Close.Write(_1);
+            }
+            _V4Latch = !_V4Latch;
+        }
+
+        public void ToggleValve5()
+        {
+            if (_V5Latch)
+            {
+                _wastePin_Open.Write(_1);
+                _wastePin_Close.Write(_0);
+            }
+            else
+            {
+                _wastePin_Open.Write(_0);
+                _wastePin_Close.Write(_1);
+            }
+            _V5Latch = !_V5Latch;
+        }
         #endregion
     }
 }

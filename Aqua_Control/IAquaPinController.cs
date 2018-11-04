@@ -37,5 +37,11 @@ namespace Aqua_Control
         /// Starts the Feed sequence
         /// </summary>
         void Feed();
+
+        void ToggleValve1();
+        void ToggleValve2();
+        void ToggleValve3();
+        void ToggleValve4();
+        void ToggleValve5();
     }
 }
