@@ -32,7 +32,7 @@ namespace Aqua_Control
         private GpioPin _fillSaltPin_Open;
 
         private GpioPin _fillSaltPin_Close;
-
+        
         //Valve 5
         private GpioPin _wastePin_Open;
 

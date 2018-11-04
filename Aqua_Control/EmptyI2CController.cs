@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,9 @@ namespace Aqua_Control
         private readonly Timer _timer;
         private static int queLength = 100;
         private int queCount = 1;
-        private Queue<double> avg = new Queue<double>(queLength);
+        private ConcurrentQueue<double> avg = new ConcurrentQueue<double>();
+        private bool _calabrate = false;
+        private double _tempval;
         #endregion
         #region ctor
         /// <summary>
@@ -25,7 +28,7 @@ namespace Aqua_Control
         /// </summary>
         public EmptyI2CController(double tankWidth, double tankHeight, double tankDepth)
         {
-            _timer = new Timer(I2CCheck, null, 0, 50);
+            _timer = new Timer(I2CCheck, null, 0, 25);
         }
         #endregion
 
@@ -53,14 +56,16 @@ namespace Aqua_Control
 
         public double GetWaterHeight()
         {
+            double avgVal = 0;
+            if (_calabrate == true)
+            {
+                if (_testValIdx > _testVals.Length - 1)
+                    _testValIdx = 0;
 
-            if (_testValIdx > _testVals.Length - 1)
-                _testValIdx = 0;
-
-            double testVal = _testVals[_testValIdx];
-            double avgVal = Average(testVal);
-            _testValIdx++;
-
+                double testVal = _testVals[_testValIdx];
+                avgVal = Average(testVal);
+                _testValIdx++;
+            }
             //Console.WriteLine($"avgVal----------------{DateTime.Now}: {avgVal}");
             //Console.WriteLine($"WTR----------------{DateTime.Now}: {testVal}");
             Console.WriteLine($"{avgVal}");
@@ -75,7 +80,7 @@ namespace Aqua_Control
             }
             else
             {
-                avg.Dequeue();
+                avg.TryDequeue(out _tempval);
             }
 
             avg.Enqueue(testVal);
@@ -85,6 +90,7 @@ namespace Aqua_Control
 
         public void CalabrateSensor()
         {
+            _calabrate = true;
             Console.WriteLine($"{nameof(CalabrateSensor)}");
         }
 

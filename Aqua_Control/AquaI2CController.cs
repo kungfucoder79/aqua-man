@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,15 +36,18 @@ namespace Aqua_Control
 
         private static float _InitCapMeasure2;
 
+        private bool _calabrate = false;
+
         private readonly Timer _timer;
 
         private double _TankHeight;
         private double _TankWidth;
         private double _TankDepth;
 
-        private static int queLength = 100;
+        private static readonly int queLength = 100;
         private int queCount = 1;
-        private Queue<double> avg = new Queue<double>(queLength);
+        private ConcurrentQueue<double> avg = new ConcurrentQueue<double>();
+        private double _tempval;
         #endregion
 
         #region Properties
@@ -62,7 +66,7 @@ namespace Aqua_Control
         {
             InitI2C();
 
-            _timer = new Timer(I2CCheck, null, 0, 250);
+            _timer = new Timer(I2CCheck, null, 0, 25);
 
             _TankHeight = tankHeight;
             _TankWidth = tankWidth;
@@ -96,25 +100,28 @@ namespace Aqua_Control
         /// <returns>A <see cref="double"/> representing the height</returns>
         public double GetWaterHeight()
         {
-            //byte[] FDCCongAddrBuf = new byte[] { 0x0C };
+            double waterHeight = 0;
+            if (_calabrate == true)
+            {
+                //byte[] FDCCongAddrBuf = new byte[] { 0x0C };
 
-            //DataIn = ReadOneReg(FDCCongAddrBuf);
-            //Console.WriteLine($"{nameof(FinalCapMeasure1)}");
-            FinalCapMeasure1 = ReadCapSen1_1(_Meas1AddrBufLSB, _Meas1AddrBufMSB);
-            //Console.WriteLine($"{nameof(FinalCapMeasure2)}");
-            FinalCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
-            //Console.WriteLine($"{nameof(FinalCapMeasure3)}");
-            FinalCapMeasure3 = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
+                //DataIn = ReadOneReg(FDCCongAddrBuf);
+                //Console.WriteLine($"{nameof(FinalCapMeasure1)}");
+                FinalCapMeasure1 = ReadCapSen1_1(_Meas1AddrBufLSB, _Meas1AddrBufMSB);
+                //Console.WriteLine($"{nameof(FinalCapMeasure2)}");
+                FinalCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
+                //Console.WriteLine($"{nameof(FinalCapMeasure3)}");
+                FinalCapMeasure3 = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
 
-            double waterHeight = (0.4 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
+                waterHeight = (0.4 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
 
-            waterHeight = Average(waterHeight);
-
+                waterHeight = Average(waterHeight);
+            }
             Console.WriteLine(waterHeight.ToString(".0###########"));
             return waterHeight;
         }
 
-        private double Average(double wtrVal)
+        private double Average(double testVal)
         {
             if (queCount <= queLength)
             {
@@ -122,11 +129,12 @@ namespace Aqua_Control
             }
             else
             {
-                avg.Dequeue();
+                avg.TryDequeue(out _tempval);
             }
 
-            avg.Enqueue(wtrVal);
-            return avg.Sum() / avg.Count;
+            avg.Enqueue(testVal);
+            double avgVal = avg.Sum() / avg.Count;
+            return avgVal;
         }
 
         /// <summary>
@@ -202,6 +210,7 @@ namespace Aqua_Control
 
         public void CalabrateSensor()
         {
+            
             _InitCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
             Console.WriteLine($"{nameof(CalabrateSensor)}");
         }
