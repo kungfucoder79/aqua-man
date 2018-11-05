@@ -124,17 +124,13 @@ namespace Aqua_Control
         /// </summary>
         protected override void TurnValvesOff()
         {
-            _inPin_Open.Write(_0);
-            _inPin_Close.Write(_1);
+            CloseValve(_inPin_Open, _inPin_Close);
 
-            _fillSaltPin_Open.Write(_0);
-            _fillSaltPin_Close.Write(_1);
+            CloseValve(_fillSaltPin_Open, _fillSaltPin_Close);
 
-            _outPin_Open.Write(_0);
-            _outPin_Close.Write(_1);
+            CloseValve(_outPin_Open, _outPin_Close);
 
-            _wastePin_Open.Write(_0);
-            _wastePin_Close.Write(_1);
+            CloseValve(_wastePin_Open, _wastePin_Close);
         }
 
         /// <summary>
@@ -145,17 +141,13 @@ namespace Aqua_Control
         {
             IsPumpActive = true;
 
-            _inPin_Open.Write(_1);
-            _inPin_Close.Write(_0);
+            OpenValve(_inPin_Open, _inPin_Close);
 
-            _fillSaltPin_Open.Write(_1);
-            _fillSaltPin_Close.Write(_0);
+            OpenValve(_fillSaltPin_Open, _fillSaltPin_Close);
 
-            _outPin_Open.Write(_0);
-            _outPin_Close.Write(_1);
+            CloseValve(_outPin_Open, _outPin_Close);
 
-            _wastePin_Open.Write(_0);
-            _wastePin_Close.Write(_1);
+            CloseValve(_wastePin_Open, _wastePin_Close);
 
             TimerController.SetPumpOnDelay();
         }
@@ -168,17 +160,13 @@ namespace Aqua_Control
         {
             IsPumpActive = true;
 
-            _outPin_Open.Write(_1);
-            _outPin_Close.Write(_0);
+            OpenValve(_outPin_Open, _outPin_Close);
 
-            _wastePin_Open.Write(_1);
-            _wastePin_Close.Write(_0);
+            OpenValve(_wastePin_Open, _wastePin_Close);
 
-            _inPin_Open.Write(_0);
-            _inPin_Close.Write(_1);
+            CloseValve(_inPin_Open, _inPin_Close);
 
-            _fillSaltPin_Open.Write(_0);
-            _fillSaltPin_Close.Write(_1);
+            CloseValve(_fillSaltPin_Open, _fillSaltPin_Close);
 
             TimerController.SetPumpOnDelay();
         }
@@ -207,13 +195,11 @@ namespace Aqua_Control
         {
             if(_V1Latch)
             {
-                _outPin_Open.Write(_1);
-                _outPin_Close.Write(_0);
+                CloseValve(_outPin_Open, _outPin_Close);
             }
             else
             {
-                _outPin_Open.Write(_0);
-                _outPin_Close.Write(_1);
+                OpenValve(_outPin_Open, _outPin_Close);
             }
             _V1Latch = !_V1Latch;
         }
@@ -222,13 +208,11 @@ namespace Aqua_Control
         {
             if (_V2Latch)
             {
-                _inPin_Open.Write(_1);
-                _inPin_Close.Write(_0);
+                CloseValve(_inPin_Open, _inPin_Close);
             }
             else
             {
-                _inPin_Open.Write(_0);
-                _inPin_Close.Write(_1);
+                OpenValve(_inPin_Open, _inPin_Close);
             }
             _V2Latch = !_V2Latch;
         }
@@ -237,13 +221,11 @@ namespace Aqua_Control
         {
             if (_V3Latch)
             {
-                _fillFreshPin_Open.Write(_1);
-                _fillFreshPin_Close.Write(_0);
+                CloseValve(_fillFreshPin_Open, _fillFreshPin_Close);
             }
             else
             {
-                _fillFreshPin_Open.Write(_0);
-                _fillFreshPin_Close.Write(_1);
+                OpenValve(_fillFreshPin_Open, _fillFreshPin_Close);
             }
             _V3Latch = !_V3Latch;
         }
@@ -252,13 +234,11 @@ namespace Aqua_Control
         {
             if (_V4Latch)
             {
-                _fillSaltPin_Open.Write(_1);
-                _fillSaltPin_Close.Write(_0);
+                CloseValve(_fillSaltPin_Open, _fillSaltPin_Close);
             }
             else
             {
-                _fillSaltPin_Open.Write(_0);
-                _fillSaltPin_Close.Write(_1);
+                OpenValve(_fillSaltPin_Open, _fillSaltPin_Close);
             }
             _V4Latch = !_V4Latch;
         }
@@ -267,15 +247,26 @@ namespace Aqua_Control
         {
             if (_V5Latch)
             {
-                _wastePin_Open.Write(_1);
-                _wastePin_Close.Write(_0);
+                CloseValve(_wastePin_Open, _wastePin_Close);
             }
             else
             {
-                _wastePin_Open.Write(_0);
-                _wastePin_Close.Write(_1);
+                OpenValve(_wastePin_Open, _wastePin_Close);
             }
             _V5Latch = !_V5Latch;
+        }
+
+
+        private void OpenValve(GpioPin openPin, GpioPin closePin)
+        {
+            openPin.Write(_1);
+            closePin.Write(_0);
+        }
+
+        private void CloseValve(GpioPin openPin, GpioPin closePin)
+        {
+            openPin.Write(_0);
+            closePin.Write(_1);
         }
         #endregion
     }
