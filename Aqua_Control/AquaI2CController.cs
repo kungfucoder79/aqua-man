@@ -15,7 +15,7 @@ namespace Aqua_Control
         public int DataLSB;
     };
 
-    public class AquaI2CController : IAquaI2CController
+    public class AquaI2CController : BaseI2CController, IAquaI2CController
     {
         #region Members
         //Declared variables for I2C
@@ -35,19 +35,6 @@ namespace Aqua_Control
 
 
         private static float _InitCapMeasure2;
-
-        private bool _calabrate = false;
-
-        private readonly Timer _timer;
-
-        private double _TankHeight;
-        private double _TankWidth;
-        private double _TankDepth;
-
-        private static readonly int queLength = 100;
-        private int queCount = 1;
-        private ConcurrentQueue<double> avg = new ConcurrentQueue<double>();
-        private double _tempval;
         #endregion
 
         #region Properties
@@ -63,14 +50,9 @@ namespace Aqua_Control
         /// Creates a new <see cref="AquaI2C"/>
         /// </summary>
         public AquaI2CController(double tankWidth, double tankHeight, double tankDepth)
+            : base(tankWidth, tankHeight, tankDepth)
         {
             InitI2C();
-
-            _timer = new Timer(I2CCheck, null, 0, 25);
-
-            _TankHeight = tankHeight;
-            _TankWidth = tankWidth;
-            _TankDepth = tankDepth;
         }
 
         private void InitI2C()
@@ -84,21 +66,24 @@ namespace Aqua_Control
 
             FinalCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
         }
-
-        private void I2CCheck(object state)
-        {
-            double waterHeight = GetWaterHeight();
-            //Console.WriteLine($"{nameof(waterHeight)} = {waterHeight}");
-        }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Calabrates the water level sensor
+        /// </summary>
+        public void CalabrateSensor()
+        {
+            _calabrate = true;
+            _InitCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
+            Console.WriteLine($"{nameof(CalabrateSensor)}");
+        }
 
         /// <summary>
         /// Gets the height of the water in the tank
         /// </summary>
         /// <returns>A <see cref="double"/> representing the height</returns>
-        public double GetWaterHeight()
+        public override double GetWaterHeight()
         {
             double waterHeight = 0;
             if (_calabrate == true)
@@ -121,21 +106,6 @@ namespace Aqua_Control
             return waterHeight;
         }
 
-        private double Average(double testVal)
-        {
-            if (queCount <= queLength)
-            {
-                queCount++;
-            }
-            else
-            {
-                avg.TryDequeue(out _tempval);
-            }
-
-            avg.Enqueue(testVal);
-            double avgVal = avg.Sum() / avg.Count;
-            return avgVal;
-        }
 
         /// <summary>
         /// Resets the I2C port
@@ -206,20 +176,6 @@ namespace Aqua_Control
             OneRegReadDataOut.DataLSB = 0x00FF & RawData; // if reading Done bit, use this statement ==> ((byte)(0x08 & RawData) >> 3)
 
             return OneRegReadDataOut;
-        }
-
-        public void CalabrateSensor()
-        {
-            
-            _InitCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
-            Console.WriteLine($"{nameof(CalabrateSensor)}");
-        }
-
-        public void UpdateTankSpecs(double tankWidth, double tankHeight, double tankDepth)
-        {
-            _TankHeight = tankHeight;
-            _TankWidth = tankWidth;
-            _TankDepth = tankDepth;
         }
         #endregion
     }
