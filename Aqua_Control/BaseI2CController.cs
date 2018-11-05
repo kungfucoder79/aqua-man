@@ -35,7 +35,7 @@ namespace Aqua_Control
         /// </summary>
         public BaseI2CController(double tankWidth, double tankHeight, double tankDepth)
         {
-            _timer = new Timer(I2CCheck, null, 0, 25);
+            _timer = new Timer(GetWaterHeight, null, 0, 25);
 
             _TankHeight = tankHeight;
             _TankWidth = tankWidth;
@@ -45,13 +45,6 @@ namespace Aqua_Control
         #endregion
 
         #region Methods
-
-        private void I2CCheck(object state)
-        {
-            GetWaterHeight();
-            //Console.WriteLine($"{nameof(waterHeight)} = {waterHeight}");
-        }
-
         /// <summary>
         /// Updates the tank specification from the user
         /// </summary>
@@ -68,7 +61,7 @@ namespace Aqua_Control
         /// <summary>
         /// Gets the height of the water from the I2C sensor
         /// </summary>
-        public abstract void GetWaterHeight();
+        public abstract void GetWaterHeight(object state);
 
         protected double Average(double testVal)
         {

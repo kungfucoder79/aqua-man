@@ -52,7 +52,7 @@ namespace Aqua_Control
         /// Gets the height of the water in the tank
         /// </summary>
         /// <returns>A <see cref="double"/> representing the height</returns>
-        public override void GetWaterHeight()
+        public override void GetWaterHeight(object state)
         {
             double avgVal = 0;
             if (_calabrate == true)
