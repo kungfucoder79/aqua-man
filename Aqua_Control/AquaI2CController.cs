@@ -83,7 +83,7 @@ namespace Aqua_Control
         /// Gets the height of the water in the tank
         /// </summary>
         /// <returns>A <see cref="double"/> representing the height</returns>
-        public override double GetWaterHeight()
+        public override void GetWaterHeight()
         {
             double waterHeight = 0;
             if (_calabrate == true)
@@ -103,7 +103,7 @@ namespace Aqua_Control
                 waterHeight = Average(waterHeight);
             }
             Console.WriteLine(waterHeight.ToString(".0###########"));
-            return waterHeight;
+            WaterHeight = waterHeight;
         }
 
 

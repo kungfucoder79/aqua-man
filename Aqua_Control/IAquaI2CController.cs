@@ -8,10 +8,33 @@ namespace Aqua_Control
         float FinalCapMeasure1 { get; }
         float FinalCapMeasure2 { get; }
         float FinalCapMeasure3 { get; }
+
+        /// <summary>
+        /// Gets the current instance of <see cref="I2CDevice"/>
+        /// </summary>
         I2CDevice I2CSensor { get; }
-        double GetWaterHeight();
+
+        /// <summary>
+        /// Gets the current water height read from the sensor
+        /// </summary>
+        double WaterHeight { get; }
+
+        /// <summary>
+        /// Calabrates the water level sensor
+        /// </summary>
         void CalabrateSensor();
+
+        /// <summary>
+        /// Resets the <see cref="I2CSensor"/>
+        /// </summary>
         void Reset();
+
+        /// <summary>
+        /// Updates the tank specification from the user
+        /// </summary>
+        /// <param name="tankWidth"></param>
+        /// <param name="tankHeight"></param>
+        /// <param name="tankDepth"></param>
         void UpdateTankSpecs(double tankWidth, double tankHeight, double tankDepth);
     }
 }

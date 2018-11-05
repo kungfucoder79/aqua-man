@@ -22,6 +22,13 @@ namespace Aqua_Control
         private double _TankDepth;
         #endregion
 
+        #region Propeties
+        /// <summary>
+        /// Gets the current water height read from the sensor
+        /// </summary>
+        public double WaterHeight { get; protected set; }
+        #endregion
+
         #region ctor
         /// <summary>
         /// Creates a new <see cref="BaseI2CController"/>
@@ -29,7 +36,6 @@ namespace Aqua_Control
         public BaseI2CController(double tankWidth, double tankHeight, double tankDepth)
         {
             _timer = new Timer(I2CCheck, null, 0, 25);
-
 
             _TankHeight = tankHeight;
             _TankWidth = tankWidth;
@@ -42,11 +48,27 @@ namespace Aqua_Control
 
         private void I2CCheck(object state)
         {
-            double waterHeight = GetWaterHeight();
+            GetWaterHeight();
             //Console.WriteLine($"{nameof(waterHeight)} = {waterHeight}");
         }
 
-        public abstract double GetWaterHeight();
+        /// <summary>
+        /// Updates the tank specification from the user
+        /// </summary>
+        /// <param name="tankWidth"></param>
+        /// <param name="tankHeight"></param>
+        /// <param name="tankDepth"></param>
+        public void UpdateTankSpecs(double tankWidth, double tankHeight, double tankDepth)
+        {
+            _TankHeight = tankHeight;
+            _TankWidth = tankWidth;
+            _TankDepth = tankDepth;
+        }
+
+        /// <summary>
+        /// Gets the height of the water from the I2C sensor
+        /// </summary>
+        public abstract void GetWaterHeight();
 
         protected double Average(double testVal)
         {
@@ -62,19 +84,6 @@ namespace Aqua_Control
             avg.Enqueue(testVal);
             double avgVal = avg.Sum() / avg.Count;
             return avgVal;
-        }
-
-        /// <summary>
-        /// Updates the tank specification from the user
-        /// </summary>
-        /// <param name="tankWidth"></param>
-        /// <param name="tankHeight"></param>
-        /// <param name="tankDepth"></param>
-        public void UpdateTankSpecs(double tankWidth, double tankHeight, double tankDepth)
-        {
-            _TankHeight = tankHeight;
-            _TankWidth = tankWidth;
-            _TankDepth = tankDepth;
         }
         #endregion
     }

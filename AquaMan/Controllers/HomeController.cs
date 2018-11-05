@@ -116,7 +116,7 @@ namespace AquaMan.Controllers
         }
         public IActionResult GetWaterHeight()
         {
-            _waterHeight = _aquaI2CController.GetWaterHeight();
+            _waterHeight = _aquaI2CController.WaterHeight;
             return Ok(_waterHeight);
         }
 

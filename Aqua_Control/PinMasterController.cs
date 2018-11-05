@@ -41,7 +41,7 @@ namespace Aqua_Control
         /// <param name="state"></param>
         private void CheckWaterLevel(object state)
         {
-            _waterHeight = _aquaI2CController.GetWaterHeight();
+            _waterHeight = _aquaI2CController.WaterHeight;
             if (_waterHeight >= 4 && _aquaPinController.IsPumpActive)
             {
                 _aquaPinController.Stop();
