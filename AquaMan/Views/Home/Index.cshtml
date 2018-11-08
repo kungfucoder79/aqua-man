@@ -64,13 +64,13 @@
         });
     }
 
-    setInterval(GetWaterHeight, 1000);
+    setInterval(GetWaterHeight, 25);
 
     function GetWaterHeight() 
 	{
         $.get("/Home/GetWaterHeight", function (data) 
 		{ 
-            var waterPercent = (data / 4.6) * 100;
+            var waterPercent = (data / 12.5) * 100;
             $("#waterHeight").css('width', waterPercent + "%");
 			$("#WaterNum").html(data);
 			

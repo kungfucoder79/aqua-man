@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AquaMan.Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace AquaMan.Models
         /// <summary>
         /// A list of times to initiate the feeding sequence
         /// </summary>
+        [TimesApart(2)]
         public List<DateTime?> Feedings { get; private set; }
     }
 }
