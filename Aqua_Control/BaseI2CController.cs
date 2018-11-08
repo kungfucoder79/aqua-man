@@ -27,6 +27,11 @@ namespace Aqua_Control
         /// Gets the current water height read from the sensor
         /// </summary>
         public double WaterHeight { get; protected set; }
+
+        /// <summary>
+        /// Total volume of the tank
+        /// </summary>
+        public double TankVolume { get; private set; }
         #endregion
 
         #region ctor
@@ -40,8 +45,8 @@ namespace Aqua_Control
             _TankHeight = tankHeight;
             _TankWidth = tankWidth;
             _TankDepth = tankDepth;
+            TankVolume = CalulateVolume();
         }
-
         #endregion
 
         #region Methods
@@ -56,6 +61,7 @@ namespace Aqua_Control
             _TankHeight = tankHeight;
             _TankWidth = tankWidth;
             _TankDepth = tankDepth;
+            TankVolume = CalulateVolume();
         }
 
         /// <summary>
@@ -77,6 +83,11 @@ namespace Aqua_Control
             avg.Enqueue(testVal);
             double avgVal = avg.Sum() / avg.Count;
             return avgVal;
+        }
+
+        private double CalulateVolume()
+        {
+            return _TankDepth * _TankHeight * _TankWidth;
         }
         #endregion
     }

@@ -19,6 +19,12 @@ namespace Aqua_Control
         /// </summary>
         double WaterHeight { get; }
 
+
+        /// <summary>
+        /// Total volume of the tank
+        /// </summary>
+        double TankVolume { get; }
+
         /// <summary>
         /// Calabrates the water level sensor
         /// </summary>
