@@ -64,15 +64,16 @@
         });
     }
 
-    setInterval(GetWaterHeight, 25);
+    setInterval(GetWaterHeight, 250);
 
     function GetWaterHeight() 
 	{
         $.get("/Home/GetWaterHeight", function (data) 
 		{ 
-            var waterPercent = (data / 12.5) * 100;
+            var waterPercent = (data / 125) * 100;
             $("#waterHeight").css('width', waterPercent + "%");
 			$("#WaterNum").html(data);
+			$("#WaterNumRaw").html(waterPercent);
 			
 		});
     }
@@ -116,6 +117,8 @@
                 <br />
                 <p id="WaterNum" />
                 <br />
+				<p id="WaterNumRaw" />
+				<br />
                 <div class="progress">
                     <progressbar id="waterHeight" />
                 </div>
