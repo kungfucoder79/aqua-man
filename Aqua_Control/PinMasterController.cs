@@ -42,7 +42,8 @@ namespace Aqua_Control
         private void CheckWaterLevel(object state)
         {
             _waterHeight = _aquaI2CController.WaterHeight;
-            if (_waterHeight >= 4 && _aquaPinController.IsPumpActive)
+            
+            if (_waterHeight >= _aquaI2CController.DeltaHeight && _aquaPinController.IsPumpActive)
             {
                 _aquaPinController.Stop();
             }

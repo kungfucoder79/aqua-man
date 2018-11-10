@@ -32,6 +32,17 @@ namespace Aqua_Control
         /// Total volume of the tank
         /// </summary>
         public double TankVolume { get; private set; }
+
+
+        /// <summary>
+        /// Gets the change in height in the tank.
+        /// </summary>
+        public double DeltaHeight {
+            get
+            {
+                return (TankVolume * .1) / (_TankDepth * _TankWidth);
+            }
+        }
         #endregion
 
         #region ctor

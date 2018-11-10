@@ -102,7 +102,7 @@ namespace Aqua_Control
 
                 waterHeight = Average(waterHeight);
             }
-            Console.WriteLine(waterHeight.ToString(".0###########"));
+            //Console.WriteLine(waterHeight.ToString(".0###########"));
             WaterHeight = waterHeight;
         }
 

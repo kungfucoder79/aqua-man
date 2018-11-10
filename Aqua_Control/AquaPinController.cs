@@ -87,10 +87,10 @@ namespace Aqua_Control
             _outPin_Open = InitializePin(gpioController[P1.Gpio19], _0, GpioPinDriveMode.Output);
             _outPin_Close = InitializePin(gpioController[P1.Gpio13], _1, GpioPinDriveMode.Output);
 
-            _feedPin1 = InitializePin(gpioController[P1.Gpio23], _0, GpioPinDriveMode.Output);
-            _feedPin2 = InitializePin(gpioController[P1.Gpio24], _0, GpioPinDriveMode.Output);
-            _feedPin3 = InitializePin(gpioController[P1.Gpio25], _0, GpioPinDriveMode.Output);
-            _feedPin4 = InitializePin(gpioController[P1.Gpio08], _0, GpioPinDriveMode.Output);
+            _feedPin1 = InitializePin(gpioController[P1.Gpio21], _0, GpioPinDriveMode.Output);
+            _feedPin2 = InitializePin(gpioController[P1.Gpio20], _0, GpioPinDriveMode.Output);
+            _feedPin3 = InitializePin(gpioController[P1.Gpio16], _0, GpioPinDriveMode.Output);
+            _feedPin4 = InitializePin(gpioController[P1.Gpio12], _0, GpioPinDriveMode.Output);
         }
 
         protected override void _timerController_FeederStart(object sender, EventArgs e)
@@ -176,16 +176,21 @@ namespace Aqua_Control
         /// </summary>
         public async void Feed()
         {
-            int numberOfTimes = 40;
-            int delay = 1;
+            int numberOfTimes = 400;
+            TimeSpan delay = TimeSpan.FromMilliseconds(0.5);
             for (int i = 0; i < numberOfTimes; i++)
             {
+                Console.WriteLine($"Feeding {i}");
                 for (int j = 0; j < _feederSequences[0].Length; j++)
                 {
                     _feedPin1.Write(_feederSequences[j][0]);
+                    //Console.WriteLine($"Feeding {_feederSequences[j][0]}");
                     _feedPin2.Write(_feederSequences[j][1]);
+                    //Console.WriteLine($"Feeding {_feederSequences[j][1]}");
                     _feedPin3.Write(_feederSequences[j][2]);
+                    //Console.WriteLine($"Feeding {_feederSequences[j][2]}");
                     _feedPin4.Write(_feederSequences[j][3]);
+                    //Console.WriteLine($"Feeding {_feederSequences[j][3]}");
                     await Task.Delay(delay);
                 }
             }

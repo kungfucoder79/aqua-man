@@ -19,6 +19,10 @@ namespace Aqua_Control
         /// </summary>
         double WaterHeight { get; }
 
+        /// <summary>
+        /// Gets the change in height in the tank.
+        /// </summary>
+        double DeltaHeight { get; }
 
         /// <summary>
         /// Total volume of the tank
