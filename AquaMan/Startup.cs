@@ -50,7 +50,7 @@ namespace OrderingApplication
 
             TankSpecs tankSpecs = _formDataService.GetTankSpecs();
             _i2CController = new AquaI2CController(tankSpecs.Width, tankSpecs.Height, tankSpecs.Depth);
-            _pinMasterController = new PinMasterController(_i2CController, _pinController);
+            //_pinMasterController = new PinMasterController(_i2CController, _pinController);
         }
 
         #endregion

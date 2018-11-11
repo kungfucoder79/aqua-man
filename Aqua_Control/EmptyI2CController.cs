@@ -66,7 +66,7 @@ namespace Aqua_Control
             }
             //Console.WriteLine($"avgVal----------------{DateTime.Now}: {avgVal}");
             //Console.WriteLine($"WTR----------------{DateTime.Now}: {testVal}");
-            Console.WriteLine($"{avgVal}");
+            //Console.WriteLine($"{avgVal}");
             WaterHeight = avgVal;
         }
 

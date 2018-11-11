@@ -76,7 +76,7 @@ namespace Aqua_Control
         {
             _calabrate = true;
             _InitCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
-            Console.WriteLine($"{nameof(CalabrateSensor)}");
+            //Console.WriteLine($"{nameof(CalabrateSensor)}");
         }
 
         /// <summary>
@@ -85,6 +85,7 @@ namespace Aqua_Control
         /// <returns>A <see cref="double"/> representing the height</returns>
         public override void GetWaterHeight(object state)
         {
+            //Console.Clear();
             double waterHeight = 0;
             if (_calabrate == true)
             {
@@ -97,10 +98,21 @@ namespace Aqua_Control
                 FinalCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
                 //Console.WriteLine($"{nameof(FinalCapMeasure3)}");
                 FinalCapMeasure3 = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
-
-                waterHeight = (10.27 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
-
+                //Console.WriteLine($"READ 1____{FinalCapMeasure1}");
+                //Console.WriteLine($"READ 2____{FinalCapMeasure2}");
+                //Console.WriteLine($"READ 3____{FinalCapMeasure3}");
+                waterHeight = (1.027 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
+                //Console.WriteLine($"WHTRAW____{waterHeight}");
                 waterHeight = Average(waterHeight);
+
+                waterHeight = (waterHeight / 0.412) - (0.027 / 0.412);
+                if(waterHeight > 4)
+                {
+                    waterHeight = (waterHeight / 0.2236) - (0.7464 / 0.2236);
+                }
+
+
+                Console.WriteLine($"{waterHeight}");
             }
             //Console.WriteLine(waterHeight.ToString(".0###########"));
             WaterHeight = waterHeight;
