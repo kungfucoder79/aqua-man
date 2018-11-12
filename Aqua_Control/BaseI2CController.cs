@@ -22,6 +22,8 @@ namespace Aqua_Control
         private double _TankHeight;
         private double _TankWidth;
         private double _TankDepth;
+        private double _filterResult = 0.0;
+        double _dampeningConstant = 0.05;
         #endregion
 
         #region Propeties
@@ -81,6 +83,18 @@ namespace Aqua_Control
         /// Gets the height of the water from the I2C sensor
         /// </summary>
         public abstract void GetWaterHeight(object state);
+
+        /// <summary>
+        /// Using a low pass filter to dampen the noise
+        /// </summary>
+        /// <param name="inputWaterHeight"></param>
+        /// <returns></returns>
+        protected double Filter(double inputWaterHeight)
+        {
+            _filterResult += _dampeningConstant * (inputWaterHeight - _filterResult);
+
+            return _filterResult;
+        }
 
         protected double Average(double testVal)
         {
