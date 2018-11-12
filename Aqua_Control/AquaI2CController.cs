@@ -87,6 +87,7 @@ namespace Aqua_Control
         {
             //Console.Clear();
             double waterHeight = 0;
+            double wtrHeight = 0;
             if (_calabrate == true)
             {
                 //byte[] FDCCongAddrBuf = new byte[] { 0x0C };
@@ -105,17 +106,23 @@ namespace Aqua_Control
                 //Console.WriteLine($"WHTRAW____{waterHeight}");
                 waterHeight = Average(waterHeight);
 
-                waterHeight = (waterHeight / 0.412) - (0.027 / 0.412);
-                if(waterHeight > 4)
+                
+                //waterHeight = (waterHeight / 0.2236) - (0.7464 / 0.2236);
+                if (waterHeight > 4)
                 {
-                    waterHeight = (waterHeight / 0.2236) - (0.7464 / 0.2236);
+                    //waterHeight = (waterHeight / 0.412) - (0.027 / 0.412);
+                    wtrHeight = (waterHeight / 0.2236) - (0.7464 / 0.2236);
+                }
+                else
+                {
+                    wtrHeight = (waterHeight / 0.412) - (0.027 / 0.412);
                 }
 
 
-                Console.WriteLine($"{waterHeight}");
+                Console.WriteLine($"{wtrHeight}");
             }
             //Console.WriteLine(waterHeight.ToString(".0###########"));
-            WaterHeight = waterHeight;
+            WaterHeight = wtrHeight;
         }
 
 
@@ -124,6 +131,8 @@ namespace Aqua_Control
         /// </summary>
         public void Reset()
         {
+            byte[] WriteBuf_FDC_Config_Clear = new byte[] { FDC_CONF_CONTROL, 0x00, 0x00 };
+            I2CSensor.Write(WriteBuf_FDC_Config_Clear);
             byte[] WriteBuf_FDC_Config = new byte[] { FDC_CONF_CONTROL, 0x8C, 0x00 };
             I2CSensor.Write(WriteBuf_FDC_Config);
             WriteToI2CDevice();
