@@ -40,7 +40,8 @@ namespace Aqua_Control
             TimerController.PumpOff += _timerController_PumpOff;
             TimerController.PumpOn += _timerController_PumpOn;
             TimerController.FeederStart += _timerController_FeederStart;
-            IsPumpActive = false;
+            IsFillActive = false;
+            IsDrainActive = false;
         }
         #endregion
 

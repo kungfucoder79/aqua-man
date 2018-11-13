@@ -104,22 +104,22 @@ namespace Aqua_Control
                 //Console.WriteLine($"READ 3____{FinalCapMeasure3}");
                 waterHeight = (1.027 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
                 //Console.WriteLine($"WHTRAW____{waterHeight}");
-                waterHeight = Average(waterHeight);
+                waterHeight = Filter(waterHeight);
 
                 
                 //waterHeight = (waterHeight / 0.2236) - (0.7464 / 0.2236);
-                if (waterHeight > 4)
-                {
-                    //waterHeight = (waterHeight / 0.412) - (0.027 / 0.412);
-                    wtrHeight = (waterHeight / 0.2236) - (0.7464 / 0.2236);
-                }
-                else
-                {
-                    wtrHeight = (waterHeight / 0.412) - (0.027 / 0.412);
-                }
+                //if (waterHeight > 4)
+                //{
+                //    //waterHeight = (waterHeight / 0.412) - (0.027 / 0.412);
+                //    wtrHeight = (waterHeight / 0.2236) - (0.7464 / 0.2236);
+                //}
+                //else
+                //{
+                //    wtrHeight = (waterHeight / 0.412) - (0.027 / 0.412);
+                //}
 
 
-                Console.WriteLine($"{wtrHeight}");
+                Console.WriteLine($"{waterHeight}");
             }
             //Console.WriteLine(waterHeight.ToString(".0###########"));
             WaterHeight = wtrHeight;
