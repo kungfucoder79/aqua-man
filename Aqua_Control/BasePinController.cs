@@ -19,9 +19,14 @@ namespace Aqua_Control
         protected TimerController TimerController { get; private set; }
         
         /// <summary>
-        /// Gets if the <see cref="BasePinController"/> is currently running a fill or drain sequence
+        /// Gets if the <see cref="BasePinController"/> is currently running a fill sequence
         /// </summary>
-        public bool IsPumpActive { get; protected set; }
+        public bool IsFillActive { get; protected set; }
+
+        /// <summary>
+        /// Gets if the <see cref="BasePinController"/> is currently running a drain sequence
+        /// </summary>
+        public bool IsDrainActive { get; protected set; }
         #endregion
 
         #region ctor

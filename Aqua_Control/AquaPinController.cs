@@ -124,7 +124,8 @@ namespace Aqua_Control
         protected override void _timerController_PumpOff(object sender, EventArgs e)
         {
             _pumpPin_Open.Write(_0);
-            IsPumpActive = false;
+            IsFillActive = false;
+            IsDrainActive = false;
         }
 
         #endregion
@@ -157,7 +158,7 @@ namespace Aqua_Control
         /// </summary>
         public void Fill()
         {
-            IsPumpActive = true;
+            IsFillActive = true;
 
             OpenValve(_inPin_Open, _inPin_Close);
 
@@ -176,7 +177,7 @@ namespace Aqua_Control
         /// </summary>
         public void Drain()
         {
-            IsPumpActive = true;
+            IsDrainActive = true;
 
             OpenValve(_outPin_Open, _outPin_Close);
 

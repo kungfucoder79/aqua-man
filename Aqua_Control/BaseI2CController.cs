@@ -14,16 +14,17 @@ namespace Aqua_Control
         #region Members
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
         private readonly Timer _timer;
-        private static int queLength = 100;
-        private int queCount = 1;
-        private int readCount = 1;
-        private Queue<double> avg = new Queue<double>();
+        private static int _readingInterval = 50;
+        private static int _queLength = 100;
+        private int _queCount = 1;
+        private int _readCount = 1;
+        private Queue<double> _avg = new Queue<double>();
         protected bool _calabrate = false;
         private double _TankHeight;
         private double _TankWidth;
         private double _TankDepth;
         private double _filterResult = 0.0;
-        double _dampeningConstant = 0.05;
+        private readonly double _dampeningConstant = 0.05;
         #endregion
 
         #region Propeties
@@ -55,7 +56,7 @@ namespace Aqua_Control
         /// </summary>
         public BaseI2CController(double tankWidth, double tankHeight, double tankDepth)
         {
-            _timer = new Timer(GetWaterHeight, null, 0, 50);
+            _timer = new Timer(ReadSensor, null, 0, Timeout.Infinite);
 
             _TankHeight = tankHeight;
             _TankWidth = tankWidth;
@@ -78,11 +79,19 @@ namespace Aqua_Control
             _TankDepth = tankDepth;
             TankVolume = CalulateVolume();
         }
+        private void ReadSensor(object state)
+        {
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+
+            GetWaterHeight();
+
+            _timer.Change(_readingInterval, Timeout.Infinite);
+        }
 
         /// <summary>
         /// Gets the height of the water from the I2C sensor
         /// </summary>
-        public abstract void GetWaterHeight(object state);
+        public abstract void GetWaterHeight();
 
         /// <summary>
         /// Using a low pass filter to dampen the noise
@@ -101,25 +110,25 @@ namespace Aqua_Control
             semaphoreSlim.WaitAsync();
             try
             {
-                if (queCount <= queLength)
+                if (_queCount <= _queLength)
                 {
-                    queCount++;
+                    _queCount++;
                 }
                 else
                 {
-                    avg.Dequeue();
+                    _avg.Dequeue();
                 }
-                if (readCount > 1000)
+                if (_readCount > 1000)
                 {
-                    readCount = 0;
-                    queCount = 1;
-                    avg.Clear();
-                    avg = new Queue<double>(queLength);
+                    _readCount = 0;
+                    _queCount = 1;
+                    _avg.Clear();
+                    _avg = new Queue<double>(_queLength);
                    // Console.WriteLine($"Cleared!!!!!");
                 }
-                readCount++;
-                avg.Enqueue(testVal);
-                double avgVal = avg.Sum() / avg.Count;
+                _readCount++;
+                _avg.Enqueue(testVal);
+                double avgVal = _avg.Sum() / _avg.Count;
                 return avgVal;
             }
             finally

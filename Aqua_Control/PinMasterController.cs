@@ -43,7 +43,7 @@ namespace Aqua_Control
         {
             _waterHeight = _aquaI2CController.WaterHeight;
             
-            if (_waterHeight >= _aquaI2CController.DeltaHeight && _aquaPinController.IsPumpActive)
+            if (_waterHeight >= _aquaI2CController.DeltaHeight && _aquaPinController.IsFillActive)
             {
                 _aquaPinController.Stop();
             }

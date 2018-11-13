@@ -54,7 +54,7 @@ namespace Aqua_Control
         /// Gets the height of the water in the tank
         /// </summary>
         /// <returns>A <see cref="double"/> representing the height</returns>
-        public override void GetWaterHeight(object state)
+        public override void GetWaterHeight()
         {
             double avgVal = 0;
             if (_calabrate == true)
@@ -64,6 +64,7 @@ namespace Aqua_Control
 
                 double testVal = _testVals[_testValIdx];
                 avgVal = Filter(testVal);
+                Console.WriteLine($"{avgVal}");
                 _testValIdx++;
             }
             //Console.WriteLine($"avgVal----------------{DateTime.Now}: {avgVal}");

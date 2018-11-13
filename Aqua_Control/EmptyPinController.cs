@@ -37,7 +37,8 @@ namespace Aqua_Control
         protected override void _timerController_PumpOff(object sender, EventArgs e)
         {
             Console.WriteLine($"PUMP----------------{DateTime.Now}: TURNING PUMP OFF");
-            IsPumpActive = false;
+            IsFillActive = false;
+            IsDrainActive = false;
         }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace Aqua_Control
         /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Fill()
         {
-            IsPumpActive = true;
+            IsFillActive = true;
             Console.WriteLine($"----------------{DateTime.Now}: FILL ON");
             TimerController.SetPumpOnDelay();
         }
@@ -67,7 +68,7 @@ namespace Aqua_Control
         /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Drain()
         {
-            IsPumpActive = true;
+            IsDrainActive = true;
             Console.WriteLine($"----------------{DateTime.Now}: DRAIN ON");
             TimerController.SetPumpOnDelay();
         }
