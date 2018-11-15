@@ -102,11 +102,20 @@ namespace Aqua_Control
                 //Console.WriteLine($"READ 1____{FinalCapMeasure1}");
                 //Console.WriteLine($"READ 2____{FinalCapMeasure2}");
                 //Console.WriteLine($"READ 3____{FinalCapMeasure3}");
+                wtrHeight = ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3));
                 waterHeight = (1.027 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
+
+                // Want to write the capacitance measures to a CSV file for easier graphing
+                // We can load the new text file with the values separated by commas and then easily bring into excel.
+                // When we lauch from the pi, configure the app launch with a txt modifier to store the information and upload to excel
+                string cap_data = string.Format("{0},{1},{2},{3},{4}", FinalCapMeasure1, FinalCapMeasure2, FinalCapMeasure3, wtrHeight, waterHeight);
+                Console.WriteLine($"{cap_data}");
+
                 //Console.WriteLine($"WHTRAW____{waterHeight}");
                 waterHeight = Filter(waterHeight);
 
-                
+                waterHeight = waterHeight / (2.24 / 12.754);
+
                 //waterHeight = (waterHeight / 0.2236) - (0.7464 / 0.2236);
                 //if (waterHeight > 4)
                 //{
@@ -119,10 +128,10 @@ namespace Aqua_Control
                 //}
 
 
-                Console.WriteLine($"{waterHeight}");
+               // Console.WriteLine($"{waterHeight}");
             }
             //Console.WriteLine(waterHeight.ToString(".0###########"));
-            WaterHeight = wtrHeight;
+            WaterHeight = waterHeight;
         }
 
 
