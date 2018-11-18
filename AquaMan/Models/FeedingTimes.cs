@@ -15,7 +15,9 @@ namespace AquaMan.Models
         public FeedingTimes()
         {
             Feedings = new List<DateTime?>();
+            Pinches = 1;
         }
+        public int Pinches { get; set; }
         /// <summary>
         /// A list of times to initiate the feeding sequence
         /// </summary>

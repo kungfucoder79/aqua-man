@@ -25,6 +25,7 @@ namespace Aqua_Control
         private double _TankDepth;
         private double _filterResult = 0.0;
         private readonly double _dampeningConstant = 0.05;
+        protected bool InitDevice = false;
         #endregion
 
         #region Propeties
@@ -33,21 +34,31 @@ namespace Aqua_Control
         /// </summary>
         public double WaterHeight { get; protected set; }
 
+        public double TopWaterHeight { get; protected set; }
+
+        public bool IsTopSet { get; protected set; }
         /// <summary>
         /// Total volume of the tank
         /// </summary>
         public double TankVolume { get; private set; }
-
-
+        
         /// <summary>
         /// Gets the change in height in the tank.
         /// </summary>
-        public double DeltaHeight {
+        public double Delta5Height {
             get
             {
-                return (TankVolume * .1) / (_TankDepth * _TankWidth);
+                return TopWaterHeight - (_TankHeight * .05);
             }
         }
+        public double Delta10Height
+        {
+            get
+            {
+                return TopWaterHeight - (_TankHeight * .1);
+            }
+        }
+
         #endregion
 
         #region ctor
@@ -62,6 +73,8 @@ namespace Aqua_Control
             _TankWidth = tankWidth;
             _TankDepth = tankDepth;
             TankVolume = CalulateVolume();
+
+            IsTopSet = false;
         }
         #endregion
 
@@ -79,6 +92,7 @@ namespace Aqua_Control
             _TankDepth = tankDepth;
             TankVolume = CalulateVolume();
         }
+        
         private void ReadSensor(object state)
         {
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -140,6 +154,12 @@ namespace Aqua_Control
         private double CalulateVolume()
         {
             return _TankDepth * _TankHeight * _TankWidth;
+        }
+
+        public void SetTopLevel()
+        {
+            IsTopSet = true;
+            TopWaterHeight = WaterHeight;
         }
         #endregion
     }

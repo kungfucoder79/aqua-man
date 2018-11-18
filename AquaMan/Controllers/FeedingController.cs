@@ -48,7 +48,7 @@ namespace AquaMan.Controllers
             if (ModelState.IsValid)
             {
                 _formDataService.SetFeedingTimes(feedingTimes);
-                _aquaPinController.UpdateFeedingTimes(feedingTimes.Feedings);
+                _aquaPinController.UpdateFeedingTimes(feedingTimes.Feedings,feedingTimes.Pinches);
                 return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
             }
             return View(feedingTimes);

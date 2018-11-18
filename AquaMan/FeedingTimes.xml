@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <FeedingTimes>
-  <Time1>10/26/2018 3:54:00 PM</Time1>
-  <Time2>10/26/2018 3:55:00 PM</Time2>
-  <Time3>10/26/2018 4:00:00 PM</Time3>
+  <Pinches>1</Pinches>
+  <Time1>11/17/2018 1:00:00 AM</Time1>
+  <Time2>11/17/2018 1:00:00 PM</Time2>
+  <Time3 />
   <Time4 />
   <Time5 />
 </FeedingTimes>

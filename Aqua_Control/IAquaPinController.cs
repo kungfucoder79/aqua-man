@@ -17,11 +17,13 @@ namespace Aqua_Control
         /// </summary>
         bool IsDrainActive { get; }
 
+        bool IsPumpActive { get; }
+        
         /// <summary>
         /// Update the list of feeding times
         /// </summary>
         /// <param name="_feedingTimes"></param>
-        void UpdateFeedingTimes(IEnumerable<DateTime?> _feedingTimes);
+        void UpdateFeedingTimes(IEnumerable<DateTime?> _feedingTimes, int pinches);
 
         /// <summary>
         /// Starts the Drain sequence
@@ -36,7 +38,7 @@ namespace Aqua_Control
         /// <summary>
         /// Starts the Fill sequence
         /// </summary>
-        void Fill();
+        void FillSaltWater();
 
         /// <summary>
         /// Starts the Feed sequence

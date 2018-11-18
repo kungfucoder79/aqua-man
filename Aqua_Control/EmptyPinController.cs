@@ -15,8 +15,8 @@ namespace Aqua_Control
         /// <summary>
         /// Constructs a new <see cref="AquaGPIO"/> object by initialzing the gpio pins for the raspberry pi
         /// </summary>
-        public EmptyPinController(IEnumerable<DateTime?> feedingTimes)
-            : base(feedingTimes)
+        public EmptyPinController(IEnumerable<DateTime?> feedingTimes, int pinches)
+            : base(feedingTimes, pinches)
         {
             Console.WriteLine($"--------------{DateTime.Now}: Initializing Pin Controller");
         }
@@ -54,7 +54,7 @@ namespace Aqua_Control
         /// to turn on the correct valve.
         /// </summary>
         /// <returns>The value of the <see cref="_pumppinValue"/></returns>
-        public void Fill()
+        public void FillSaltWater()
         {
             IsFillActive = true;
             Console.WriteLine($"----------------{DateTime.Now}: FILL ON");

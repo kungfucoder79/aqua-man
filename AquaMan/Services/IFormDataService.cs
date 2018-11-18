@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using AquaMan.Models;
+﻿using AquaMan.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,5 @@ namespace AquaMan.Services
         /// </summary>
         /// <param name="tankSpecs"></param>
         void SetTankSpecs(TankSpecs tankSpecs);
-
-        
     }
 }

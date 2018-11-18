@@ -57,9 +57,20 @@
             $("p").html(data);
         });
     }
+    
+    function TopLevel() {
+        $.get("/Home/TopLevel", function (data) {
+            $("p").html(data);
+        });
+    }
 
     function Stop() {
         $.get("/Home/Stop", function (data) {
+            $("p").html(data);
+        });
+    }
+    function WaterChange() {
+        $.get("/Home/WaterChange", function (data) {
             $("p").html(data);
         });
     }
@@ -70,7 +81,7 @@
 	{
         $.get("/Home/GetWaterHeight", function (data) 
 		{ 
-            var waterPercent = (data / 125) * 100;
+            var waterPercent = (data / 2.8) * 100;
             $("#waterHeight").css('width', waterPercent + "%");
 			$("#WaterNum").html(data);
 			$("#WaterNumRaw").html(waterPercent);
@@ -95,32 +106,48 @@
     <div class="row">
         <div class="col-md-8">
             <form>
+                <button type="button" onclick="WaterChange()" value="WaterChange">WaterChange</button>
+                <br />
+                <br />
                 <button type="button" onclick="Fill()" value="Fill">Fill</button>
+                <br />
                 <br />
                 <button type="button" onclick="Drain()" value="Drain">Drain</button>
                 <br />
+                <br />
                 <button type="button" onclick="Stop()" value="Stop">Stop</button>
+                <br />
+                <br />
+                <button type="button" onclick="TopLevel()" value="TopLevel">TopLevel</button>
+                <br />
                 <br />
                 <button type="button" onclick="Feed()" value="Feed">Feed</button>
                 <br />
+                <br />
                 <button type="button" onclick="Calabrate()" value="Calabrate">Calabrate</button>
+                <br />
                 <br />
                 <button type="button" onclick="V1()" value="V1">V1</button>
                 <br />
+                <br />
                 <button type="button" onclick="V2()" value="V2">V2</button>
+                <br />
                 <br />
                 <button type="button" onclick="V3()" value="V3">V3</button>
                 <br />
+                <br />
                 <button type="button" onclick="V4()" value="V4">V4</button>
+                <br />
                 <br />
                 <button type="button" onclick="V5()" value="V5">V5</button>
                 <br />
-				<button type="button" onclick="ResetI2C()" value="ResetI2C">ResetI2C</button>
+                <br />
+                <button type="button" onclick="ResetI2C()" value="ResetI2C">ResetI2C</button>
                 <br />
                 <p id="WaterNum" />
                 <br />
-				<p id="WaterNumRaw" />
-				<br />
+                <p id="WaterNumRaw" />
+                <br />
                 <div class="progress">
                     <progressbar id="waterHeight" />
                 </div>

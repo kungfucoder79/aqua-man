@@ -80,8 +80,8 @@ namespace Aqua_Control
         /// <summary>
         /// Constructs a new <see cref="AquaGPIO"/> object by initialzing the gpio pins for the raspberry pi
         /// </summary>
-        public AquaPinController(IEnumerable<DateTime?> feedingTimes)
-            :base(feedingTimes)
+        public AquaPinController(IEnumerable<DateTime?> feedingTimes, int pinches)
+            :base(feedingTimes, pinches)
         {
             GpioController gpioController = GpioController.Instance;
 
@@ -119,6 +119,7 @@ namespace Aqua_Control
         protected override void _timerController_PumpOn(object sender, EventArgs e)
         {
             _pumpPin_Open.Write(_1);
+            IsPumpActive = true;
         }
 
         protected override void _timerController_PumpOff(object sender, EventArgs e)
@@ -126,6 +127,7 @@ namespace Aqua_Control
             _pumpPin_Open.Write(_0);
             IsFillActive = false;
             IsDrainActive = false;
+            IsPumpActive = false;
         }
 
         #endregion
@@ -143,6 +145,8 @@ namespace Aqua_Control
         /// </summary>
         protected override void TurnValvesOff()
         {
+            IsFillActive = false;
+            IsDrainActive = false;
             CloseValve(_inPin_Open, _inPin_Close);
 
             CloseValve(_fillSaltPin_Open, _fillSaltPin_Close);
@@ -156,7 +160,7 @@ namespace Aqua_Control
         /// Initicates the fill sequence. Will start the associated timer and set the GPIO pins.
         /// to turn on the correct valves.
         /// </summary>
-        public void Fill()
+        public void FillSaltWater()
         {
             IsFillActive = true;
 
@@ -195,7 +199,7 @@ namespace Aqua_Control
         /// </summary>
         public async void Feed()
         {
-            int numberOfTimes = 2000;
+            int numberOfTimes = 2000 * Pinches;
             TimeSpan delay = TimeSpan.FromMilliseconds(1);
             for (int i = 0; i < numberOfTimes; i++)
             {

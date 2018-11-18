@@ -19,10 +19,13 @@ namespace Aqua_Control
         /// </summary>
         double WaterHeight { get; }
 
+        double TopWaterHeight { get; }
+        bool IsTopSet { get; }
         /// <summary>
         /// Gets the change in height in the tank.
         /// </summary>
-        double DeltaHeight { get; }
+        double Delta5Height { get; }
+        double Delta10Height { get; }
 
         /// <summary>
         /// Total volume of the tank
@@ -46,5 +49,7 @@ namespace Aqua_Control
         /// <param name="tankHeight"></param>
         /// <param name="tankDepth"></param>
         void UpdateTankSpecs(double tankWidth, double tankHeight, double tankDepth);
+
+        void SetTopLevel();
     }
 }

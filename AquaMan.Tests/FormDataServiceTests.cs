@@ -10,6 +10,7 @@ namespace AquaMan.Tests
     public class FormDataServiceTests
     {
         private const string feedingXML = @"<FeedingTimes>
+                                              <Pinches>3</Pinches>
                                               <Time1>10/10/2018 1:00:00 AM</Time1>
                                               <Time2>10/10/2018 2:01:00 PM</Time2>
                                               <Time3>10/10/2018 5:00:00 PM</Time3>
@@ -26,6 +27,7 @@ namespace AquaMan.Tests
         [TestMethod]
         public void FormDataService_DeSerializeFeedingTimes_Deserializes()
         {
+            double expectedPinches = 3;
             List<DateTime> expectedTimes = new List<DateTime>();
             expectedTimes.Add(new DateTime(2018, 10, 10, 1, 0, 0));
             expectedTimes.Add(new DateTime(2018, 10, 10, 14, 1, 0));
@@ -36,7 +38,7 @@ namespace AquaMan.Tests
 
             FormDataService formDataService = new FormDataService();
             FeedingTimes feedingTimes = formDataService.DeSerializeFeedingTimes(feedingXML);
-
+            Assert.AreEqual(expectedPinches, feedingTimes.Pinches);
             CollectionAssert.AreEqual(expectedTimes, feedingTimes.Feedings, $"feeding times are not the same");
         }
 
@@ -50,7 +52,7 @@ namespace AquaMan.Tests
 
             FormDataService formDataService = new FormDataService();
             TankSpecs tankSpecs = formDataService.DeSerializeTankSpecs(tankSpecsXML);
-
+            
             Assert.AreEqual(expectedDepth, tankSpecs.Depth, $"{nameof(tankSpecs.Depth)} is not the same");
             Assert.AreEqual(expectedWidth, tankSpecs.Width, $"{nameof(tankSpecs.Width)} is not the same");
             Assert.AreEqual(expectedHeight, tankSpecs.Height, $"{nameof(tankSpecs.Height)} is not the same");

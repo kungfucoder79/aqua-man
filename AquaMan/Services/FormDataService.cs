@@ -20,6 +20,7 @@ namespace AquaMan.Services
         private const string FEEDING_TIMES_FILE = "FeedingTimes.xml";
 
         private const string FEEDING_TIME_START_ELM = "FeedingTimes";
+        private const string FEEDING_TIME_PINCH_START_ELM = "Pinches";
         private const string FEEDING_TIME = "Time";
         private const string FEEDING_TIME_1 = "Time1";
         private const string FEEDING_TIME_2 = "Time2";
@@ -28,6 +29,7 @@ namespace AquaMan.Services
         private const string FEEDING_TIME_5 = "Time5";
 
         private const string TANK_SPECS_START_ELM = "TankSpecs";
+        private const string TANK_SPECS_LEVEL = "TopWaterLevel";
         private const string TANK_SPECS_DEPTH = "Depth";
         private const string TANK_SPECS_HEIGHT = "Height";
         private const string TANK_SPECS_WIDTH = "Width";
@@ -72,10 +74,16 @@ namespace AquaMan.Services
                 XmlDocument document = new XmlDocument();
 
                 document.SecureLoadXml(xmlData);
-
                 XmlNode rootNode = document.SelectSingleNode(FEEDING_TIME_START_ELM);
-                for (int x = 1; x <= rootNode.ChildNodes.Count; x++)
+
+                XmlNode pinchNode = rootNode.SelectSingleNode(FEEDING_TIME_PINCH_START_ELM);
+                int pinches = 1;
+                int.TryParse(pinchNode.InnerXml, out pinches);
+                feedingTimes.Pinches = pinches;
+
+                for (int x = 1; x <= rootNode.ChildNodes.Count - 1; x++)
                 {
+                    XmlNode test = rootNode.SelectSingleNode($"{FEEDING_TIME}{x}");
                     feedingTimes.Feedings.Add(GetFeedingTime(rootNode.SelectSingleNode($"{FEEDING_TIME}{x}").FirstChild?.Value));
                 }
             }
@@ -107,11 +115,12 @@ namespace AquaMan.Services
                 xmlWriter.Formatting = Formatting.Indented;
                 xmlWriter.WriteStartDocument();
                 xmlWriter.WriteStartElement(FEEDING_TIME_START_ELM);
-
+                xmlWriter.WriteElementString(FEEDING_TIME_PINCH_START_ELM, feedingTimes.Pinches.ToString());
                 for (int x = 0; x < feedingTimes.Feedings.Count; x++)
                 {
-                    xmlWriter.WriteElementString($"{FEEDING_TIME}{x+1}", feedingTimes.Feedings[x].ToString());
+                    xmlWriter.WriteElementString($"{FEEDING_TIME}{x + 1}", feedingTimes.Feedings[x].ToString());
                 }
+                
                 xmlWriter.WriteEndElement();
                 xmlWriter.WriteEndDocument();
                 xmlWriter.Close();
@@ -156,7 +165,6 @@ namespace AquaMan.Services
                 document.SecureLoadXml(xmlData);
 
                 XmlNode rootNode = document.SelectSingleNode(TANK_SPECS_START_ELM);
-
                 tankSpecs.Depth = double.Parse(rootNode.SelectSingleNode(TANK_SPECS_DEPTH).FirstChild.Value);
                 tankSpecs.Height = double.Parse(rootNode.SelectSingleNode(TANK_SPECS_HEIGHT).FirstChild.Value);
                 tankSpecs.Width = double.Parse(rootNode.SelectSingleNode(TANK_SPECS_WIDTH).FirstChild.Value);

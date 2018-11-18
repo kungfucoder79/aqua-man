@@ -27,13 +27,17 @@ namespace Aqua_Control
         /// Gets if the <see cref="BasePinController"/> is currently running a drain sequence
         /// </summary>
         public bool IsDrainActive { get; protected set; }
+
+        public bool IsPumpActive { get; protected set; }
+
+        public int Pinches { get; protected set; }
         #endregion
 
         #region ctor
         /// <summary>
         /// Constructs a new <see cref="BasePinController"/> object by initialzing the timer controller
         /// </summary>
-        public BasePinController(IEnumerable<DateTime?> feedingTimes)
+        public BasePinController(IEnumerable<DateTime?> feedingTimes, int pinches)
         {
             //Console.WriteLine($"--------------{DateTime.Now}: Initializing Pin Controller");
             TimerController = new TimerController(feedingTimes);
@@ -42,6 +46,7 @@ namespace Aqua_Control
             TimerController.FeederStart += _timerController_FeederStart;
             IsFillActive = false;
             IsDrainActive = false;
+            Pinches = pinches;
         }
         #endregion
 
@@ -53,9 +58,11 @@ namespace Aqua_Control
         protected abstract void _timerController_PumpOff(object sender, EventArgs e);
 
         protected abstract void TurnValvesOff();
+        
 
-        public void UpdateFeedingTimes(IEnumerable<DateTime?> _feedingTimes)
+        public void UpdateFeedingTimes(IEnumerable<DateTime?> _feedingTimes, int pinches)
         {
+            Pinches = pinches;
             TimerController.FeedingTimes.Clear();
             foreach(DateTime? feedingTime in _feedingTimes)
             {

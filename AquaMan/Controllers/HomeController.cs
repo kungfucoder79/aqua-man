@@ -15,12 +15,15 @@ namespace AquaMan.Controllers
     {
         private IAquaPinController _aquaPinController;
         private IAquaI2CController _aquaI2CController;
+        private IPinMasterController _pinMasterController;
+
         private double _waterHeight = 0.0;
 
-        public HomeController(IAquaPinController aquaPinController, IAquaI2CController aquaI2CController)
+        public HomeController(IAquaPinController aquaPinController, IAquaI2CController aquaI2CController, IPinMasterController pinMasterController)
         {
             _aquaPinController = aquaPinController;
             _aquaI2CController = aquaI2CController;
+            _pinMasterController = pinMasterController;
         }
 
         public IActionResult Index()
@@ -42,15 +45,25 @@ namespace AquaMan.Controllers
             return View();
         }
 
+        public IActionResult WaterChange()
+        {
+            _pinMasterController.WaterChange();
+            return Ok();
+        }
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public IActionResult TopLevel()
+        {
+            _aquaI2CController.SetTopLevel();
+            return Ok();
+        }
         public IActionResult Fill()
         {
             if (!_aquaPinController.IsFillActive && !_aquaPinController.IsDrainActive)
-                _aquaPinController.Fill();
+                _aquaPinController.FillSaltWater();
             return Ok();
         }
 

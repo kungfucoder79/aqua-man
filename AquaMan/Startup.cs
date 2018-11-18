@@ -22,7 +22,7 @@ namespace OrderingApplication
         private IAquaPinController _pinController;
         private IAquaI2CController _i2CController;
         private IFormDataService _formDataService;
-        private PinMasterController _pinMasterController;
+        private IPinMasterController _pinMasterController;
         #endregion
 
         #region Properties
@@ -46,11 +46,11 @@ namespace OrderingApplication
             _formDataService = new FormDataService();
 
             FeedingTimes feedingTimes = _formDataService.GetFeedingTimes();
-            _pinController = new AquaPinController(feedingTimes.Feedings);
+            _pinController = new AquaPinController(feedingTimes.Feedings, feedingTimes.Pinches);
 
             TankSpecs tankSpecs = _formDataService.GetTankSpecs();
             _i2CController = new AquaI2CController(tankSpecs.Width, tankSpecs.Height, tankSpecs.Depth);
-            //_pinMasterController = new PinMasterController(_i2CController, _pinController);
+            _pinMasterController = new PinMasterController(_i2CController, _pinController);
         }
 
         #endregion
@@ -73,6 +73,7 @@ namespace OrderingApplication
             builder.RegisterInstance(_pinController);
             builder.RegisterInstance(_i2CController);
             builder.RegisterInstance(_formDataService);
+            builder.RegisterInstance(_pinMasterController);
 
             return new AutofacServiceProvider(builder.Build());
         }
