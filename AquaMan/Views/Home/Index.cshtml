@@ -81,7 +81,7 @@
 	{
         $.get("/Home/GetWaterHeight", function (data) 
 		{ 
-            var waterPercent = (data / 2.8) * 100;
+            var waterPercent = (data / 12) * 100;
             $("#waterHeight").css('width', waterPercent + "%");
 			$("#WaterNum").html(data);
 			$("#WaterNumRaw").html(waterPercent);

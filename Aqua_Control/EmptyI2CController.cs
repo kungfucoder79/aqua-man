@@ -44,7 +44,7 @@ namespace Aqua_Control
         public I2CDevice I2CSensor { get; private set; }
         public float FinalCapMeasure1 { get; private set; }
         public float FinalCapMeasure2 { get; private set; }
-        public float FinalCapMeasure3 { get; private set; }
+        public float CapMeasureTest { get; private set; }
         public OneRegisterRead DataIn { get; private set; }
         #endregion
 

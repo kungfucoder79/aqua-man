@@ -7,7 +7,7 @@ namespace Aqua_Control
         OneRegisterRead DataIn { get; }
         float FinalCapMeasure1 { get; }
         float FinalCapMeasure2 { get; }
-        float FinalCapMeasure3 { get; }
+        float CapMeasureTest { get; }
 
         /// <summary>
         /// Gets the current instance of <see cref="I2CDevice"/>
