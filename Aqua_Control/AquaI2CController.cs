@@ -33,7 +33,7 @@ namespace Aqua_Control
         private const int _Meas3AddrBufLSB = 0x04;
         private const int _Meas3AddrBufMSB = 0x05;
         
-        private static float _InitCapMeasure2;
+        private static float _InitCapMeasure2 = 4.8f;
 
         private double _timecount = 0.00;
         #endregion
@@ -41,6 +41,8 @@ namespace Aqua_Control
         #region Properties
         public I2CDevice I2CSensor { get; private set; }
         public float FinalCapMeasure1 { get; private set; }
+        public float FinalCapMeasure1_Lock { get; private set; }
+        public float FinalCapMeasure3_Lock { get; private set; }
         public float FinalCapMeasure2 { get; private set; }
         public float FinalCapMeasure3 { get; private set; }
         public OneRegisterRead DataIn { get; private set; }
@@ -87,8 +89,8 @@ namespace Aqua_Control
         {
             _calabrate = true;
             _InitCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
-            FinalCapMeasure1 = ReadCapSen1_1(_Meas1AddrBufLSB, _Meas1AddrBufMSB);
-            FinalCapMeasure3 = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
+            FinalCapMeasure1_Lock = ReadCapSen1_1(_Meas1AddrBufLSB, _Meas1AddrBufMSB);
+            FinalCapMeasure3_Lock = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
             Console.WriteLine($"Time,FinalCapMeasure1,FinalCapMeasure2,FinalCapMeasure3,wtrHeight,waterHeight");
         }
 
@@ -106,8 +108,10 @@ namespace Aqua_Control
                 //byte[] FDCCongAddrBuf = new byte[] { 0x0C };
 
                 //DataIn = ReadOneReg(FDCCongAddrBuf);
+                FinalCapMeasure1 = ReadCapSen1_1(_Meas1AddrBufLSB, _Meas1AddrBufMSB);
+                FinalCapMeasure3 = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
                 FinalCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
-                wtrHeight = ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3));
+                wtrHeight = ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1_Lock - FinalCapMeasure3_Lock));
                 waterHeight = (1.47 * ((FinalCapMeasure2 - _InitCapMeasure2) / (FinalCapMeasure1 - FinalCapMeasure3)));
 
                 // Want to write the capacitance measures to a CSV file for easier graphing
@@ -117,7 +121,7 @@ namespace Aqua_Control
                 waterHeight = Filter(waterHeight);
                 //Rounded = Math.Round(waterHeight, 1, MidpointRounding.AwayFromZero);
                 _timecount += 0.05;
-                //Console.WriteLine($"{_timecount},{FinalCapMeasure1},{FinalCapMeasure2},{FinalCapMeasure3},{wtrHeight},{waterHeight}");
+                Console.WriteLine($"{FinalCapMeasure1},{FinalCapMeasure2},{FinalCapMeasure3},{waterHeight},{FinalCapMeasure1_Lock},{FinalCapMeasure3_Lock}");
 
                 //waterHeight = waterHeight / (2.24 / 12.754);
 
@@ -145,9 +149,15 @@ namespace Aqua_Control
         /// </summary>
         public void Reset()
         {
-            InitI2C();
-
+            while (FinalCapMeasure3 < 1)
+            { 
+                InitI2C();
+                FinalCapMeasure3 = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
+            }
             TopWaterHeight = 0.0;
+            FinalCapMeasure1_Lock = 2.001f;
+            FinalCapMeasure3_Lock = 0.92f;
+            _calabrate = true;
             IsTopSet = false;
         }
 
