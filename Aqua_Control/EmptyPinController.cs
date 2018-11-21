@@ -50,14 +50,22 @@ namespace Aqua_Control
         }
 
         /// <summary>
-        /// GUI click event for filling.  Will start the associated timer and set the selected GPIO pins LOW
-        /// to turn on the correct valve.
+        /// Starts the Fill salt water
         /// </summary>
-        /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void FillSaltWater()
         {
             IsFillActive = true;
-            Console.WriteLine($"----------------{DateTime.Now}: FILL ON");
+            Console.WriteLine($"----------------{DateTime.Now}: FILL SALT ON");
+            TimerController.SetPumpOnDelay();
+        }
+
+        /// <summary>
+        /// Starts the Fill fresh water
+        /// </summary>
+        public void FillFreshWater()
+        {
+            IsFillActive = true;
+            Console.WriteLine($"----------------{DateTime.Now}: FILL FRESH ON");
             TimerController.SetPumpOnDelay();
         }
 
@@ -65,7 +73,6 @@ namespace Aqua_Control
         /// GUI click event for draining.  Will start the associated timer and set the selected GPIO pins LOW
         /// to turn on the correct valves.
         /// </summary>
-        /// <returns>The value of the <see cref="_pumppinValue"/></returns>
         public void Drain()
         {
             IsDrainActive = true;

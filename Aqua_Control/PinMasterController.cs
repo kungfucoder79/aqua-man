@@ -89,7 +89,7 @@ namespace Aqua_Control
                 }
                 if (_waterHeight < _aquaI2CController.Delta5Height && _aquaPinController.IsFillActive == false && _aquaPinController.IsDrainActive == false)
                 {
-                    _aquaPinController.FillSaltWater();
+                    _aquaPinController.FillFreshWater();
                     Console.WriteLine($"{nameof(_aquaPinController.IsFillActive)} = {_aquaPinController.IsFillActive}");
                     Console.WriteLine($"{nameof(_aquaI2CController.Delta5Height)} = {_aquaI2CController.Delta5Height}");
                     Console.WriteLine($"{nameof(_aquaI2CController.WaterHeight)} = {_aquaI2CController.WaterHeight}");

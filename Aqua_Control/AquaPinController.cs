@@ -157,6 +157,24 @@ namespace Aqua_Control
         }
 
         /// <summary>
+        /// Starts the Fill fresh water
+        /// </summary>
+        public void FillFreshWater()
+        {
+            IsFillActive = true;
+
+            OpenValve(_inPin_Open, _inPin_Close);
+
+            OpenValve(_fillFreshPin_Open, _fillFreshPin_Close);
+
+            CloseValve(_outPin_Open, _outPin_Close);
+
+            CloseValve(_wastePin_Open, _wastePin_Close);
+
+            TimerController.SetPumpOnDelay();
+        }
+
+        /// <summary>
         /// Initicates the fill sequence. Will start the associated timer and set the GPIO pins.
         /// to turn on the correct valves.
         /// </summary>
@@ -207,13 +225,10 @@ namespace Aqua_Control
                 for (int j = 0; j < _feederSequences[0].Length; j++)
                 {
                     _feedPin1.Write(_feederSequences[0][j]);
-                    //Console.WriteLine($"Feeding {_feederSequences[j][0]}");
                     _feedPin2.Write(_feederSequences[1][j]);
-                    //Console.WriteLine($"Feeding {_feederSequences[j][1]}");
                     _feedPin3.Write(_feederSequences[2][j]);
-                    //Console.WriteLine($"Feeding {_feederSequences[j][2]}");
                     _feedPin4.Write(_feederSequences[3][j]);
-                    //Console.WriteLine($"Feeding {_feederSequences[j][3]}");
+
                     await Task.Delay(delay);
                 }
             }

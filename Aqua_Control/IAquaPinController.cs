@@ -36,9 +36,14 @@ namespace Aqua_Control
         void Stop();
 
         /// <summary>
-        /// Starts the Fill sequence
+        /// Starts the Fill salt water sequence
         /// </summary>
         void FillSaltWater();
+
+        /// <summary>
+        /// Starts the Fill fresh water
+        /// </summary>
+        void FillFreshWater();
 
         /// <summary>
         /// Starts the Feed sequence
