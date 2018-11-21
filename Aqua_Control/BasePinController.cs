@@ -39,7 +39,6 @@ namespace Aqua_Control
         /// </summary>
         public BasePinController(IEnumerable<DateTime?> feedingTimes, int pinches)
         {
-            //Console.WriteLine($"--------------{DateTime.Now}: Initializing Pin Controller");
             TimerController = new TimerController(feedingTimes);
             TimerController.PumpOff += _timerController_PumpOff;
             TimerController.PumpOn += _timerController_PumpOn;

@@ -18,7 +18,6 @@ namespace Aqua_Control
         private static TimeSpan _waterLevelCheckInterval = TimeSpan.FromMilliseconds(250);
         private double _waterHeight;
         private DateTime _waterChangeTime;
-        private bool _isWaterChangeActive;
         private bool _isChangeDrainDone;
         #endregion
 
@@ -32,9 +31,8 @@ namespace Aqua_Control
         {
             _aquaI2CController = aquaI2CController;
             _aquaPinController = aquaPinController;
-            _waterLevelTimer = new Timer(DoThings, null, TimeSpan.Zero, _waterLevelCheckInterval);
+            _waterLevelTimer = new Timer(CheckTopOff, null, TimeSpan.Zero, _waterLevelCheckInterval);
             _waterChangeTimer = new Timer(CheckWaterChangeLevel, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-            _isWaterChangeActive = false;
             _isChangeDrainDone = false;
             _waterChangeTime = new DateTime();
         }
@@ -60,7 +58,6 @@ namespace Aqua_Control
             {
                 _aquaPinController.Stop();
                 Console.WriteLine("Water Changed: WaterChange Off");
-                _isWaterChangeActive = false;
                 _waterChangeTimer.Change(Timeout.Infinite, Timeout.Infinite);
                 _waterLevelTimer.Change(TimeSpan.Zero, _waterLevelCheckInterval);
                 _isChangeDrainDone = false;
@@ -74,7 +71,7 @@ namespace Aqua_Control
         /// Checks the water level of the tank and decides it need to stop the fill sequence
         /// </summary>
         /// <param name="state"></param>
-        private void DoThings(object state)
+        private void CheckTopOff(object state)
         {
             _waterHeight = _aquaI2CController.WaterHeight;
             if (_aquaI2CController.IsTopSet)
