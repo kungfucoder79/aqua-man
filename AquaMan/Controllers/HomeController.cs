@@ -31,11 +31,6 @@ namespace AquaMan.Controllers
             return View();
         }
 
-        public IActionResult WaterChange()
-        {
-            _pinMasterController.WaterChange();
-            return Ok();
-        }
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
@@ -46,50 +41,6 @@ namespace AquaMan.Controllers
             _aquaI2CController.SetTopLevel();
             return Ok();
         }
-        public IActionResult Fill()
-        {
-            if (!_aquaPinController.IsFillActive && !_aquaPinController.IsDrainActive)
-                _aquaPinController.FillSaltWater();
-            return Ok();
-        }
-
-        public IActionResult Drain()
-        {
-            if (!_aquaPinController.IsFillActive && !_aquaPinController.IsDrainActive)
-                _aquaPinController.Drain();
-            return Ok();
-        }
-
-        public IActionResult V1()
-        {
-            _aquaPinController.ToggleValve1();
-            return Ok();
-        }
-
-        public IActionResult V2()
-        {
-            _aquaPinController.ToggleValve2();
-            return Ok();
-        }
-
-        public IActionResult V3()
-        {
-            _aquaPinController.ToggleValve3();
-            return Ok();
-        }
-
-        public IActionResult V4()
-        {
-            _aquaPinController.ToggleValve4();
-            return Ok();
-        }
-
-        public IActionResult V5()
-        {
-            _aquaPinController.ToggleValve5();
-            return Ok();
-        }
-
         public IActionResult Feed()
         {
             _aquaPinController.Feed();
@@ -98,12 +49,6 @@ namespace AquaMan.Controllers
         public IActionResult ResetI2C()
         {
             _aquaI2CController.Reset();
-            return Ok();
-        }
-
-        public IActionResult Stop()
-        {
-            _aquaPinController.Stop();
             return Ok();
         }
 

@@ -5,48 +5,6 @@
 
 
 <script>
-    function Fill() {
-        $.get("/Home/Fill", function (data) {
-            $("p").html(data);
-        });
-    }
-
-    function Drain() {
-        $.get("/Home/Drain", function (data) {
-            $("p").html(data);
-        });
-    }
-
-    function V1() {
-        $.get("/Home/V1", function (data) {
-            $("p").html(data);
-        });
-    }
-
-    function V2() {
-        $.get("/Home/V2", function (data) {
-            $("p").html(data);
-        });
-    }
-
-    function V3() {
-        $.get("/Home/V3", function (data) {
-            $("p").html(data);
-        });
-    }
-
-    function V4() {
-        $.get("/Home/V4", function (data) {
-            $("p").html(data);
-        });
-    }
-
-    function V5() {
-        $.get("/Home/V5", function (data) {
-            $("p").html(data);
-        });
-    }
-
     function Feed() {
         $.get("/Home/Feed", function (data) {
             $("p").html(data);
@@ -58,23 +16,6 @@
         });
     }
     
-    function TopLevel() {
-        $.get("/Home/TopLevel", function (data) {
-            $("p").html(data);
-        });
-    }
-
-    function Stop() {
-        $.get("/Home/Stop", function (data) {
-            $("p").html(data);
-        });
-    }
-    function WaterChange() {
-        $.get("/Home/WaterChange", function (data) {
-            $("p").html(data);
-        });
-    }
-
     setInterval(GetWaterHeight, 250);
 
     function GetWaterHeight() 
@@ -106,10 +47,10 @@
     <div class="row">
         <div class="col-md-8">
             <form>
-                <button type="button" onclick="TopLevel()" value="TopLevel">Set Top Water Level</button>
-                <br />
-                <br />
                 <button type="button" onclick="Feed()" value="Feed">Start Feeder</button>
+                <br />
+                <br />
+                <button type="button" onclick="TopLevel()" value="TopLevel">Set Top Water Level</button>
                 <br />
                 <br />
                 <button type="button" onclick="Calabrate()" value="Calabrate">Calabrate Water Sensor</button>
