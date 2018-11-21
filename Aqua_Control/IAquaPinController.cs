@@ -17,6 +17,9 @@ namespace Aqua_Control
         /// </summary>
         bool IsDrainActive { get; }
 
+        /// <summary>
+        /// Gets if the pump is currently active
+        /// </summary>
         bool IsPumpActive { get; }
         
         /// <summary>

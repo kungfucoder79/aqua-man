@@ -44,14 +44,14 @@ namespace AquaMan.Controllers
         }
         public IActionResult Fill()
         {
-            if (!_aquaPinController.IsFillActive && !_aquaPinController.IsDrainActive)
+            if (!_aquaPinController.IsFillActive && !_aquaPinController.IsDrainActive && !_aquaPinController.IsPumpActive)
                 _aquaPinController.FillSaltWater();
             return Ok();
         }
 
         public IActionResult Drain()
         {
-            if (!_aquaPinController.IsFillActive && !_aquaPinController.IsDrainActive)
+            if (!_aquaPinController.IsFillActive && !_aquaPinController.IsDrainActive && !_aquaPinController.IsPumpActive)
                 _aquaPinController.Drain();
             return Ok();
         }
