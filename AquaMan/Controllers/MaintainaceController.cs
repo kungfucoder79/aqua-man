@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AquaMan.Controllers
 {
-    public class HomeController : Controller
+    public class MaintainaceController : Controller
     {
         private IAquaPinController _aquaPinController;
         private IAquaI2CController _aquaI2CController;
@@ -19,14 +19,14 @@ namespace AquaMan.Controllers
 
         private double _waterHeight = 0.0;
 
-        public HomeController(IAquaPinController aquaPinController, IAquaI2CController aquaI2CController, IPinMasterController pinMasterController)
+        public MaintainaceController(IAquaPinController aquaPinController, IAquaI2CController aquaI2CController, IPinMasterController pinMasterController)
         {
             _aquaPinController = aquaPinController;
             _aquaI2CController = aquaI2CController;
             _pinMasterController = pinMasterController;
         }
 
-        public IActionResult Index()
+        public IActionResult Maintainace()
         {
             return View();
         }
@@ -35,10 +35,6 @@ namespace AquaMan.Controllers
         {
             _pinMasterController.WaterChange();
             return Ok();
-        }
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         public IActionResult TopLevel()

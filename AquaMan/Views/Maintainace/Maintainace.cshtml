@@ -6,71 +6,71 @@
 
 <script>
     function Fill() {
-        $.get("/Home/Fill", function (data) {
+        $.get("/Maintainace/Fill", function (data) {
             $("p").html(data);
         });
     }
 
     function Drain() {
-        $.get("/Home/Drain", function (data) {
+        $.get("/Maintainace/Drain", function (data) {
             $("p").html(data);
         });
     }
 
     function V1() {
-        $.get("/Home/V1", function (data) {
+        $.get("/Maintainace/V1", function (data) {
             $("p").html(data);
         });
     }
 
     function V2() {
-        $.get("/Home/V2", function (data) {
+        $.get("/Maintainace/V2", function (data) {
             $("p").html(data);
         });
     }
 
     function V3() {
-        $.get("/Home/V3", function (data) {
+        $.get("/Maintainace/V3", function (data) {
             $("p").html(data);
         });
     }
 
     function V4() {
-        $.get("/Home/V4", function (data) {
+        $.get("/Maintainace/V4", function (data) {
             $("p").html(data);
         });
     }
 
     function V5() {
-        $.get("/Home/V5", function (data) {
+        $.get("/Maintainace/V5", function (data) {
             $("p").html(data);
         });
     }
 
     function Feed() {
-        $.get("/Home/Feed", function (data) {
+        $.get("/Maintainace/Feed", function (data) {
             $("p").html(data);
         });
     }
     function ResetI2C() {
-        $.get("/Home/ResetI2C", function (data) {
+        $.get("/Maintainace/ResetI2C", function (data) {
             $("p").html(data);
         });
     }
     
     function TopLevel() {
-        $.get("/Home/TopLevel", function (data) {
+        $.get("/Maintainace/TopLevel", function (data) {
             $("p").html(data);
         });
     }
 
     function Stop() {
-        $.get("/Home/Stop", function (data) {
+        $.get("/Maintainace/Stop", function (data) {
             $("p").html(data);
         });
     }
     function WaterChange() {
-        $.get("/Home/WaterChange", function (data) {
+        $.get("/Maintainace/WaterChange", function (data) {
             $("p").html(data);
         });
     }
@@ -79,7 +79,7 @@
 
     function GetWaterHeight() 
 	{
-        $.get("/Home/GetWaterHeight", function (data) 
+        $.get("/Maintainace/GetWaterHeight", function (data) 
 		{ 
             var waterPercent = (data / 12) * 100;
             $("#waterHeight").css('width', waterPercent + "%");
@@ -89,23 +89,27 @@
 		});
     }
     function Calabrate() {
-        $.get("/Home/Calabrate", function (data) {
+        $.get("/Maintainace/Calabrate", function (data) {
             $("p").html(data);
         });
     }
 </script>
 <div id="page-wrapper">
     <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">
-                Welcome to the Aqua Man! <br />
-                <small>Your complete tank automation system</small>
-            </h1>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-md-8">
             <form>
+                <button type="button" onclick="WaterChange()" value="WaterChange">Water Change</button>
+                <br />
+                <br />
+                <button type="button" onclick="Fill()" value="Fill">Fill</button>
+                <br />
+                <br />
+                <button type="button" onclick="Drain()" value="Drain">Drain</button>
+                <br />
+                <br />
+                <button type="button" onclick="Stop()" value="Stop">Stop</button>
+                <br />
+                <br />
                 <button type="button" onclick="TopLevel()" value="TopLevel">Set Top Water Level</button>
                 <br />
                 <br />
@@ -118,7 +122,24 @@
                 <button type="button" onclick="ResetI2C()" value="ResetI2C">Reset Water Sensor</button>
                 <br />
                 <br />
-                <label>Water Level</label>
+                <button type="button" onclick="V1()" value="V1">Toggle Output Valve</button>
+                <br />
+                <br />
+                <button type="button" onclick="V2()" value="V2">Toggle Input Valve</button>
+                <br />
+                <br />
+                <button type="button" onclick="V3()" value="V3">Toggle Fresh Water Valve</button>
+                <br />
+                <br />
+                <button type="button" onclick="V4()" value="V4">Toggle Salt Water Valve</button>
+                <br />
+                <br />
+                <button type="button" onclick="V5()" value="V5">Toggle Drain Water Valve</button>
+                <br />
+                <p id="WaterNum" />
+                <br />
+                <p id="WaterNumRaw" />
+                <br />
                 <div class="progress">
                     <progressbar id="waterHeight" />
                 </div>
