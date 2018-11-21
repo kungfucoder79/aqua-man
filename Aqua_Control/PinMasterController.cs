@@ -15,9 +15,11 @@ namespace Aqua_Control
         private IAquaPinController _aquaPinController;
         private Timer _waterLevelTimer;
         private Timer _waterChangeTimer;
-        private static TimeSpan _waterLevelCheckInterval = TimeSpan.FromMilliseconds(250);
+        private Timer _waterChangeCheckTimer;
+        private static TimeSpan _waterLevelCheckInterval;
         private double _waterHeight;
         private DateTime _waterChangeTime;
+        private TimeSpan _waterChangeInterval;
         private bool _isChangeDrainDone;
         #endregion
 
@@ -27,19 +29,24 @@ namespace Aqua_Control
         /// </summary>
         /// <param name="aquaI2CController"></param>
         /// <param name="aquaPinController"></param>
-        public PinMasterController(IAquaI2CController aquaI2CController, IAquaPinController aquaPinController)
+        public PinMasterController(IAquaI2CController aquaI2CController, IAquaPinController aquaPinController, DateTime waterChangeTime)
         {
             _aquaI2CController = aquaI2CController;
             _aquaPinController = aquaPinController;
             _waterLevelTimer = new Timer(CheckTopOff, null, TimeSpan.Zero, _waterLevelCheckInterval);
             _waterChangeTimer = new Timer(CheckWaterChangeLevel, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
             _isChangeDrainDone = false;
-            _waterChangeTime = new DateTime();
+            _waterChangeTime = waterChangeTime;
+            _waterChangeInterval = TimeSpan.FromSeconds(2);
+            _waterLevelCheckInterval = TimeSpan.FromMilliseconds(250);
+
+            _waterChangeCheckTimer = new Timer(CheckWaterChangeTime, null, TimeSpan.Zero, _waterChangeInterval);
+
         }
 
         private void CheckWaterChangeLevel(object state)
         {
-            if(_aquaI2CController.WaterHeight < _aquaI2CController.Delta10Height && _isChangeDrainDone == false)
+            if (_aquaI2CController.WaterHeight < _aquaI2CController.Delta10Height && _isChangeDrainDone == false)
             {
                 _isChangeDrainDone = true;
                 _aquaPinController.Stop();
@@ -61,7 +68,6 @@ namespace Aqua_Control
                 _waterChangeTimer.Change(Timeout.Infinite, Timeout.Infinite);
                 _waterLevelTimer.Change(TimeSpan.Zero, _waterLevelCheckInterval);
                 _isChangeDrainDone = false;
-                
             }
         }
         #endregion
@@ -90,13 +96,30 @@ namespace Aqua_Control
                 }
             }
         }
-        
+
+        /// <summary>
+        /// Manual override for the Water Change sequence
+        /// </summary>
         public void WaterChange()
         {
             _waterLevelTimer.Change(Timeout.Infinite, Timeout.Infinite);
             _aquaPinController.Drain();
             _waterChangeTimer.Change(TimeSpan.Zero, _waterLevelCheckInterval);
         }
+
+        public void UpdateWaterChangeTime(DateTime waterChangeTime)
+        {
+            _waterChangeTime = waterChangeTime;
+        }
+
+        private void CheckWaterChangeTime(object state)
+        {
+            if (TimerController.IsTimeReadyToRun(_waterChangeTime, _waterChangeInterval))
+            {
+                WaterChange();
+            }
+        }
+        
         #endregion
     }
 }

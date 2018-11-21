@@ -18,7 +18,16 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label asp-for="Height" class="col-xs-12">Tank Height (inch)</label>
+                    <label asp-for="WaterChangeTime" class="col-xs-12">Water Change Time of Day</label>
+                    <div class="col-xs-9">
+                        <span asp-validation-for="WaterChangeTime" />
+                    </div>
+                    <div class="col-xs-9">
+                        <input asp-for="WaterChangeTime" type="time" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Height" class="col-xs-12">Tank Height (cm)</label>
                     <div class="col-xs-9">
                         <span asp-validation-for="Height" />
                     </div>
@@ -27,7 +36,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Width" class="col-xs-12">Tank Width (inch)</label>
+                    <label asp-for="Width" class="col-xs-12">Tank Width (cm)</label>
                     <div class="col-xs-9">
                         <span asp-validation-for="Width" />
                     </div>
@@ -36,7 +45,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Depth" class="col-xs-12">Tank Depth (inch)</label>
+                    <label asp-for="Depth" class="col-xs-12">Tank Depth (cm)</label>
                     <div class="col-xs-9">
                         <span asp-validation-for="Depth" />
                     </div>

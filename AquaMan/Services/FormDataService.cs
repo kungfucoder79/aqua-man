@@ -29,7 +29,7 @@ namespace AquaMan.Services
         private const string FEEDING_TIME_5 = "Time5";
 
         private const string TANK_SPECS_START_ELM = "TankSpecs";
-        private const string TANK_SPECS_LEVEL = "TopWaterLevel";
+        private const string TANK_SPECS_WATER_CHANGE = "WaterChangeTime";
         private const string TANK_SPECS_DEPTH = "Depth";
         private const string TANK_SPECS_HEIGHT = "Height";
         private const string TANK_SPECS_WIDTH = "Width";
@@ -84,14 +84,14 @@ namespace AquaMan.Services
                 for (int x = 1; x <= rootNode.ChildNodes.Count - 1; x++)
                 {
                     XmlNode test = rootNode.SelectSingleNode($"{FEEDING_TIME}{x}");
-                    feedingTimes.Feedings.Add(GetFeedingTime(rootNode.SelectSingleNode($"{FEEDING_TIME}{x}").FirstChild?.Value));
+                    feedingTimes.Feedings.Add(GetDateTime(rootNode.SelectSingleNode($"{FEEDING_TIME}{x}").FirstChild?.Value));
                 }
             }
 
             return feedingTimes;
         }
 
-        private DateTime? GetFeedingTime(string xmlDateTime)
+        private DateTime? GetDateTime(string xmlDateTime)
         {
             DateTime? dateTime;
             if (string.IsNullOrEmpty(xmlDateTime))
@@ -165,6 +165,7 @@ namespace AquaMan.Services
                 document.SecureLoadXml(xmlData);
 
                 XmlNode rootNode = document.SelectSingleNode(TANK_SPECS_START_ELM);
+                tankSpecs.WaterChangeTime = GetDateTime(rootNode.SelectSingleNode($"{TANK_SPECS_WATER_CHANGE}").FirstChild.Value).Value;
                 tankSpecs.Depth = double.Parse(rootNode.SelectSingleNode(TANK_SPECS_DEPTH).FirstChild.Value);
                 tankSpecs.Height = double.Parse(rootNode.SelectSingleNode(TANK_SPECS_HEIGHT).FirstChild.Value);
                 tankSpecs.Width = double.Parse(rootNode.SelectSingleNode(TANK_SPECS_WIDTH).FirstChild.Value);
@@ -185,6 +186,7 @@ namespace AquaMan.Services
                 xmlWriter.WriteStartDocument();
                 xmlWriter.WriteStartElement(TANK_SPECS_START_ELM);
 
+                xmlWriter.WriteElementString(TANK_SPECS_WATER_CHANGE, tankSpecs.WaterChangeTime.ToString());
                 xmlWriter.WriteElementString(TANK_SPECS_HEIGHT, tankSpecs.Height.ToString());
                 xmlWriter.WriteElementString(TANK_SPECS_WIDTH, tankSpecs.Width.ToString());
                 xmlWriter.WriteElementString(TANK_SPECS_DEPTH, tankSpecs.Depth.ToString());

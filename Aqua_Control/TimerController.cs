@@ -78,21 +78,33 @@ namespace Aqua_Control
         {
             foreach (DateTime feedingTime in FeedingTimes.Where(p => p != null).ToArray())
             {
-                if (IsFeederReadyToRun(feedingTime))
+                if (IsTimeReadyToRun(feedingTime, _feedingInterval))
                 {
                     OnFeederStart(EventArgs.Empty);
                 }
             }
         }
-        private bool IsFeederReadyToRun(DateTime timeToCheck)
+
+        /// <summary>
+        /// Gets whether the time to check lands with in the interval/>
+        /// </summary>
+        /// <param name="timeToCheck"></param>
+        /// <param name="interval"></param>
+        /// <returns></returns>
+        public static bool IsTimeReadyToRun(DateTime timeToCheck, TimeSpan interval)
         {
             DateTime currentTime = GetCurrentDayTime(DateTime.Now);
             DateTime currentTimeToCheck = GetCurrentDayTime(timeToCheck);
-            DateTime lastTime = currentTime - _feedingInterval;
+            DateTime lastTime = currentTime - interval;
             return (lastTime <= currentTimeToCheck && currentTimeToCheck < currentTime);
         }
 
-        private DateTime GetCurrentDayTime(DateTime dt)
+        /// <summary>
+        /// Gets the Date time with the current year month and day
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public static DateTime GetCurrentDayTime(DateTime dt)
         {
             return new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, dt.Hour, dt.Minute, dt.Second);
         }

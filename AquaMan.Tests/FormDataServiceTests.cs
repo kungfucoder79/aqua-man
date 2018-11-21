@@ -19,6 +19,7 @@ namespace AquaMan.Tests
                                             </FeedingTimes>";
 
         private const string tankSpecsXML = @"<TankSpecs>
+                                              <WaterChangeTime>10/10/2018 11:00:00 AM</WaterChangeTime>
                                               <Height>6</Height>
                                               <Width>12</Width>
                                               <Depth>22</Depth>
@@ -48,11 +49,12 @@ namespace AquaMan.Tests
             double expectedHeight = 6;
             double expectedWidth = 12;
             double expectedDepth = 22;
+            DateTime expectedWaterChangeTime = new DateTime(2018, 10, 10, 11, 00, 00);
 
-
-            FormDataService formDataService = new FormDataService();
+                FormDataService formDataService = new FormDataService();
             TankSpecs tankSpecs = formDataService.DeSerializeTankSpecs(tankSpecsXML);
             
+            Assert.AreEqual(expectedWaterChangeTime, tankSpecs.WaterChangeTime, $"{nameof(tankSpecs.WaterChangeTime)} is not the same");
             Assert.AreEqual(expectedDepth, tankSpecs.Depth, $"{nameof(tankSpecs.Depth)} is not the same");
             Assert.AreEqual(expectedWidth, tankSpecs.Width, $"{nameof(tankSpecs.Width)} is not the same");
             Assert.AreEqual(expectedHeight, tankSpecs.Height, $"{nameof(tankSpecs.Height)} is not the same");
