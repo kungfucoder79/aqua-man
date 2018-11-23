@@ -25,10 +25,16 @@
             var waterPercent = (data / 12) * 100;
             $("#waterHeight").css('width', waterPercent + "%");
 			$("#WaterNum").html(data);
-			$("#WaterNumRaw").html(waterPercent);
-			
+			$("#WaterNumRaw").html(waterPercent);			
 		});
     }
+
+	function TopLevel() {
+        $.get("/Home/TopLevel", function (data) {
+            $("p").html(data);
+        });
+    }
+
     function Calabrate() {
         $.get("/Home/Calabrate", function (data) {
             $("p").html(data);

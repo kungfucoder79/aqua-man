@@ -89,7 +89,7 @@ namespace Aqua_Control
             _InitCapMeasure2 = ReadCapSen1_1(_Meas2AddrBufLSB, _Meas2AddrBufMSB);
             FinalCapMeasure1 = ReadCapSen1_1(_Meas1AddrBufLSB, _Meas1AddrBufMSB);
             FinalCapMeasure3 = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
-            //Console.WriteLine($"FinalCapMeasure1,FinalCapMeasure2,FinalCapMeasure3,waterHeight,FinalCapMeasure1UpDate,FinalCapMeasure3UpDate");
+            Console.WriteLine($"FinalCapMeasure1,FinalCapMeasure2,FinalCapMeasure3,waterHeight,FinalCapMeasure1UpDate,FinalCapMeasure3UpDate");
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Aqua_Control
                 FinalCapMeasure1UpDate = ReadCapSen1_1(_Meas1AddrBufLSB, _Meas1AddrBufMSB);
                 FinalCapMeasure3UpDate = ReadCapSen1_1(_Meas3AddrBufLSB, _Meas3AddrBufMSB);
 
-                Console.WriteLine($"{FinalCapMeasure1},{FinalCapMeasure2},{FinalCapMeasure3},{waterHeight},{FinalCapMeasure1UpDate},{FinalCapMeasure3UpDate}");
+                //Console.WriteLine($"{FinalCapMeasure1},{FinalCapMeasure2},{FinalCapMeasure3},{waterHeight},{FinalCapMeasure1UpDate},{FinalCapMeasure3UpDate}");
             }
             WaterHeight = waterHeight;
         }

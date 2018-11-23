@@ -35,7 +35,7 @@ namespace Aqua_Control
         public double WaterHeight { get; protected set; }
 
         public double TopWaterHeight { get; protected set; }
-
+        public double _outputWaterDelta { get; private set; }
         public bool IsTopSet { get; protected set; }
         /// <summary>
         /// Total volume of the tank
@@ -160,6 +160,9 @@ namespace Aqua_Control
         {
             IsTopSet = true;
             TopWaterHeight = WaterHeight;
+            _outputWaterDelta = TopWaterHeight - (_TankHeight * 0.05);
+            Console.WriteLine($"Set Top Level to {TopWaterHeight}");
+            Console.WriteLine($"The delta 5% is {_outputWaterDelta}");
         }
         #endregion
     }

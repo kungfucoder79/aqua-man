@@ -33,12 +33,13 @@ namespace Aqua_Control
         {
             _aquaI2CController = aquaI2CController;
             _aquaPinController = aquaPinController;
+            _waterLevelCheckInterval = TimeSpan.FromMilliseconds(250);
             _waterLevelTimer = new Timer(CheckTopOff, null, TimeSpan.Zero, _waterLevelCheckInterval);
             _waterChangeTimer = new Timer(CheckWaterChangeLevel, null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
             _isChangeDrainDone = false;
             _waterChangeTime = waterChangeTime;
             _waterChangeInterval = TimeSpan.FromSeconds(2);
-            _waterLevelCheckInterval = TimeSpan.FromMilliseconds(250);
+            
 
             _waterChangeCheckTimer = new Timer(CheckWaterChangeTime, null, TimeSpan.Zero, _waterChangeInterval);
 
