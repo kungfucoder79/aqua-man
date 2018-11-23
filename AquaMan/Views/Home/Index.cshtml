@@ -23,9 +23,7 @@
         $.get("/Home/GetWaterHeight", function (data) 
 		{ 
             var waterPercent = (data / 12) * 100;
-            $("#waterHeight").css('width', waterPercent + "%");
-			$("#WaterNum").html(data);
-			$("#WaterNumRaw").html(waterPercent);			
+            $("#waterHeight").css('width', waterPercent + "%");		
 		});
     }
 
