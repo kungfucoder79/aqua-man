@@ -93,29 +93,59 @@ namespace Aqua_Control
             Console.WriteLine($"----------------{DateTime.Now}: FEEDING STOPPED");
         }
 
-        public void ToggleValve1()
+        /// <summary>
+        /// Toggles the output valve
+        /// </summary>
+        /// <returns>the state of the valve</returns>
+        public bool ToggleValve1()
         {
-            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve1)}");
+            _V1Latch = !_V1Latch;
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve1)}: {_V1Latch}");
+            return _V1Latch;
         }
 
-        public void ToggleValve2()
+        /// <summary>
+        /// Toggles the input valve
+        /// </summary>
+        /// <returns>the state of the valve</returns>
+        public bool ToggleValve2()
         {
-            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve2)}");
+            _V2Latch = !_V2Latch;
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve2)}: {_V2Latch}");
+            return _V2Latch;
         }
 
-        public void ToggleValve3()
+        /// <summary>
+        /// Toggles the fresh water valve
+        /// </summary>
+        /// <returns>the state of the valve</returns>
+        public bool ToggleValve3()
         {
-            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve3)}");
+            _V3Latch = !_V3Latch;
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve3)}: {_V3Latch}");
+            return _V3Latch;
         }
 
-        public void ToggleValve4()
+        /// <summary>
+        /// Toggles the salt water valve
+        /// </summary>
+        /// <returns>the state of the valve</returns>
+        public bool ToggleValve4()
         {
-            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve4)}");
+            _V4Latch = !_V4Latch;
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve4)}: {_V4Latch}");
+            return _V4Latch;
         }
 
-        public void ToggleValve5()
+        /// <summary>
+        /// Toggles the drain valve
+        /// </summary>
+        /// <returns>the state of the valve</returns>
+        public bool ToggleValve5()
         {
-            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve5)}");
+            _V5Latch = !_V5Latch;
+            Console.WriteLine($"----------------{DateTime.Now}: {nameof(ToggleValve5)}: {_V5Latch}");
+            return _V5Latch;
         }
         #endregion
     }

@@ -15,19 +15,17 @@
             $("p").html(data);
         });
     }
-    
+
     setInterval(GetWaterHeight, 250);
 
-    function GetWaterHeight() 
-	{
-        $.get("/Home/GetWaterHeight", function (data) 
-		{ 
+    function GetWaterHeight() {
+        $.get("/Home/GetWaterHeight", function (data) {
             var waterPercent = (data / 12) * 100;
-            $("#waterHeight").css('width', waterPercent + "%");		
-		});
+            $("#waterHeight").css('width', waterPercent + "%");
+        });
     }
 
-	function TopLevel() {
+    function TopLevel() {
         $.get("/Home/TopLevel", function (data) {
             $("p").html(data);
         });
@@ -50,25 +48,23 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-            <form>
-                <button type="button" onclick="Feed()" value="Feed">Start Feeder</button>
-                <br />
-                <br />
-                <button type="button" onclick="TopLevel()" value="TopLevel">Set Top Water Level</button>
-                <br />
-                <br />
-                <button type="button" onclick="Calabrate()" value="Calabrate">Calabrate Water Sensor</button>
-                <br />
-                <br />
-                <button type="button" onclick="ResetI2C()" value="ResetI2C">Reset Water Sensor</button>
-                <br />
-                <br />
-                <label>Water Level</label>
-                <div class="progress">
-                    <progressbar id="waterHeight" />
-                </div>
-                <br />
-            </form>
+            <button class="button" type="button" onclick="Feed()" value="Feed">Start Feeder</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="TopLevel()" value="TopLevel">Set Top Water Level</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="Calabrate()" value="Calabrate">Calabrate Water Sensor</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="ResetI2C()" value="ResetI2C">Reset Water Sensor</button>
+            <br />
+            <br />
+            <label>Water Level</label>
+            <div class="progress">
+                <progressbar id="waterHeight" />
+            </div>
+            <br />
         </div>
     </div>
 </div>

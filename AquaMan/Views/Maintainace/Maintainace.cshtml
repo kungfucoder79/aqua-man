@@ -3,7 +3,12 @@
 @using AquaMan.Services
 @inject IFormDataService formHelper
 
-
+<style>
+    .valvebutton {
+        background-color: #f44336; /* Red */
+        color: white;
+    }
+</style>
 <script>
     function Fill() {
         $.get("/Maintainace/Fill", function (data) {
@@ -20,30 +25,70 @@
     function V1() {
         $.get("/Maintainace/V1", function (data) {
             $("p").html(data);
+            if (data) {
+                //if valve is off show red
+                $("#Output").css('background-color', "#4CAF50");
+            }
+            else {
+                //if valve is on show green
+                $("#Output").css('background-color', "#f44336");
+            }
         });
     }
 
     function V2() {
         $.get("/Maintainace/V2", function (data) {
             $("p").html(data);
+            if (data) {
+                //if valve is off show red
+                $("#input").css('background-color', "#4CAF50");
+            }
+            else {
+                //if valve is on show green
+                $("#input").css('background-color', "#f44336");
+            }
         });
     }
 
     function V3() {
         $.get("/Maintainace/V3", function (data) {
             $("p").html(data);
+            if (data) {
+                //if valve is off show red
+                $("#fresh").css('background-color', "#4CAF50");
+            }
+            else {
+                //if valve is on show green
+                $("#fresh").css('background-color', "#f44336");
+            }
         });
     }
 
     function V4() {
         $.get("/Maintainace/V4", function (data) {
             $("p").html(data);
+            if (data) {
+                //if valve is off show red
+                $("#salt").css('background-color', "#4CAF50");
+            }
+            else {
+                //if valve is on show green
+                $("#salt").css('background-color', "#f44336");
+            }
         });
     }
 
     function V5() {
         $.get("/Maintainace/V5", function (data) {
             $("p").html(data);
+            if (data) {
+                //if valve is off show red
+                $("#drain").css('background-color', "#4CAF50");
+            }
+            else {
+                //if valve is on show green
+                $("#drain").css('background-color', "#f44336");
+            }
         });
     }
 
@@ -57,7 +102,7 @@
             $("p").html(data);
         });
     }
-    
+
     function TopLevel() {
         $.get("/Maintainace/TopLevel", function (data) {
             $("p").html(data);
@@ -77,16 +122,12 @@
 
     setInterval(GetWaterHeight, 250);
 
-    function GetWaterHeight() 
-	{
-        $.get("/Maintainace/GetWaterHeight", function (data) 
-		{ 
+    function GetWaterHeight() {
+        $.get("/Maintainace/GetWaterHeight", function (data) {
             var waterPercent = (data / 12) * 100;
             $("#waterHeight").css('width', waterPercent + "%");
-			$("#WaterNum").html(data);
-			$("#WaterNumRaw").html(waterPercent);
-			
-		});
+            $("#WaterNum").html(data);
+        });
     }
     function Calabrate() {
         $.get("/Maintainace/Calabrate", function (data) {
@@ -97,54 +138,52 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-md-8">
-            <form>
-                <button type="button" onclick="WaterChange()" value="WaterChange">Water Change</button>
-                <br />
-                <br />
-                <button type="button" onclick="Fill()" value="Fill">Fill</button>
-                <br />
-                <br />
-                <button type="button" onclick="Drain()" value="Drain">Drain</button>
-                <br />
-                <br />
-                <button type="button" onclick="Stop()" value="Stop">Stop</button>
-                <br />
-                <br />
-                <button type="button" onclick="TopLevel()" value="TopLevel">Set Top Water Level</button>
-                <br />
-                <br />
-                <button type="button" onclick="Feed()" value="Feed">Start Feeder</button>
-                <br />
-                <br />
-                <button type="button" onclick="Calabrate()" value="Calabrate">Calabrate Water Sensor</button>
-                <br />
-                <br />
-                <button type="button" onclick="ResetI2C()" value="ResetI2C">Reset Water Sensor</button>
-                <br />
-                <br />
-                <button type="button" onclick="V1()" value="V1">Toggle Output Valve</button>
-                <br />
-                <br />
-                <button type="button" onclick="V2()" value="V2">Toggle Input Valve</button>
-                <br />
-                <br />
-                <button type="button" onclick="V3()" value="V3">Toggle Fresh Water Valve</button>
-                <br />
-                <br />
-                <button type="button" onclick="V4()" value="V4">Toggle Salt Water Valve</button>
-                <br />
-                <br />
-                <button type="button" onclick="V5()" value="V5">Toggle Drain Water Valve</button>
-                <br />
-                <p id="WaterNum" />
-                <br />
-                <p id="WaterNumRaw" />
-                <br />
-                <div class="progress">
-                    <progressbar id="waterHeight" />
-                </div>
-                <br />
-            </form>
+            <button class="button" type="button" onclick="WaterChange()" value="WaterChange">Water Change</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="Fill()" value="Fill">Fill</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="Drain()" value="Drain">Drain</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="Stop()" value="Stop">Stop</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="TopLevel()" value="TopLevel">Set Top Water Level</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="Feed()" value="Feed">Start Feeder</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="Calabrate()" value="Calabrate">Calabrate Water Sensor</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="ResetI2C()" value="ResetI2C">Reset Water Sensor</button>
+            <br />
+            <br />
+            <button id="Output" class="button valvebutton" type="button" onclick="V1()" value="V1">Toggle Output Valve</button>
+            <br />
+            <br />
+            <button id="input" class="button valvebutton" type="button" onclick="V2()" value="V2">Toggle Input Valve</button>
+            <br />
+            <br />
+            <button id="fresh" class="button valvebutton" type="button" onclick="V3()" value="V3">Toggle Fresh Water Valve</button>
+            <br />
+            <br />
+            <button id="salt" class="button valvebutton" type="button" onclick="V4()" value="V4">Toggle Salt Water Valve</button>
+            <br />
+            <br />
+            <button id="drain" class="button valvebutton" onclick="V5()" value="V5">Toggle Drain Water Valve</button>
+            <br />
+            <br />
+            <label>Water Level</label>
+            <br />
+            <p id="WaterNum" />
+            <div class="progress">
+                <progressbar id="waterHeight" />
+            </div>
+            <br />
         </div>
     </div>
 </div>

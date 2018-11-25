@@ -53,10 +53,34 @@ namespace Aqua_Control
         /// </summary>
         void Feed();
 
-        void ToggleValve1();
-        void ToggleValve2();
-        void ToggleValve3();
-        void ToggleValve4();
-        void ToggleValve5();
+        /// <summary>
+        /// Toggles the output valve
+        /// </summary>
+        /// <returns>the state of the valve</returns>
+        bool ToggleValve1();
+
+        /// <summary>
+        /// Toggles the input valve
+        /// </summary>
+        /// <returns>the state of the valve</returns>
+        bool ToggleValve2();
+
+        /// <summary>
+        /// Toggles the fresh water valve
+        /// </summary>
+        /// <returns>the state of the valve</returns>
+        bool ToggleValve3();
+
+        /// <summary>
+        /// Toggles the salt water valve
+        /// </summary>
+        /// <returns>the state of the valve</returns>
+        bool ToggleValve4();
+
+        /// <summary>
+        /// Toggles the drain valve
+        /// </summary>
+        /// <returns>the state of the valve</returns>
+        bool ToggleValve5();
     }
 }

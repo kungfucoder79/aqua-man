@@ -58,32 +58,32 @@ namespace AquaMan.Controllers
 
         public IActionResult V1()
         {
-            _aquaPinController.ToggleValve1();
-            return Ok();
+            bool val = _aquaPinController.ToggleValve1();
+            return Ok(val);
         }
 
         public IActionResult V2()
         {
-            _aquaPinController.ToggleValve2();
-            return Ok();
+            bool val = _aquaPinController.ToggleValve2();
+            return Ok(val);
         }
 
         public IActionResult V3()
         {
-            _aquaPinController.ToggleValve3();
-            return Ok();
+            bool val = _aquaPinController.ToggleValve3();
+            return Ok(val);
         }
 
         public IActionResult V4()
         {
-            _aquaPinController.ToggleValve4();
-            return Ok();
+            bool val = _aquaPinController.ToggleValve4();
+            return Ok(val);
         }
 
         public IActionResult V5()
         {
-            _aquaPinController.ToggleValve5();
-            return Ok();
+            bool val = _aquaPinController.ToggleValve5();
+            return Ok(val);
         }
 
         public IActionResult Feed()

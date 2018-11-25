@@ -46,10 +46,10 @@ namespace OrderingApplication
             _formDataService = new FormDataService();
 
             FeedingTimes feedingTimes = _formDataService.GetFeedingTimes();
-            _pinController = new AquaPinController(feedingTimes.Feedings, feedingTimes.Pinches);
+            _pinController = new EmptyPinController(feedingTimes.Feedings, feedingTimes.Pinches);
 
             TankSpecs tankSpecs = _formDataService.GetTankSpecs();
-            _i2CController = new AquaI2CController(tankSpecs.Width, tankSpecs.Height, tankSpecs.Depth);
+            _i2CController = new EmptyI2CController(tankSpecs.Width, tankSpecs.Height, tankSpecs.Depth);
             _pinMasterController = new PinMasterController(_i2CController, _pinController, tankSpecs.WaterChangeTime);
         }
 
