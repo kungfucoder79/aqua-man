@@ -12,29 +12,29 @@ namespace AquaMan.Models
     public class TankSpecs
     {
         /// <summary>
-        /// Gets or sets whether or not the tanks specs have been initialized
+        /// Time to initiate the water change sequence
         /// </summary>
-        public bool Initialized { get; set; }
-
+        [Required(ErrorMessage = "* A time must be specified for water changes")]
+        public DateTime WaterChangeTime { get; set; }
         /// <summary>
         /// Height of the tank
         /// </summary>
         [Required]
-        [RegularExpression(@"\d+(\.\d{1,2})?$", ErrorMessage = "* Must be a two digit decimal (1.00)")]
+        [RegularExpression(@"\d+(\.\d{1,4})?$", ErrorMessage = "* Must be at least a four digit decimal (1.0000)")]
         public double Height { get; set; }
 
         /// <summary>
         /// Width of the tank
         /// </summary>
         [Required]
-        [RegularExpression(@"\d+(\.\d{1,2})?$", ErrorMessage = "* Must be a two digit decimal (1.00)")]
+        [RegularExpression(@"\d+(\.\d{1,4})?$", ErrorMessage = "* Must be at least a four digit decimal (1.0000)")]
         public double Width { get; set; }
 
         /// <summary>
         /// Depth of the tank
         /// </summary>
         [Required]
-        [RegularExpression(@"\d+(\.\d{1,2})?$", ErrorMessage = "* Must be a two digit decimal (1.00)")]
+        [RegularExpression(@"\d+(\.\d{1,4})?$", ErrorMessage = "* Must be at least a four digit decimal (1.0000)")]
         public double Depth { get; set; }
     }
 }

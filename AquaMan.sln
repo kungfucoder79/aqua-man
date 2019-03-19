@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aqua_Control", "Aqua_Contro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aqua_Control_UWP", "BlinkyHeaded\Aqua_Control_UWP.csproj", "{5CFD39E8-0331-4AC1-84B2-2F943C077096}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AquaMan.Tests", "AquaMan.Tests\AquaMan.Tests.csproj", "{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4FA7FCD2-1EF5-4902-B582-70D135E5C362}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,9 +77,28 @@ Global
 		{5CFD39E8-0331-4AC1-84B2-2F943C077096}.Release|x86.ActiveCfg = Release|x86
 		{5CFD39E8-0331-4AC1-84B2-2F943C077096}.Release|x86.Build.0 = Release|x86
 		{5CFD39E8-0331-4AC1-84B2-2F943C077096}.Release|x86.Deploy.0 = Release|x86
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Debug|ARM.Build.0 = Debug|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Debug|x64.Build.0 = Debug|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Debug|x86.Build.0 = Debug|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Release|ARM.ActiveCfg = Release|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Release|ARM.Build.0 = Release|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Release|x64.ActiveCfg = Release|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Release|x64.Build.0 = Release|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Release|x86.ActiveCfg = Release|Any CPU
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7C148DDA-2F3C-4F9B-83D2-A09B32CB3A1E} = {4FA7FCD2-1EF5-4902-B582-70D135E5C362}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8015B0AC-BE34-40FF-82E1-8941BCD163AB}

@@ -16,29 +16,21 @@
             <br />
             <ul class="nav" id="side-menu">
                 <li>
-                    <span><i class="fa fa-edit fa-fw"></i> Tank Specs</span>
+                    <span><i class="fa fa-edit fa-fw"></i>Setup</span>
                     <ul class="nav nav-second-level in">
                         <li>
-                            <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup</a>
+                            <a asp-controller="Tank" asp-action="TankSpecs">Tank Specifications</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Feeding" asp-action="FeedingTimes">Feeding Times</a>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    <span><i class="fa fa-edit fa-fw"></i> Feeding Times</span>
-                    <ul class="nav nav-second-level in">
-                        <li>
-                            <a asp-controller="Feeding" asp-action="FeedingTimes">Setup Feeding Times</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <span><i class="fa fa-edit fa-fw"></i> Water</span>
+                    <span><i class="fa fa-edit fa-fw"></i> Maintainace</span>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="#">Check water level</a>
-                        </li>
-                        <li>
-                            <a href="#">Configure water change</a>
+                            <a asp-controller="Maintainace" asp-action="Maintainace">System Maintainace Page</a>
                         </li>
                     </ul>
                 </li>

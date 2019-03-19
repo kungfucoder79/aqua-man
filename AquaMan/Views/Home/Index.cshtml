@@ -3,6 +3,40 @@
 @using AquaMan.Services
 @inject IFormDataService formHelper
 
+
+<script>
+    function Feed() {
+        $.get("/Home/Feed", function (data) {
+            $("p").html(data);
+        });
+    }
+    function ResetI2C() {
+        $.get("/Home/ResetI2C", function (data) {
+            $("p").html(data);
+        });
+    }
+
+    setInterval(GetWaterHeight, 250);
+
+    function GetWaterHeight() {
+        $.get("/Home/GetWaterHeight", function (data) {
+            var waterPercent = (data / 12) * 100;
+            $("#waterHeight").css('width', waterPercent + "%");
+        });
+    }
+
+    function TopLevel() {
+        $.get("/Home/TopLevel", function (data) {
+            $("p").html(data);
+        });
+    }
+
+    function Calabrate() {
+        $.get("/Home/Calabrate", function (data) {
+            $("p").html(data);
+        });
+    }
+</script>
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
@@ -14,38 +48,23 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-
-            @*@using (Html.BeginForm(nameof(HomeController.Fill), nameof(HomeController).RemoveControllerFromName(), FormMethod.Post))
-            {
-                <label>Click to Fill</label>
-                <br />
-                <input type="submit" title="Fill" class="pull-left btn btn-primary" />
-            }
-            
+            <button class="button" type="button" onclick="Feed()" value="Feed">Start Feeder</button>
             <br />
-
-            @using (Html.BeginForm(nameof(HomeController.Drain), nameof(HomeController).RemoveControllerFromName(), FormMethod.Post))
-            {
-                <label>Click to Drain</label>
-                <br />
-                <input type="submit" title="Drain" class="pull-left btn btn-primary" />
-            }*@
-
-            @if (!formHelper.GetTankSpecs().Initialized)
-            {
-                <label>Tanks specifications are needed to intitailize the system.</label>
-                <br />
-                <lable> Please go to the </lable>
-                <a asp-controller="Tank" asp-action="TankSpecs">Tank Setup Page</a>
-            }
-            @if (formHelper.GetFeedingTimes()?.Time1 == null)
-            {
-                <br />
-                <label>At least one feeding time is needed.</label>
-                <br />
-                <lable> Please go to the </lable>
-                <a asp-controller="Feeding" asp-action="FeedingTimes">Feeding Times Setup Page</a>
-            }
+            <br />
+            <button class="button" type="button" onclick="TopLevel()" value="TopLevel">Set Top Water Level</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="Calabrate()" value="Calabrate">Calabrate Water Sensor</button>
+            <br />
+            <br />
+            <button class="button" type="button" onclick="ResetI2C()" value="ResetI2C">Reset Water Sensor</button>
+            <br />
+            <br />
+            <label>Water Level</label>
+            <div class="progress">
+                <progressbar id="waterHeight" />
+            </div>
+            <br />
         </div>
     </div>
 </div>

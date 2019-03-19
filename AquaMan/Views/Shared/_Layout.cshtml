@@ -7,15 +7,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aqua Man</title>
     <link asp-href-include="~/css/*.css" rel="stylesheet" />
+    <style>
+        .button {
+            display: inline-block;
+            width: 50%;
+            padding: 10px 20px;
+        }
+    </style>
 </head>
 <body>
+    <script>
+        setInterval(Time, 1000);
+
+        function Time() {
+            $.get("/Layout/GetCurrentTime", function (data) {
+                $("#CurrentTime").html(data);
+            });
+        }
+    </script>
+    <div id="CurrentTime"></div>
     <div id="wrapper">
         <partial name="_Navigation" />
         @RenderBody()
     </div>
-    <footer>
-        <p>&copy; 2018 Engingeering Awesomeness<span class="pull-right">Contact Help Desk at 1-800-DRU-IDIA</span></p>
-    </footer>
     <script asp-src-include="~/js/*.js"></script>
 </body>
 </html>

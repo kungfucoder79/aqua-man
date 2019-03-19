@@ -1,40 +1,33 @@
-﻿using System;
+﻿using Aqua_Control;
+using AquaMan.Extensions;
+using AquaMan.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using AquaMan.Models;
-using Aqua_Control;
-using AquaMan.Extensions;
 
 namespace AquaMan.Controllers
 {
     public class HomeController : Controller
     {
         private IAquaPinController _aquaPinController;
+        private IAquaI2CController _aquaI2CController;
+        private IPinMasterController _pinMasterController;
 
-        public HomeController(IAquaPinController aquaPinController)
+        private double _waterHeight = 0.0;
+
+        public HomeController(IAquaPinController aquaPinController, IAquaI2CController aquaI2CController, IPinMasterController pinMasterController)
         {
             _aquaPinController = aquaPinController;
+            _aquaI2CController = aquaI2CController;
+            _pinMasterController = pinMasterController;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
             return View();
         }
 
@@ -43,20 +36,33 @@ namespace AquaMan.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [HttpPost]
-        public ActionResult Fill()
+        public IActionResult TopLevel()
         {
-            _aquaPinController.Fill();
-            return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
+            _aquaI2CController.SetTopLevel();
+            return Ok();
+        }
+        public IActionResult Feed()
+        {
+            _aquaPinController.Feed();
+            return Ok();
+        }
+        public IActionResult ResetI2C()
+        {
+            _aquaI2CController.Reset();
+            return Ok();
         }
 
-
-        [HttpPost]
-        public ActionResult Drain()
+        public IActionResult Calabrate()
         {
-            _aquaPinController.Drain();
-            return RedirectToAction("Index", nameof(HomeController).RemoveControllerFromName());
+            _aquaI2CController.CalabrateSensor();
+            return Ok();
+
         }
-        
+        public IActionResult GetWaterHeight()
+        {
+            _waterHeight = _aquaI2CController.WaterHeight;
+            return Ok(_waterHeight);
+        }
+
     }
 }
